@@ -1,21 +1,26 @@
 import { ApolloServer, gql } from 'apollo-server-lambda';
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
+import { merge } from 'lodash';
+import { typeDefs as guestTypes, resolvers as guestResolvers } from './schema/guest';
+import { typeDefs as entryTypes, resolvers as entryResolvers } from './schema/entry';
+
+const rootQuery = gql`
 	type Query {
-		hello: String
+		_empty: String
 	}
 `;
+const resolvers = merge(guestResolvers, entryResolvers);
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
+const server = new ApolloServer({
+  typeDefs: [rootQuery, guestTypes, entryTypes],
+  resolvers,
+});
+
+const hello = server.createHandler({
+  cors: {
+    origin: true,
+    credentials: true,
   },
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
-
-const hello = server.createHandler();
+});
 
 export { hello };

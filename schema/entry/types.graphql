@@ -1,0 +1,11 @@
+type Entry {
+	id: String!
+	see: String!
+	createdAt: String!
+	endedAt: String!
+}
+
+extend type Query {
+	listEntry: [Entry]
+	getEntry(id: String): Entry
+}

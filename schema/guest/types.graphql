@@ -1,0 +1,13 @@
+type Guest {
+	id: String!
+	firstName: String!
+	lastName: String
+	email: String!
+	company: String
+	NIK: String!
+}
+
+extend type Query {
+	listGuest: [Guest]
+	getGuest(id: String): Guest
+}
