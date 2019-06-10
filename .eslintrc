@@ -2,6 +2,15 @@
 	"extends": "airbnb-base",
 	"plugins": ["prettier"],
 	"rules": {
-		"no-use-before-define": 0
+		"no-use-before-define": 0,
+		"no-tabs": 0,
+		"indent": [
+			"error",
+			2,
+			{
+				"SwitchCase": 1
+			}
+		],
+		"import/prefer-default-export": 0
 	}
 }
