@@ -1,4 +1,9 @@
 {
-	"plugins": ["source-map-support", "transform-runtime", "import-graphql"],
-	"presets": [["env", { "node": "8.10" }], "stage-3"]
+  "plugins": [
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    "@babel/transform-runtime",
+    "import-graphql",
+    "source-map-support"
+  ],
+  "presets": ["@babel/preset-env"]
 }
