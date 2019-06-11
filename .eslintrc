@@ -14,5 +14,8 @@
     ],
     "import/prefer-default-export": 0,
     "arrow-parens": 0
+  },
+  "env": {
+    "jest": true
   }
 }
