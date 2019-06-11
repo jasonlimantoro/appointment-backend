@@ -28,7 +28,7 @@ const defaultData = [
 ];
 class MockGuestService extends BaseService {
   constructor({ mockedData = defaultData } = {}) {
-    super({ mockedData });
+    super({ mockedData, mocked: true });
   }
 
   list() {
