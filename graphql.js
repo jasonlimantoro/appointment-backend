@@ -11,7 +11,7 @@ const server = new ApolloServer({
   typeDefs: [rootQuery, ...typeDefs],
   resolvers,
   formatError: error => error,
-  formatResponse: response => JSON.stringify(response, null, 2),
+  formatResponse: response => response,
 });
 
 const hello = server.createHandler({
