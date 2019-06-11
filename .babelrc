@@ -2,8 +2,7 @@
   "plugins": [
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
     "@babel/transform-runtime",
-    "import-graphql",
-    "source-map-support"
+    "import-graphql"
   ],
-  "presets": ["@babel/preset-env"]
+  "presets": [["@babel/preset-env", { "targets": { "esmodules": true } }]]
 }
