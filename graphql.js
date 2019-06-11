@@ -1,14 +1,8 @@
-import { ApolloServer, gql } from 'apollo-server-lambda';
+import { ApolloServer } from 'apollo-server-lambda';
 import { resolvers, typeDefs } from './schema';
 
-const rootQuery = gql`
-	type Query {
-		_empty: String
-	}
-`;
-
 const server = new ApolloServer({
-  typeDefs: [rootQuery, ...typeDefs],
+  typeDefs,
   resolvers,
   formatError: error => error,
   formatResponse: response => response,
