@@ -1,13 +1,22 @@
 type Guest {
-	id: String!
-	firstName: String!
-	lastName: String
-	email: String!
-	company: String
-	NIK: String!
+  id: String!
+  firstName: String!
+  lastName: String
+  email: String!
+  company: String
+  NIK: String!
+}
+
+input CreateGuestInput {
+  firstName: String!
+  lastName: String
+  email: String!
+  company: String
+  NIK: String!
 }
 
 extend type Query {
-	listGuest: [Guest]
-	getGuest(id: String): Guest
+  listGuest: [Guest]
+  getGuest(id: String): Guest
+  createGuest(input: CreateGuestInput!): Guest
 }

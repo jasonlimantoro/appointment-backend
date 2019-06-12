@@ -1,8 +1,13 @@
+import uuid from 'uuid';
+import AWS from 'aws-sdk';
+
 import BaseService from './base';
 
 class GuestService extends BaseService {
-  constructor({ mockedData = [], mocked = false } = {}) {
+  constructor({ mockedData = [], mocked = false, tableName = process.env.guestsTable } = {}) {
     super({ mockedData, mocked });
+    this.dataSource = new AWS.DynamoDB.DocumentClient();
+    this.tableName = tableName;
   }
 
   list() {
@@ -11,6 +16,20 @@ class GuestService extends BaseService {
 
   get(id) {
     return this.list().find(d => d.id === id);
+  }
+
+  create(body) {
+    const params = {
+      TableName: this.tableName,
+      Item: {
+        id: uuid.v1(),
+        ...body,
+      },
+    };
+    return this.dataSource
+      .put(params)
+      .promise()
+      .then(() => params.Item);
   }
 }
 
