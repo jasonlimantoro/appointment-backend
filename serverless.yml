@@ -14,6 +14,9 @@ custom:
     prod: 5
     default: 1
   tableThroughput: ${self:custom.tableThroughputs.${self:custom.stage}, self:custom.tableThroughputs.default}
+  tableNames:
+    guests: ${self:custom.stage}-guests
+    entries: ${self:custom.stage}-entries
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -29,6 +32,9 @@ provider:
   # commit your env.yml.
   #
   #environment: ${file(env.yml):${self:provider.stage}}
+  environment:
+    guestsTable: ${self:custom.tableNames.guests}
+    entriesTable: ${self:custom.tableNames.entries}
 
 functions:
   graphql:

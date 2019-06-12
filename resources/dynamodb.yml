@@ -2,7 +2,7 @@ Resources:
   EntryTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:custom.stage}-entries
+      TableName: ${self:custom.tableNames.entries}
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -16,7 +16,7 @@ Resources:
   GuestTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:custom.stage}-guests
+      TableName: ${self:custom.tableName.guests}
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
