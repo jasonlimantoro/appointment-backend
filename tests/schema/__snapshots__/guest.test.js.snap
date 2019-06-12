@@ -2,40 +2,36 @@
 
 exports[`Guest schema getGuest: should work 1`] = `
 Object {
-  "data": Object {
-    "getGuest": Object {
-      "email": "andy@gmail.com",
-      "firstName": "Andy",
-      "id": "ah",
-      "lastName": "Huang",
-    },
+  "getGuest": Object {
+    "email": "andy@gmail.com",
+    "firstName": "Andy",
+    "id": "ah",
+    "lastName": "Huang",
   },
 }
 `;
 
 exports[`Guest schema listGuest: should work 1`] = `
 Object {
-  "data": Object {
-    "listGuest": Array [
-      Object {
-        "email": "andy@gmail.com",
-        "firstName": "Andy",
-        "id": "ah",
-        "lastName": "Huang",
-      },
-      Object {
-        "email": "budy@gmail.com",
-        "firstName": "Budy",
-        "id": "bh",
-        "lastName": "Harjo",
-      },
-      Object {
-        "email": "charlie@gmail.com",
-        "firstName": "Charlie",
-        "id": "cp",
-        "lastName": "Putt",
-      },
-    ],
-  },
+  "listGuest": Array [
+    Object {
+      "email": "andy@gmail.com",
+      "firstName": "Andy",
+      "id": "ah",
+      "lastName": "Huang",
+    },
+    Object {
+      "email": "budy@gmail.com",
+      "firstName": "Budy",
+      "id": "bh",
+      "lastName": "Harjo",
+    },
+    Object {
+      "email": "charlie@gmail.com",
+      "firstName": "Charlie",
+      "id": "cp",
+      "lastName": "Putt",
+    },
+  ],
 }
 `;

@@ -1,6 +1,4 @@
-import BaseService from './base';
-
-const defaultData = [
+export const mockedGuests = [
   {
     id: 'ah',
     firstName: 'Andy',
@@ -26,18 +24,3 @@ const defaultData = [
     company: 'Facebook',
   },
 ];
-class MockGuestService extends BaseService {
-  constructor({ mockedData = defaultData } = {}) {
-    super({ mockedData, mocked: true });
-  }
-
-  list() {
-    return this.mockedData;
-  }
-
-  get(id) {
-    return this.mockedData.find(d => d.id === id);
-  }
-}
-
-export default MockGuestService;

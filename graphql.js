@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { resolvers, typeDefs } from './schema';
-import GuestService from './services/guest';
+import GuestService from './services/guest.service';
 
 const server = new ApolloServer({
   typeDefs,
