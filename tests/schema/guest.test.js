@@ -43,4 +43,49 @@ describe('Guest schema', () => {
     const result = await query({ query: GET_GUEST, variables: { input: { id: 'some-id' } } });
     expect(result).toMatchSnapshot();
   });
+
+  it('byName: should work', async () => {
+    const { query, guestAPI } = createTestClientAndServer();
+    const guest = mockedGuests[0];
+    const { firstName, lastName } = guest;
+    guestAPI.byName = jest.fn().mockResolvedValue(guest);
+    const BY_NAME = gql`
+      query guestByName($input: ByNameInput!) {
+        byName(input: $input) {
+          id
+          firstName
+          lastName
+          email
+        }
+      }
+    `;
+    const result = await query({ query: BY_NAME, variables: { input: { firstName, lastName } } });
+    expect(result).toMatchSnapshot();
+  });
+
+  it('create guest: should work', async () => {
+    const { query, guestAPI } = createTestClientAndServer();
+    const attributes = {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      NIK: '12345',
+    };
+    guestAPI.create = jest.fn().mockResolvedValue({ ...attributes, id: 'some-id' });
+
+    const CREATE_GUEST = gql`
+      query CreateGuest($input: CreateGuestInput!) {
+        createGuest(input: $input) {
+          id
+          firstName
+          lastName
+          email
+          NIK
+          company
+        }
+      }
+    `;
+    const result = await query({ query: CREATE_GUEST, variables: { input: attributes } });
+    expect(result).toMatchSnapshot();
+  });
 });

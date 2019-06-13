@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Guest schema byName: should work 1`] = `
+Object {
+  "data": Object {
+    "byName": Object {
+      "email": "andy@gmail.com",
+      "firstName": "Andy",
+      "id": "ah",
+      "lastName": "Huang",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Guest schema create guest: should work 1`] = `
+Object {
+  "data": Object {
+    "createGuest": Object {
+      "NIK": "12345",
+      "company": null,
+      "email": "john@example.com",
+      "firstName": "John",
+      "id": "some-id",
+      "lastName": "Doe",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Guest schema getGuest: should work 1`] = `
 Object {
   "data": Object {
