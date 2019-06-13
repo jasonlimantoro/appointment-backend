@@ -1,7 +1,7 @@
 import { createTestClient } from 'apollo-server-testing';
 import gql from 'graphql-tag';
 import { createTestServer } from '../utils';
-import { mockedGuests } from '../../fixtures/guests';
+import mockedGuests from '../../fixtures/guests';
 
 describe('Guest schema', () => {
   const createTestClientAndServer = () => {

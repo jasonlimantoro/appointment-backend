@@ -1,4 +1,4 @@
-export const mockedGuests = [
+module.exports = [
   {
     id: 'ah',
     firstName: 'Andy',

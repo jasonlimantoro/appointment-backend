@@ -4,9 +4,14 @@ import AWS from 'aws-sdk';
 import BaseService from './base';
 
 class GuestService extends BaseService {
-  constructor({ mockedData = [], mocked = false, tableName = process.env.guestsTable } = {}) {
+  constructor({
+    mockedData = [],
+    mocked = false,
+    tableName = process.env.guestsTable,
+    dataSource = new AWS.DynamoDB.DocumentClient(),
+  } = {}) {
     super({ mockedData, mocked });
-    this.dataSource = new AWS.DynamoDB.DocumentClient();
+    this.dataSource = dataSource;
     this.tableName = tableName;
   }
 

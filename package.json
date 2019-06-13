@@ -54,6 +54,9 @@
     "testEnvironment": "jsdom",
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest"
-    }
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTests.js"
+    ]
   }
 }
