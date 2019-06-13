@@ -46,12 +46,12 @@ class GuestService extends BaseService {
   }
 
   create({
-    firstName, lastName, email, company, NIK,
+    firstName, lastName, email, company, NIK, id,
   }) {
     const params = {
       TableName: this.tableName,
       Item: {
-        id: uuid.v1(),
+        id: id || uuid.v1(),
         firstName,
         lastName,
         email,
