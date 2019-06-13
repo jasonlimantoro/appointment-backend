@@ -77,7 +77,7 @@ describe('Guest schema', () => {
     guestAPI.create = jest.fn().mockResolvedValue({ ...attributes, id: 'some-id' });
 
     const CREATE_GUEST = gql`
-      query CreateGuest($input: CreateGuestInput!) {
+      mutation CreateGuest($input: CreateGuestInput!) {
         createGuest(input: $input) {
           id
           firstName

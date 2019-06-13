@@ -25,5 +25,8 @@ extend type Query {
   listGuest: [Guest]
   getGuest(id: String!): Guest
   byName(input: ByNameInput!): Guest
+}
+
+extend type Mutation {
   createGuest(input: CreateGuestInput!): Guest
 }
