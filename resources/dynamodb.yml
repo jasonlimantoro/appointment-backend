@@ -29,8 +29,6 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: firstName
-          KeyType: RANGE
       GlobalSecondaryIndexes:
         - IndexName: firstName-index
           KeySchema:
