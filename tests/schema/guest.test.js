@@ -24,6 +24,7 @@ describe('Guest schema', () => {
       }
     `;
     const result = await query({ query: LIST_GUEST });
+    expect(guestAPI.list).toBeCalled();
     expect(result).toMatchSnapshot();
   });
 
@@ -31,8 +32,8 @@ describe('Guest schema', () => {
     const { query, guestAPI } = createTestClientAndServer();
     guestAPI.get = jest.fn(() => mockedGuests[0]);
     const GET_GUEST = gql`
-      query guest($input: getGuestInput!) {
-        getGuest(input: $input) {
+      query guest($id: String!) {
+        getGuest(id: $id) {
           id
           firstName
           lastName
@@ -40,7 +41,8 @@ describe('Guest schema', () => {
         }
       }
     `;
-    const result = await query({ query: GET_GUEST, variables: { input: { id: 'some-id' } } });
+    const result = await query({ query: GET_GUEST, variables: { id: 'some-id' } });
+    expect(guestAPI.get).toBeCalledWith('some-id');
     expect(result).toMatchSnapshot();
   });
 
@@ -60,6 +62,7 @@ describe('Guest schema', () => {
       }
     `;
     const result = await query({ query: BY_NAME, variables: { input: { firstName, lastName } } });
+    expect(guestAPI.byName).toBeCalledWith({ firstName, lastName });
     expect(result).toMatchSnapshot();
   });
 
@@ -86,6 +89,7 @@ describe('Guest schema', () => {
       }
     `;
     const result = await query({ query: CREATE_GUEST, variables: { input: attributes } });
+    expect(guestAPI.create).toBeCalledWith(attributes);
     expect(result).toMatchSnapshot();
   });
 });

@@ -8,7 +8,7 @@ const server = new ApolloServer({
   formatError: error => error,
   formatResponse: response => response,
   dataSources: () => ({
-    GuestAPI: new GuestService(),
+    guestAPI: new GuestService(),
   }),
 });
 

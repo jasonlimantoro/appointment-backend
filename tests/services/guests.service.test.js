@@ -17,7 +17,7 @@ describe('Guest service', () => {
   });
   it('get: should return the correct object', async () => {
     const { id } = mockedData[1];
-    const res = await service.get({ id });
+    const res = await service.get(id);
     expect(res).toEqual(mockedData[1]);
   });
   it('create: should save an item', async () => {

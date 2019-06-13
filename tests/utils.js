@@ -7,7 +7,7 @@ export const createTestServer = () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    dataSources: () => ({ GuestAPI: guestAPI }),
+    dataSources: () => ({ guestAPI }),
   });
   return { server, guestAPI };
 };

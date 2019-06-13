@@ -24,7 +24,7 @@ class GuestService extends BaseService {
       .then(r => r.Items);
   }
 
-  get({ id }) {
+  get(id) {
     return this.dataSource
       .get({
         TableName: this.tableName,
