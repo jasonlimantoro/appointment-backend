@@ -11,14 +11,25 @@ class GuestService extends BaseService {
   }
 
   list() {
-    return this.mockedData;
+    return this.dataSource
+      .scan({
+        TableName: this.tableName,
+      })
+      .promise()
+      .then(r => r.Items);
   }
 
-  get(id) {
-    return this.list().find(d => d.id === id);
+  get({ id }) {
+    return this.dataSource
+      .get({
+        TableName: this.tableName,
+        Key: { id },
+      })
+      .promise()
+      .then(r => r.Item);
   }
 
-  byName(body) {
+  byName({ firstName, lastName }) {
     return this.dataSource
       .query({
         TableName: this.tableName,
@@ -26,20 +37,26 @@ class GuestService extends BaseService {
         KeyConditionExpression: 'firstName = :firstName',
         FilterExpression: 'lastName = :lastName',
         ExpressionAttributeValues: {
-          ':firstName': body.firstName,
-          ':lastName': body.lastName,
+          ':firstName': firstName,
+          ':lastName': lastName,
         },
       })
       .promise()
       .then(response => response.Items[0]);
   }
 
-  create(body) {
+  create({
+    firstName, lastName, email, company, NIK,
+  }) {
     const params = {
       TableName: this.tableName,
       Item: {
         id: uuid.v1(),
-        ...body,
+        firstName,
+        lastName,
+        email,
+        company,
+        NIK,
       },
     };
     return this.dataSource

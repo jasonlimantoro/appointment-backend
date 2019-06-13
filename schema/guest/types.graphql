@@ -20,9 +20,13 @@ input ByNameInput {
   lastName: String!
 }
 
+input getGuestInput {
+  id: String!
+}
+
 extend type Query {
   listGuest: [Guest]
-  getGuest(id: String): Guest
+  getGuest(input: getGuestInput!): Guest
   byName(input: ByNameInput!): Guest
   createGuest(input: CreateGuestInput!): Guest
 }
