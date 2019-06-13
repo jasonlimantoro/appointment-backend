@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Entry Service list: should work 1`] = `
+Array [
+  Object {
+    "Guest": Object {
+      "NIK": "12312365",
+      "company": "IMCP",
+      "email": "andy@gmail.com",
+      "firstName": "Andy",
+      "id": "ah",
+      "lastName": "Huang",
+    },
+    "id": "234",
+    "see": "person2",
+  },
+  Object {
+    "Guest": Object {
+      "NIK": "12312365",
+      "company": "IMCP",
+      "email": "andy@gmail.com",
+      "firstName": "Andy",
+      "id": "ah",
+      "lastName": "Huang",
+    },
+    "id": "123",
+    "see": "person1",
+  },
+  Object {
+    "Guest": Object {
+      "NIK": "12832837",
+      "company": "Google",
+      "email": "budy@gmail.com",
+      "firstName": "Budy",
+      "id": "bh",
+      "lastName": "Harjo",
+    },
+    "id": "456k",
+    "see": "person2",
+  },
+]
+`;

@@ -1,11 +1,12 @@
 type Entry {
-	id: String!
-	see: String!
-	createdAt: String!
-	endedAt: String!
+  id: String!
+  see: String!
+  createdAt: String!
+  endedAt: String
+  Guest: Guest!
 }
 
 extend type Query {
-	listEntry: [Entry]
-	getEntry(id: String): Entry
+  listEntry: [Entry]
+  getEntry(id: String): Entry
 }

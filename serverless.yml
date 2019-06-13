@@ -33,7 +33,12 @@ custom:
       domain:
         sources:
           - table: dev-guests
-            sources: [./fixtures/guests.js]
+            sources: 
+              - ./fixtures/guests.js
+
+          - table: dev-entries
+            sources:
+              - ./fixtures/entries.js
 
 provider:
   name: aws
