@@ -1,9 +1,12 @@
 # NOTE: update this with your service name
 service: appointment-backend
+tenant: 'jasonlimantoro'
+app: 'appointment'
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
   - serverless-webpack
+  - serverless-dynamodb-local
   - serverless-offline
 
 # serverless-webpack configuration
@@ -20,6 +23,17 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+      seed: true
+    seed:
+      domain:
+        sources:
+          - table: dev-guests
+            sources: [./fixtures/guests.js]
 
 provider:
   name: aws
