@@ -16,7 +16,7 @@ Resources:
   GuestTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:custom.tableName.guests}
+      TableName: ${self:custom.tableNames.guests}
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -37,7 +37,7 @@ Resources:
             - AttributeName: firstName
               KeyType: HASH
           Projection:
-            ProjectionType: KEYS_ONLY
+            ProjectionType: ALL
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1

@@ -15,8 +15,14 @@ input CreateGuestInput {
   NIK: String!
 }
 
+input ByNameInput {
+  firstName: String!
+  lastName: String!
+}
+
 extend type Query {
   listGuest: [Guest]
   getGuest(id: String): Guest
+  byName(input: ByNameInput!): Guest
   createGuest(input: CreateGuestInput!): Guest
 }

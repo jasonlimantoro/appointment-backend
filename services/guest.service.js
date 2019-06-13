@@ -18,6 +18,22 @@ class GuestService extends BaseService {
     return this.list().find(d => d.id === id);
   }
 
+  byName(body) {
+    return this.dataSource
+      .query({
+        TableName: this.tableName,
+        IndexName: 'firstName-index',
+        KeyConditionExpression: 'firstName = :firstName',
+        FilterExpression: 'lastName = :lastName',
+        ExpressionAttributeValues: {
+          ':firstName': body.firstName,
+          ':lastName': body.lastName,
+        },
+      })
+      .promise()
+      .then(response => response.Items[0]);
+  }
+
   create(body) {
     const params = {
       TableName: this.tableName,
