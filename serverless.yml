@@ -50,6 +50,32 @@ provider:
     guestsTable: ${self:custom.tableNames.guests}
     entriesTable: ${self:custom.tableNames.entries}
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        # Guest table
+        - Fn::GetAtt: 
+          - GuestTable
+          - Arn
+        # the firstName index
+        - Fn::Join: 
+            - '/' 
+            -
+              - Fn::GetAtt: 
+                - GuestTable
+                - Arn 
+              - index
+              - firstName-index"
 functions:
   graphql:
     handler: graphql.hello
@@ -65,3 +91,7 @@ functions:
 resources:
   # Dynamodb
   - ${file(resources/dynamodb.yml)}
+  # Cognito user
+  - ${file(resources/cognito-user.yml)}
+  # Cognito identity
+  - ${file(resources/cognito-identity.yml)}
