@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --no-cache",
     "test:watch": "yarn test --watch",
-    "offline": "sls offline start"
+    "offline": "sls offline start",
+    "deploy": "sls deploy -v"
   },
   "author": "",
   "license": "MIT",
