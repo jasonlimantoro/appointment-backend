@@ -1,5 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Entry Schema createEntry: should work 1`] = `
+Object {
+  "data": Object {
+    "createEntry": Object {
+      "Guest": Object {
+        "email": "jane@example.com",
+        "firstName": "Jane",
+        "lastName": "Doe",
+      },
+      "id": "asdf",
+      "see": "xyz",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Entry Schema listEntry: should work 1`] = `
 Object {
   "data": Object {

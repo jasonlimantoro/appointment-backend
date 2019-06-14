@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { resolvers, typeDefs } from './schema';
 import GuestService from './services/guest.service';
+import EntryService from './services/entry.service';
 
 const server = new ApolloServer({
   typeDefs,
@@ -9,6 +10,7 @@ const server = new ApolloServer({
   formatResponse: response => response,
   dataSources: () => ({
     guestAPI: new GuestService(),
+    entryAPI: new EntryService(),
   }),
 });
 

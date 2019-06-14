@@ -11,7 +11,22 @@ const service = new EntryService({ dataSource: localDynamo });
 describe('Entry Service', () => {
   it('list: should work', async () => {
     const res = await service.list();
-    expect(res.length).toEqual(3);
-    expect(res).toMatchSnapshot();
+    expect(res).toContainEqual(mockedData[0]);
+  });
+
+  it('create: should work', async () => {
+    const attributes = {
+      id: 'asdf',
+      see: 'xyz',
+      Guest: {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane@example.com',
+        company: 'Amazon',
+        NIK: 'abcdefghijklmnop',
+      },
+    };
+    const res = await service.create(attributes);
+    expect(res).toEqual(attributes);
   });
 });

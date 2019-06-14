@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import uuid from 'uuid';
 
 import BaseService from './base';
 
@@ -21,6 +22,21 @@ class EntryService extends BaseService {
       })
       .promise()
       .then(r => r.Items);
+  }
+
+  create({ see, Guest, id }) {
+    const params = {
+      TableName: this.tableName,
+      Item: {
+        id: id || uuid.v1(),
+        see,
+        Guest,
+      },
+    };
+    return this.dataSource
+      .put(params)
+      .promise()
+      .then(() => params.Item);
   }
 }
 

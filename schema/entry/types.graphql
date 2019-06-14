@@ -6,7 +6,17 @@ type Entry {
   Guest: Guest!
 }
 
+input CreateEntryInput {
+  id: String
+  see: String!
+  Guest: CreateGuestInput!
+}
+
 extend type Query {
   listEntry: [Entry]
   getEntry(id: String): Entry
+}
+
+extend type Mutation {
+  createEntry(input: CreateEntryInput!): Entry!
 }
