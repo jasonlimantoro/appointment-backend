@@ -12,7 +12,7 @@ plugins:
 # serverless-webpack configuration
 # Enable auto-packing of external modules
 custom:
-  stage: ${opt:stage, self:provider.stage}
+  stage: ${self:provider.stage}
   tableThroughputs:
     prod: 5
     default: 1
@@ -43,17 +43,14 @@ custom:
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
+  region: ${opt:region, 'us-east-1'} # Overwrite the default region used. Default is us-east-1
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
   # the following line. Also, make sure to not
   # commit your env.yml.
   #
-  #environment: ${file(env.yml):${self:provider.stage}}
-  environment:
-    guestsTable: ${self:custom.tableNames.guests}
-    entriesTable: ${self:custom.tableNames.entries}
+  environment: ${file(env.yml):${self:provider.stage}}
 
   iamRoleStatements:
     - Effect: Allow
@@ -80,7 +77,7 @@ provider:
                 - GuestTable
                 - Arn 
               - index
-              - firstName-index"
+              - firstName-index
 
         # Entry table
         - Fn::GetAtt:
