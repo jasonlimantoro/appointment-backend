@@ -13,7 +13,6 @@ module.exports = [
     Guest: guests[0],
     see: 'person2',
     createdAt: new Date(2018, 1, 2, 11, 0).toLocaleString(),
-    endedAt: undefined,
   },
   {
     id: '456k',
