@@ -4,6 +4,8 @@ import uuid from 'uuid';
 import BaseService from './base';
 
 class EntryService extends BaseService {
+  static invalidArgumentsError = new Error('Invalid Argument');
+
   constructor({
     mockedData,
     mocked,
@@ -35,6 +37,9 @@ class EntryService extends BaseService {
   }
 
   create({ see, guestId, id }) {
+    if (!guestId) {
+      throw this.constructor.invalidArgumentsError;
+    }
     const params = {
       TableName: this.tableName,
       Item: {

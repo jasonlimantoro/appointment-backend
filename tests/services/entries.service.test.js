@@ -29,6 +29,12 @@ describe('Entry Service', () => {
     expect(res).toEqual({ ...attributes, id: expect.any(String), createdAt: expect.any(String) });
   });
 
+  it('create: should synchronously throw error if guestId is not present', async () => {
+    expect(() => {
+      service.create({ see: 'foobar' });
+    }).toThrow(service.invalidArgumentsError);
+  });
+
   it('end: should add the endedAt field', async () => {
     const entry = await service.create({
       see: 'foo',
