@@ -14,6 +14,11 @@ describe('Entry Service', () => {
     expect(res).toContainEqual(mockedData[0]);
   });
 
+  it('get: should work', async () => {
+    const res = await service.get(mockedData[0].id);
+    expect(res).toEqual(mockedData[0]);
+  });
+
   it('create: should work', async () => {
     const attributes = {
       id: 'asdf',

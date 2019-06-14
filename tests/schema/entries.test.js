@@ -65,4 +65,25 @@ describe('Entry Schema', () => {
 
     expect(res).toMatchSnapshot();
   });
+
+  it('getEntry: should work', async () => {
+    const { query, entryAPI } = createTestClientAndServer();
+    const GET_ENTRY = gql`
+      query GetEntry($id: String!) {
+        getEntry(id: $id) {
+          id
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    const mock = mockedData[0];
+    entryAPI.get = jest.fn().mockReturnValue(mock);
+    const res = await query({ query: GET_ENTRY, variables: { id: mock.id } });
+
+    expect(entryAPI.get).toBeCalledWith(mock.id);
+
+    expect(res).toMatchSnapshot();
+  });
 });

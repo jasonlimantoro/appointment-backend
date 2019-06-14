@@ -24,6 +24,16 @@ class EntryService extends BaseService {
       .then(r => r.Items);
   }
 
+  get(id) {
+    return this.dataSource
+      .get({
+        TableName: this.tableName,
+        Key: { id },
+      })
+      .promise()
+      .then(r => r.Item);
+  }
+
   create({ see, Guest, id }) {
     const params = {
       TableName: this.tableName,

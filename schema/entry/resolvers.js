@@ -2,7 +2,7 @@ const resolvers = {
   Query: {
     listEntry: (_source, _args, context) => context.dataSources.entryAPI.list(),
     // eslint-disable-next-line no-unused-vars
-    getEntry: (_, args) => {},
+    getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
   },
   Mutation: {
     createEntry: async (_source, { input }, { dataSources }) => {
