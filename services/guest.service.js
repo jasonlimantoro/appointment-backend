@@ -50,6 +50,10 @@ class GuestService extends BaseService {
       .then(response => response.Items[0]);
   }
 
+  async getByIds(ids) {
+    return Promise.all(ids.map(id => this.get(id)));
+  }
+
   async findOrCreate({
     firstName, lastName, email, company, NIK, id,
   }) {

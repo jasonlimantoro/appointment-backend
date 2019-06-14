@@ -20,6 +20,14 @@ describe('Guest service', () => {
     const res = await service.get(id);
     expect(res).toEqual(mockedData[1]);
   });
+
+  it('getByIds: should work', async () => {
+    const ids = mockedData.map(guest => guest.id);
+    const res = await service.getByIds(ids);
+    expect(res).toContainEqual(mockedData[0]);
+    expect(res).toContainEqual(mockedData[1]);
+    expect(res).toContainEqual(mockedData[2]);
+  });
   it('create: should save an item', async () => {
     const res = await service.create(mockedData[0]);
     expect(res).toEqual(mockedData[0]);
