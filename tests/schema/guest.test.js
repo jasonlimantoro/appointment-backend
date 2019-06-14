@@ -61,7 +61,7 @@ describe('Guest schema', () => {
   });
 
   it('create guest: should work', async () => {
-    const { query, guestAPI } = createTestClientAndServer();
+    const { mutate, guestAPI } = createTestClientAndServer();
     const attributes = {
       firstName: 'John',
       lastName: 'Doe',
@@ -82,7 +82,7 @@ describe('Guest schema', () => {
         }
       }
     `;
-    const result = await query({ query: CREATE_GUEST, variables: { input: attributes } });
+    const result = await mutate({ mutation: CREATE_GUEST, variables: { input: attributes } });
     expect(guestAPI.create).toBeCalledWith(attributes);
     expect(result).toMatchSnapshot();
   });

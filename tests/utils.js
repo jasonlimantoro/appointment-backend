@@ -12,6 +12,8 @@ export const createTestClientAndServer = () => {
     resolvers,
     dataSources: () => ({ guestAPI, entryAPI }),
   });
-  const { query } = createTestClient(server);
-  return { query, guestAPI, entryAPI };
+  const { query, mutate } = createTestClient(server);
+  return {
+    query, mutate, guestAPI, entryAPI,
+  };
 };

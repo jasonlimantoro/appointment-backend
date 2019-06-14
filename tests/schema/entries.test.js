@@ -26,7 +26,7 @@ describe('Entry Schema', () => {
   });
 
   it('createEntry: should work', async () => {
-    const { query, entryAPI, guestAPI } = createTestClientAndServer();
+    const { mutate, entryAPI, guestAPI } = createTestClientAndServer();
     const attributes = {
       id: 'asdf',
       see: 'xyz',
@@ -54,7 +54,7 @@ describe('Entry Schema', () => {
     entryAPI.create = jest.fn().mockReturnValue(attributes);
     guestAPI.findOrCreate = jest.fn().mockReturnValue({ ...attributes.Guest, id: 'some-id' });
 
-    const res = await query({ query: CREATE_ENTRY, variables: { input: attributes } });
+    const res = await mutate({ mutation: CREATE_ENTRY, variables: { input: attributes } });
 
     expect(guestAPI.findOrCreate).toBeCalledWith(attributes.Guest);
     expect(entryAPI.create).toBeCalledWith({
