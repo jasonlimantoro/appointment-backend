@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk';
 import uuid from 'uuid';
+import dynamoClient from '../config/dynamodb';
 
 import BaseService from './base';
 
@@ -10,7 +10,7 @@ class EntryService extends BaseService {
     mockedData,
     mocked,
     tableName = process.env.entriesTable,
-    dataSource = new AWS.DynamoDB.DocumentClient(),
+    dataSource = dynamoClient,
   } = {}) {
     super({ mockedData, mocked });
     this.tableName = tableName;

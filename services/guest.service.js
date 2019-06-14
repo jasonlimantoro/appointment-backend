@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import AWS from 'aws-sdk';
+import dynamoClient from '../config/dynamodb';
 
 import BaseService from './base';
 
@@ -8,7 +8,7 @@ class GuestService extends BaseService {
     mockedData = [],
     mocked = false,
     tableName = process.env.guestsTable,
-    dataSource = new AWS.DynamoDB.DocumentClient(),
+    dataSource = dynamoClient,
   } = {}) {
     super({ mockedData, mocked });
     this.dataSource = dataSource;
