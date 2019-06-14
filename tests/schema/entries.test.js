@@ -1,11 +1,13 @@
 import gql from 'graphql-tag';
 import { createTestClientAndServer } from '../utils';
-import mockedData from '../../fixtures/entries';
+import mockedEntries from '../../fixtures/entries';
+import mockedGuest from '../../fixtures/guests';
 
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
-    const { query, entryAPI } = createTestClientAndServer();
-    entryAPI.list = jest.fn().mockReturnValue(mockedData);
+    const { query, entryAPI, guestAPI } = createTestClientAndServer();
+    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
+    guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
     const LIST_ENTRY = gql`
       query {
         listEntry {
@@ -22,6 +24,7 @@ describe('Entry Schema', () => {
     `;
     const res = await query({ query: LIST_ENTRY });
     expect(entryAPI.list).toBeCalled();
+    expect(guestAPI.get).toBeCalledTimes(mockedEntries.length);
     expect(res).toMatchSnapshot();
   });
 
@@ -51,8 +54,8 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    entryAPI.create = jest.fn().mockReturnValue(attributes);
-    guestAPI.findOrCreate = jest.fn().mockReturnValue({ ...attributes.Guest, id: 'some-id' });
+    entryAPI.create = jest.fn().mockResolvedValue(attributes);
+    guestAPI.findOrCreate = jest.fn().mockResolvedValue({ ...attributes.Guest, id: 'some-id' });
 
     const res = await mutate({ mutation: CREATE_ENTRY, variables: { input: attributes } });
 
@@ -60,7 +63,7 @@ describe('Entry Schema', () => {
     expect(entryAPI.create).toBeCalledWith({
       id: attributes.id,
       see: attributes.see,
-      guestID: 'some-id',
+      guestId: 'some-id',
     });
 
     expect(res).toMatchSnapshot();
@@ -78,8 +81,8 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    const mock = mockedData[0];
-    entryAPI.get = jest.fn().mockReturnValue(mock);
+    const mock = mockedEntries[0];
+    entryAPI.get = jest.fn().mockResolvedValue(mock);
     const res = await query({ query: GET_ENTRY, variables: { id: mock.id } });
 
     expect(entryAPI.get).toBeCalledWith(mock.id);

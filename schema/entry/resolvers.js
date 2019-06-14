@@ -1,6 +1,17 @@
 const resolvers = {
   Query: {
-    listEntry: (_source, _args, context) => context.dataSources.entryAPI.list(),
+    listEntry: async (_source, _args, { dataSources }) => {
+      const allEntries = await dataSources.entryAPI.list();
+      const results = [];
+      await allEntries.forEach(entry => {
+        results.push({
+          ...entry,
+          Guest: dataSources.guestAPI.get(entry.guestId),
+        });
+      });
+      return results;
+      // return allEntries;
+    },
     // eslint-disable-next-line no-unused-vars
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
   },
@@ -10,9 +21,9 @@ const resolvers = {
       const res = await dataSources.entryAPI.create({
         id: input.id,
         see: input.see,
-        guestID: guest.id,
+        guestId: guest.id,
       });
-      return res;
+      return { ...res, Guest: guest };
     },
   },
 };

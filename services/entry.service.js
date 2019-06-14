@@ -34,13 +34,14 @@ class EntryService extends BaseService {
       .then(r => r.Item);
   }
 
-  create({ see, Guest, id }) {
+  create({ see, guestId, id }) {
     const params = {
       TableName: this.tableName,
       Item: {
         id: id || uuid.v1(),
         see,
-        Guest,
+        guestId,
+        createdAt: new Date().toLocaleString(),
       },
     };
     return this.dataSource

@@ -69,9 +69,9 @@ Object {
       },
       Object {
         "Guest": Object {
-          "NIK": "12832837",
-          "firstName": "Budy",
-          "lastName": "Harjo",
+          "NIK": "12312365",
+          "firstName": "Andy",
+          "lastName": "Huang",
         },
         "createdAt": "3/1/2018, 11:00:00 AM",
         "endedAt": "3/1/2018, 12:00:00 PM",
