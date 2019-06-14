@@ -1,14 +1,8 @@
-import { createTestClient } from 'apollo-server-testing';
 import gql from 'graphql-tag';
-import { createTestServer } from '../utils';
+import { createTestClientAndServer } from '../utils';
 import mockedGuests from '../../fixtures/guests';
 
 describe('Guest schema', () => {
-  const createTestClientAndServer = () => {
-    const { server, guestAPI } = createTestServer();
-    const { query } = createTestClient(server);
-    return { query, guestAPI };
-  };
   it('listGuest: should work', async () => {
     const { query, guestAPI } = createTestClientAndServer();
     guestAPI.list = jest.fn(() => mockedGuests);

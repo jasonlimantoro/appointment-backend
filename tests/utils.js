@@ -1,9 +1,10 @@
 import { ApolloServer } from 'apollo-server-lambda';
+import { createTestClient } from 'apollo-server-testing';
 import { typeDefs, resolvers } from '../schema';
 import GuestService from '../services/guest.service';
 import EntryService from '../services/entry.service';
 
-export const createTestServer = () => {
+export const createTestClientAndServer = () => {
   const guestAPI = new GuestService();
   const entryAPI = new EntryService();
   const server = new ApolloServer({
@@ -11,5 +12,6 @@ export const createTestServer = () => {
     resolvers,
     dataSources: () => ({ guestAPI, entryAPI }),
   });
-  return { server, guestAPI, entryAPI };
+  const { query } = createTestClient(server);
+  return { query, guestAPI, entryAPI };
 };

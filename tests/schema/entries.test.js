@@ -1,14 +1,8 @@
 import gql from 'graphql-tag';
-import { createTestClient } from 'apollo-server-testing';
-import { createTestServer } from '../utils';
+import { createTestClientAndServer } from '../utils';
 import mockedData from '../../fixtures/entries';
 
 describe('Entry Schema', () => {
-  const createTestClientAndServer = () => {
-    const { server, entryAPI, guestAPI } = createTestServer();
-    const { query } = createTestClient(server);
-    return { query, entryAPI, guestAPI };
-  };
   it('listEntry: should work', async () => {
     const { query, entryAPI } = createTestClientAndServer();
     entryAPI.list = jest.fn().mockReturnValue(mockedData);
