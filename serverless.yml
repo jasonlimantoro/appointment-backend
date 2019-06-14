@@ -81,6 +81,11 @@ provider:
                 - Arn 
               - index
               - firstName-index"
+
+        # Entry table
+        - Fn::GetAtt:
+          - EntryTable
+          - Arn
 functions:
   graphql:
     handler: graphql.hello
