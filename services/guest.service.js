@@ -50,6 +50,27 @@ class GuestService extends BaseService {
       .then(response => response.Items[0]);
   }
 
+  async findOrCreate({
+    firstName, lastName, email, company, NIK, id,
+  }) {
+    const existingData = await this.byName({ firstName, lastName });
+    if (existingData) {
+      return existingData;
+    }
+    const newData = await this.create({
+      firstName,
+      lastName,
+      email,
+      company,
+      NIK,
+      id,
+    });
+    return {
+      ...newData,
+      justCreated: true,
+    };
+  }
+
   create({
     firstName, lastName, email, company, NIK, id,
   }) {

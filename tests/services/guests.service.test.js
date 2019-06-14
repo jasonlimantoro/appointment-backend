@@ -30,4 +30,25 @@ describe('Guest service', () => {
     const res = await service.byName({ firstName, lastName });
     expect(res).toEqual(mockedData[2]);
   });
+
+  it('findOrCreate: should return the existing data', async () => {
+    const { firstName, lastName } = mockedData[1];
+    const res = await service.findOrCreate({ firstName, lastName });
+    service.create = jest.fn();
+    expect(service.create).not.toBeCalled();
+    expect(res).toEqual(mockedData[1]);
+  });
+  it('findOrCreate: should create when data does not exist', async () => {
+    const newData = {
+      firstName: 'some-name',
+      lastName: 'some-family-name',
+      email: 'someone@example.com',
+      NIK: '123123',
+      company: 'abc',
+    };
+    service.create = jest.fn();
+    const res = await service.findOrCreate(newData);
+    expect(service.create).toBeCalledWith(newData);
+    expect(res).toEqual({ ...res, justCreated: true });
+  });
 });
