@@ -10,7 +10,6 @@ const resolvers = {
         });
       });
       return results;
-      // return allEntries;
     },
     // eslint-disable-next-line no-unused-vars
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
@@ -25,6 +24,7 @@ const resolvers = {
       });
       return { ...res, Guest: guest };
     },
+    endEntry: async (_source, args, { dataSources }) => dataSources.entryAPI.end(args.id),
   },
 };
 

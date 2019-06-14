@@ -49,6 +49,22 @@ class EntryService extends BaseService {
       .promise()
       .then(() => params.Item);
   }
+
+  end(id) {
+    return this.dataSource
+      .update({
+        TableName: this.tableName,
+        Key: { id },
+        UpdateExpression: 'set endedAt = :now',
+        ExpressionAttributeValues: {
+          ':now': new Date().toLocaleString(),
+        },
+        ConditionExpression: 'attribute_not_exists(endedAt)',
+        ReturnValues: 'ALL_NEW',
+      })
+      .promise()
+      .then(r => r.Attributes);
+  }
 }
 
 export default EntryService;

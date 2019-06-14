@@ -89,4 +89,26 @@ describe('Entry Schema', () => {
 
     expect(res).toMatchSnapshot();
   });
+
+  it('endEntry: should work', async () => {
+    const { mutate, entryAPI } = createTestClientAndServer();
+    const END_ENTRY = gql`
+      mutation EndEntry($id: String!) {
+        endEntry(id: $id) {
+          id
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    const mock = mockedEntries[0];
+    entryAPI.end = jest
+      .fn()
+      .mockResolvedValue({ ...mock, endedAt: new Date(2020, 1, 1).toLocaleString() });
+    const res = await mutate({ mutation: END_ENTRY, variables: { id: mock.id } });
+
+    expect(entryAPI.end).toBeCalledWith(mock.id);
+    expect(res).toMatchSnapshot();
+  });
 });

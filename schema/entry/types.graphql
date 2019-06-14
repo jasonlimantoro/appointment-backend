@@ -9,6 +9,7 @@ type Entry {
 input CreateEntryInput {
   id: String
   see: String!
+  guestId: String
   Guest: CreateGuestInput!
 }
 
@@ -19,4 +20,5 @@ extend type Query {
 
 extend type Mutation {
   createEntry(input: CreateEntryInput!): Entry!
+  endEntry(id: String!): Entry!
 }
