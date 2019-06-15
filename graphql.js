@@ -12,6 +12,12 @@ const server = new ApolloServer({
     guestAPI: new GuestService(),
     entryAPI: new EntryService(),
   }),
+  context: ({ event, context }) => ({
+    headers: event.headers,
+    functionName: context.functionName,
+    event,
+    context,
+  }),
 });
 
 const hello = server.createHandler({
