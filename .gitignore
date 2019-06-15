@@ -51,3 +51,6 @@ env.yml
 # Jetbrains IDEs
 .idea
 .dynamodb/
+
+# AWS credentials
+aws-exports.js
