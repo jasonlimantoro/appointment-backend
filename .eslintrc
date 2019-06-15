@@ -3,6 +3,7 @@
   "extends": "airbnb-base",
   "plugins": ["prettier"],
   "rules": {
+    "max-len": 0,
     "no-use-before-define": 0,
     "no-tabs": 0,
     "indent": [
@@ -16,6 +17,7 @@
     "arrow-parens": 0
   },
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true
   }
 }
