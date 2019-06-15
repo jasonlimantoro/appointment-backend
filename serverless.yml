@@ -23,22 +23,22 @@ custom:
     entries: ${self:custom.stage}-entries
   webpack: ${file(plugins/webpack.yml):webpack}
   # Due to dynamodb-local bug, the configurations cannot be loaded from external file
-  dynamodb: ${file(plugins/dynamodb-local.yml):dynamodb}
-  # dynamodb:
-  #   stages:
-  #     - dev
-  #   start:
-  #     migrate: true
-  #     seed: true
-  #   seed:
-  #     domain:
-  #       sources:
-  #         - table: dev-guests
-  #           sources: 
-  #             - ./fixtures/guests.js
-  #         - table: dev-entries
-  #           sources:
-  #             - ./fixtures/entries.js
+  # dynamodb: ${file(plugins/dynamodb-local.yml):dynamodb}
+  dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+      seed: true
+    seed:
+      domain:
+        sources:
+          - table: dev-guests
+            sources: 
+              - ./fixtures/guests.js
+          - table: dev-entries
+            sources:
+              - ./fixtures/entries.js
   appSync: ${file(plugins/appsync.yml):appSync}
 
 provider:
