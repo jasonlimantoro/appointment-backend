@@ -56,6 +56,7 @@ describe('Entry Schema', () => {
     `;
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
     guestAPI.findOrCreate = jest.fn().mockResolvedValue({ ...attributes.Guest, id: 'some-id' });
+    guestAPI.get = jest.fn().mockResolvedValue(attributes.Guest);
 
     const res = await mutate({ mutation: CREATE_ENTRY, variables: { input: attributes } });
 
