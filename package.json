@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --no-cache",
     "test:watch": "yarn test --watch",
-    "offline": "sls offline start",
+    "offline": "sls offline start --dontPrintOutput",
     "deploy": "sls deploy -v"
   },
   "author": "",
