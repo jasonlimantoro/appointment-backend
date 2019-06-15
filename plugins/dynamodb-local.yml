@@ -1,0 +1,17 @@
+# When the serverless-dynamodb-local plugin bug is fixed, this will be used to load the configuration
+dynamodb:
+  stages:
+    - dev
+  start:
+    migrate: true
+    seed: true
+  seed:
+    domain:
+      sources:
+        - table: dev-guests
+          sources:
+            - ./fixtures/guests.js
+
+        - table: dev-entries
+          sources:
+            - ./fixtures/entries.js

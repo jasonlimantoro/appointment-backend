@@ -7,6 +7,7 @@ app: 'appointment'
 plugins:
   - serverless-webpack
   - serverless-dynamodb-local
+  - serverless-appsync-plugin
   - serverless-offline
 
 # serverless-webpack configuration
@@ -20,25 +21,25 @@ custom:
   tableNames:
     guests: ${self:custom.stage}-guests
     entries: ${self:custom.stage}-entries
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
-  dynamodb:
-    stages:
-      - dev
-    start:
-      migrate: true
-      seed: true
-    seed:
-      domain:
-        sources:
-          - table: dev-guests
-            sources: 
-              - ./fixtures/guests.js
-
-          - table: dev-entries
-            sources:
-              - ./fixtures/entries.js
+  webpack: ${file(plugins/webpack.yml):webpack}
+  # Due to dynamodb-local bug, the configurations cannot be loaded from external file
+  dynamodb: ${file(plugins/dynamodb-local.yml):dynamodb}
+  # dynamodb:
+  #   stages:
+  #     - dev
+  #   start:
+  #     migrate: true
+  #     seed: true
+  #   seed:
+  #     domain:
+  #       sources:
+  #         - table: dev-guests
+  #           sources: 
+  #             - ./fixtures/guests.js
+  #         - table: dev-entries
+  #           sources:
+  #             - ./fixtures/entries.js
+  appSync: ${file(plugins/appsync.yml):appSync}
 
 provider:
   name: aws

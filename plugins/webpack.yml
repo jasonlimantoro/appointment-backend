@@ -1,0 +1,3 @@
+webpack:
+  webpackConfig: ./webpack.config.js
+  includeModules: true
