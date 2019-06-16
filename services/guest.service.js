@@ -5,12 +5,10 @@ import BaseService from './base';
 
 class GuestService extends BaseService {
   constructor({
-    mockedData = [],
-    mocked = false,
     tableName = process.env.guestsTable,
     dataSource = dynamoClient,
   } = {}) {
-    super({ mockedData, mocked });
+    super();
     this.dataSource = dataSource;
     this.tableName = tableName;
   }

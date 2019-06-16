@@ -1,38 +1,19 @@
 /* eslint-disable no-new */
+import { NotImplementedError } from '../../libs/errors';
 import BaseService from '../../services/base';
 
+const service = new BaseService();
+
 describe('Base Service', () => {
-  it('constructor: should validate the constructor arguments', () => {
-    expect(() => {
-      new BaseService({ mockedData: [{ a: 'b' }], mocked: false });
-    }).toThrow(BaseService.invalidArgumentsError);
+  it('list: should not be callable', async () => {
+    await expect(service.list()).rejects.toThrow(NotImplementedError);
   });
 
-  it('constructor: should successfully instantiate class', () => {
-    let service;
-    const mockedData = [{ a: 'b' }];
-    expect(() => {
-      service = new BaseService();
-    }).not.toThrow();
-    expect(service.mocked).toBe(false);
-    expect(() => {
-      service = new BaseService({ mockedData, mocked: true });
-    }).not.toThrow();
-    expect(service.mocked).toEqual(true);
-    expect(service.mockedData).toEqual(mockedData);
+  it('get: should not be callable', async () => {
+    await expect(service.get()).rejects.toThrow(NotImplementedError);
   });
 
-  it('list: should not be callable', () => {
-    expect(() => {
-      const service = new BaseService();
-      service.list();
-    }).toThrow(BaseService.notImplementedError);
-  });
-
-  it('get: should not be callable', () => {
-    expect(() => {
-      const service = new BaseService();
-      service.get('some-id');
-    }).toThrow(BaseService.notImplementedError);
+  it('create: should not be callable', async () => {
+    await expect(service.create()).rejects.toThrow(NotImplementedError);
   });
 });

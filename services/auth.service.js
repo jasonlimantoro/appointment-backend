@@ -4,10 +4,6 @@ import BaseService from './base';
 import { AuthenticationError } from '../libs/errors';
 
 class AuthService extends BaseService {
-  constructor({ mockedData = [], mocked = false } = {}) {
-    super({ mocked, mockedData });
-  }
-
   static getJWTFromCognitoUser = CognitoUser => CognitoUser.signInUserSession.idToken.jwtToken;
 
   login = async ({ username, password }) => {

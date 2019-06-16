@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import { InvalidArgumentError } from '../../libs/errors';
 import EntryService from '../../services/entry.service';
 import mockEntries from '../../fixtures/entries';
 import mockGuests from '../../fixtures/guests';
@@ -37,7 +38,9 @@ describe('Entry Service', () => {
   });
 
   it('create: should synchronously throw error if guestId is not present', async () => {
-    await expect(service.create({ see: 'foobar' })).rejects.toThrow();
+    await expect(service.create({ see: 'foobar' })).rejects.toThrow(
+      InvalidArgumentError,
+    );
   });
 
   it('end: should add the endedAt field', async () => {

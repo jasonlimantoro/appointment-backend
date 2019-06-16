@@ -7,12 +7,10 @@ class EntryService extends BaseService {
   static invalidArgumentsError = new Error('Invalid Argument');
 
   constructor({
-    mockedData,
-    mocked,
     tableName = process.env.entriesTable,
     dataSource = dynamoClient,
   } = {}) {
-    super({ mockedData, mocked });
+    super();
     this.tableName = tableName;
     this.dataSource = dataSource;
   }
@@ -34,7 +32,9 @@ class EntryService extends BaseService {
 
   create = async ({ see, guestId, id }) => {
     if (!guestId) {
-      throw this.constructor.invalidArgumentsError;
+      throw this.constructor.throwInvalidArgumentsError(
+        'guestID must be provided',
+      );
     }
     const params = {
       TableName: this.tableName,

@@ -31,10 +31,24 @@ class AuthenticationError extends BaseError {
 
 class TokenVerificationError extends BaseError {}
 
+class InvalidArgumentError extends BaseError {
+  constructor(message = 'Invalid argument') {
+    super(message);
+  }
+}
+
+class NotImplementedError extends BaseError {
+  constructor(message = 'Must implement this method') {
+    super(message);
+  }
+}
+
 export {
   PublicKeyNotFoundError,
   TokenExpiredError,
   TokenNotIssuedError,
   TokenVerificationError,
   AuthenticationError,
+  InvalidArgumentError,
+  NotImplementedError,
 };
