@@ -9,8 +9,11 @@ class AuthService extends BaseService {
   login = async ({ username, password }) => {
     try {
       const res = await Auth.signIn(username, password);
-      if (process.env.NODE_ENV !== 'production') {
-        fs.writeFileSync('./fixtures/cognito-user.json', JSON.stringify(res));
+      if (process.env.NODE_ENV === 'development') {
+        fs.writeFileSync(
+          './fixtures/cognito-user.json',
+          JSON.stringify(res, null, 2),
+        );
       }
       return this.constructor.getJWTFromCognitoUser(res);
     } catch (e) {
