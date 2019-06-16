@@ -63,6 +63,23 @@ Object {
 }
 `;
 
+exports[`Entry Schema listEntry should be protected 1`] = `
+Object {
+  "data": Object {
+    "listEntry": null,
+  },
+  "errors": Array [
+    [GraphQLError: You are not authenticated],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Entry Schema listEntry: should work 1`] = `
 Object {
   "data": Object {

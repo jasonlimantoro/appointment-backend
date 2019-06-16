@@ -2,10 +2,12 @@ import gql from 'graphql-tag';
 import { createTestClientAndServer } from '../utils';
 import mockedEntries from '../../fixtures/entries';
 import mockedGuest from '../../fixtures/guests';
+import Auth from '../../auth';
 
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
     const { query, entryAPI, guestAPI } = createTestClientAndServer();
+    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
     entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
     guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
     const LIST_ENTRY = gql`
@@ -23,9 +25,44 @@ describe('Entry Schema', () => {
       }
     `;
     const res = await query({ query: LIST_ENTRY });
+    expect(res).toMatchSnapshot();
+    expect(Auth.verifyJwt).toBeCalled();
     expect(entryAPI.list).toBeCalled();
     expect(guestAPI.get).toBeCalledTimes(mockedEntries.length);
+  });
+
+  it('listEntry should be protected', async () => {
+    const { query, entryAPI, guestAPI } = createTestClientAndServer({
+      context: {
+        headers: {
+          Authorization: 'Bearer some-token',
+        },
+      },
+    });
+    Auth.verifyJwt = jest
+      .fn()
+      .mockRejectedValue(new Error('You are not authenticated'));
+    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
+    guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
+    const LIST_ENTRY = gql`
+      query {
+        listEntry {
+          Guest {
+            firstName
+            lastName
+            NIK
+          }
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    const res = await query({ query: LIST_ENTRY });
     expect(res).toMatchSnapshot();
+    expect(Auth.verifyJwt).toBeCalledWith('some-token');
+    expect(entryAPI.list).not.toBeCalled();
+    expect(guestAPI.get).not.toBeCalled();
   });
 
   it('createEntry: should work', async () => {
@@ -55,10 +92,15 @@ describe('Entry Schema', () => {
       }
     `;
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
-    guestAPI.findOrCreate = jest.fn().mockResolvedValue({ ...attributes.Guest, id: 'some-id' });
+    guestAPI.findOrCreate = jest
+      .fn()
+      .mockResolvedValue({ ...attributes.Guest, id: 'some-id' });
     guestAPI.get = jest.fn().mockResolvedValue(attributes.Guest);
 
-    const res = await mutate({ mutation: CREATE_ENTRY, variables: { input: attributes } });
+    const res = await mutate({
+      mutation: CREATE_ENTRY,
+      variables: { input: attributes },
+    });
 
     expect(guestAPI.findOrCreate).toBeCalledWith(attributes.Guest);
     expect(entryAPI.create).toBeCalledWith({
@@ -104,10 +146,14 @@ describe('Entry Schema', () => {
       }
     `;
     const mock = mockedEntries[0];
-    entryAPI.end = jest
-      .fn()
-      .mockResolvedValue({ ...mock, endedAt: new Date(2020, 1, 1).toLocaleString() });
-    const res = await mutate({ mutation: END_ENTRY, variables: { id: mock.id } });
+    entryAPI.end = jest.fn().mockResolvedValue({
+      ...mock,
+      endedAt: new Date(2020, 1, 1).toLocaleString(),
+    });
+    const res = await mutate({
+      mutation: END_ENTRY,
+      variables: { id: mock.id },
+    });
 
     expect(entryAPI.end).toBeCalledWith(mock.id);
     expect(res).toMatchSnapshot();

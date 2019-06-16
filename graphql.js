@@ -1,7 +1,11 @@
 import { ApolloServer } from 'apollo-server-lambda';
+import Amplify from 'aws-amplify';
+import AWSConfiguration from './config/aws-exports';
 import { resolvers, typeDefs } from './schema';
 import GuestService from './services/guest.service';
 import EntryService from './services/entry.service';
+
+Amplify.configure(AWSConfiguration);
 
 const server = new ApolloServer({
   typeDefs,
@@ -14,8 +18,6 @@ const server = new ApolloServer({
   }),
   context: ({ event, context }) => ({
     headers: event.headers,
-    functionName: context.functionName,
-    event,
     context,
   }),
 });
