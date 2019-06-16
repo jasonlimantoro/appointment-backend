@@ -12,7 +12,10 @@ const service = new EntryService({ dataSource: localDynamo });
 describe('Entry Service', () => {
   it('list: should work', async () => {
     const res = await service.list();
-    expect(res).toContainEqual({ ...mockEntries[0], endedAt: expect.any(String) });
+    expect(res).toContainEqual({
+      ...mockEntries[0],
+      endedAt: expect.any(String),
+    });
   });
 
   it('get: should work', async () => {
@@ -26,13 +29,15 @@ describe('Entry Service', () => {
       guestId: mockGuests[0].id,
     };
     const res = await service.create(attributes);
-    expect(res).toEqual({ ...attributes, id: expect.any(String), createdAt: expect.any(String) });
+    expect(res).toEqual({
+      ...attributes,
+      id: expect.any(String),
+      createdAt: expect.any(String),
+    });
   });
 
   it('create: should synchronously throw error if guestId is not present', async () => {
-    expect(() => {
-      service.create({ see: 'foobar' });
-    }).toThrow(service.invalidArgumentsError);
+    await expect(service.create({ see: 'foobar' })).rejects.toThrow();
   });
 
   it('end: should add the endedAt field', async () => {

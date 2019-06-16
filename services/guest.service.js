@@ -15,48 +15,40 @@ class GuestService extends BaseService {
     this.tableName = tableName;
   }
 
-  list() {
-    return this.dataSource
-      .scan({
-        TableName: this.tableName,
-      })
-      .promise()
-      .then(r => r.Items);
-  }
+  list = async () => this.dataSource
+    .scan({
+      TableName: this.tableName,
+    })
+    .promise()
+    .then(r => r.Items);
 
-  get(id) {
-    return this.dataSource
-      .get({
-        TableName: this.tableName,
-        Key: { id },
-      })
-      .promise()
-      .then(r => r.Item);
-  }
+  get = async id => this.dataSource
+    .get({
+      TableName: this.tableName,
+      Key: { id },
+    })
+    .promise()
+    .then(r => r.Item);
 
-  byName({ firstName, lastName }) {
-    return this.dataSource
-      .query({
-        TableName: this.tableName,
-        IndexName: 'firstName-index',
-        KeyConditionExpression: 'firstName = :firstName',
-        FilterExpression: 'lastName = :lastName',
-        ExpressionAttributeValues: {
-          ':firstName': firstName,
-          ':lastName': lastName,
-        },
-      })
-      .promise()
-      .then(response => response.Items[0]);
-  }
+  byName = async ({ firstName, lastName }) => this.dataSource
+    .query({
+      TableName: this.tableName,
+      IndexName: 'firstName-index',
+      KeyConditionExpression: 'firstName = :firstName',
+      FilterExpression: 'lastName = :lastName',
+      ExpressionAttributeValues: {
+        ':firstName': firstName,
+        ':lastName': lastName,
+      },
+    })
+    .promise()
+    .then(response => response.Items[0]);
 
-  async getByIds(ids) {
-    return Promise.all(ids.map(id => this.get(id)));
-  }
+  getByIds = async ids => Promise.all(ids.map(id => this.get(id)));
 
-  async findOrCreate({
+  findOrCreate = async ({
     firstName, lastName, email, company, NIK, id,
-  }) {
+  }) => {
     const existingData = await this.byName({ firstName, lastName });
     if (existingData) {
       return existingData;
@@ -73,11 +65,11 @@ class GuestService extends BaseService {
       ...newData,
       justCreated: true,
     };
-  }
+  };
 
-  create({
+  create = async ({
     firstName, lastName, email, company, NIK, id,
-  }) {
+  }) => {
     const params = {
       TableName: this.tableName,
       Item: {
@@ -93,7 +85,7 @@ class GuestService extends BaseService {
       .put(params)
       .promise()
       .then(() => params.Item);
-  }
+  };
 }
 
 export default GuestService;

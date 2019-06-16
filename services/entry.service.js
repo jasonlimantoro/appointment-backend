@@ -17,26 +17,22 @@ class EntryService extends BaseService {
     this.dataSource = dataSource;
   }
 
-  list() {
-    return this.dataSource
-      .scan({
-        TableName: this.tableName,
-      })
-      .promise()
-      .then(r => r.Items);
-  }
+  list = async () => this.dataSource
+    .scan({
+      TableName: this.tableName,
+    })
+    .promise()
+    .then(r => r.Items);
 
-  get(id) {
-    return this.dataSource
-      .get({
-        TableName: this.tableName,
-        Key: { id },
-      })
-      .promise()
-      .then(r => r.Item);
-  }
+  get = id => this.dataSource
+    .get({
+      TableName: this.tableName,
+      Key: { id },
+    })
+    .promise()
+    .then(r => r.Item);
 
-  create({ see, guestId, id }) {
+  create = async ({ see, guestId, id }) => {
     if (!guestId) {
       throw this.constructor.invalidArgumentsError;
     }
@@ -53,23 +49,21 @@ class EntryService extends BaseService {
       .put(params)
       .promise()
       .then(() => params.Item);
-  }
+  };
 
-  end(id) {
-    return this.dataSource
-      .update({
-        TableName: this.tableName,
-        Key: { id },
-        UpdateExpression: 'set endedAt = :now',
-        ExpressionAttributeValues: {
-          ':now': new Date().toLocaleString(),
-        },
-        ConditionExpression: 'attribute_not_exists(endedAt)',
-        ReturnValues: 'ALL_NEW',
-      })
-      .promise()
-      .then(r => r.Attributes);
-  }
+  end = async id => this.dataSource
+    .update({
+      TableName: this.tableName,
+      Key: { id },
+      UpdateExpression: 'set endedAt = :now',
+      ExpressionAttributeValues: {
+        ':now': new Date().toLocaleString(),
+      },
+      ConditionExpression: 'attribute_not_exists(endedAt)',
+      ReturnValues: 'ALL_NEW',
+    })
+    .promise()
+    .then(r => r.Attributes);
 }
 
 export default EntryService;

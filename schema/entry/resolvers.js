@@ -10,7 +10,7 @@ const checkAuthentication = async (context, controller) => {
 
 const resolvers = {
   Query: {
-    listEntry: (_source, _args, context) => checkAuthentication(context, () => context.dataSources.entryAPI.list()),
+    listEntry: (_source, _args, context) => checkAuthentication(context, context.dataSources.entryAPI.list),
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
   },
   Mutation: {
