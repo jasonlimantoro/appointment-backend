@@ -54,3 +54,4 @@ env.yml
 
 # AWS credentials
 aws-exports.js
+cognito-user.json
