@@ -5,6 +5,7 @@ import { resolvers, typeDefs } from './schema';
 import GuestService from './services/guest.service';
 import EntryService from './services/entry.service';
 import AuthService from './services/auth.service';
+import SessionService from './services/session.service';
 
 Amplify.configure(AWSConfiguration);
 
@@ -17,9 +18,11 @@ const server = new ApolloServer({
     guestAPI: new GuestService(),
     entryAPI: new EntryService(),
     authAPI: new AuthService(),
+    sessionAPI: new SessionService(),
   }),
   context: ({ event, context }) => ({
     headers: event.headers,
+    event,
     context,
   }),
 });

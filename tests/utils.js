@@ -4,6 +4,7 @@ import { typeDefs, resolvers } from '../schema';
 import GuestService from '../services/guest.service';
 import EntryService from '../services/entry.service';
 import AuthService from '../services/auth.service';
+import SessionService from '../services/session.service';
 
 const mockContext = {
   headers: {
@@ -15,11 +16,20 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
   const guestAPI = new GuestService();
   const entryAPI = new EntryService();
   const authAPI = new AuthService();
+  const sessionAPI = new SessionService();
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    dataSources: () => ({ guestAPI, entryAPI, authAPI }),
-    context: () => ({ headers: context.headers }),
+    dataSources: () => ({
+      guestAPI,
+      entryAPI,
+      authAPI,
+      sessionAPI,
+    }),
+    context: ({ event }) => ({
+      headers: context.headers,
+      event,
+    }),
   });
   const { query, mutate } = createTestClient(server);
   return {
@@ -28,5 +38,6 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
     guestAPI,
     entryAPI,
     authAPI,
+    sessionAPI,
   };
 };
