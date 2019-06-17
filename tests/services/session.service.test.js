@@ -1,15 +1,10 @@
-import AWS from 'aws-sdk';
 import uuid from 'uuid';
 import SessionService from '../../services/session.service';
 import { InvalidArgumentError } from '../../libs/errors';
 
 jest.mock('uuid');
 
-const localDynamo = new AWS.DynamoDB.DocumentClient({
-  region: 'localhost',
-  endpoint: process.env.dynamoDBEndPoint,
-});
-const service = new SessionService({ dataSource: localDynamo });
+const service = new SessionService();
 
 describe('Session Service', () => {
   it('create: should work', async () => {

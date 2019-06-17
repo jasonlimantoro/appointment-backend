@@ -1,12 +1,7 @@
-import AWS from 'aws-sdk';
 import GuestService from '../../services/guest.service';
 import mockedData from '../../fixtures/guests';
 
-const localDynamo = new AWS.DynamoDB.DocumentClient({
-  region: 'localhost',
-  endpoint: process.env.dynamoDBEndPoint,
-});
-const service = new GuestService({ dataSource: localDynamo });
+const service = new GuestService();
 
 describe('Guest service', () => {
   it('list: should return the passed mockedData', async () => {

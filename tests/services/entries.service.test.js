@@ -1,14 +1,9 @@
-import AWS from 'aws-sdk';
 import { InvalidArgumentError } from '../../libs/errors';
 import EntryService from '../../services/entry.service';
 import mockEntries from '../../fixtures/entries';
 import mockGuests from '../../fixtures/guests';
 
-const localDynamo = new AWS.DynamoDB.DocumentClient({
-  region: 'localhost',
-  endpoint: process.env.dynamoDBEndPoint,
-});
-const service = new EntryService({ dataSource: localDynamo });
+const service = new EntryService();
 
 describe('Entry Service', () => {
   it('list: should work', async () => {
