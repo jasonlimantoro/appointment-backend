@@ -43,7 +43,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.5",
     "apollo-server-lambda": "^2.6.2",
-    "appointment_common": "../appointment_common",
+    "appointment-common": "^1.0.0",
     "aws-amplify": "^1.1.28",
     "aws-sdk": "^2.473.0",
     "babel-runtime": "^6.26.0",

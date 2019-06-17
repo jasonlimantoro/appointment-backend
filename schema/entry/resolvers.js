@@ -1,4 +1,4 @@
-import { getNestedObjectValue } from 'appointment_common';
+import { getNestedObjectValue } from 'appointment-common';
 import Auth from '../../auth';
 import { AuthenticationError } from '../../libs/errors';
 
