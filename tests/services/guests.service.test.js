@@ -1,4 +1,4 @@
-import GuestService from '../../services/guest.service';
+import { GuestService } from '../../services';
 import mockedData from '../../fixtures/guests';
 
 const service = new GuestService();

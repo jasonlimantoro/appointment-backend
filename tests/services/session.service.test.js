@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import SessionService from '../../services/session.service';
+import { SessionService } from '../../services';
 import { InvalidArgumentError } from '../../libs/errors';
 
 jest.mock('uuid');

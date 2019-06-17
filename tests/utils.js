@@ -1,10 +1,12 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { createTestClient } from 'apollo-server-testing';
 import { typeDefs, resolvers } from '../schema';
-import GuestService from '../services/guest.service';
-import EntryService from '../services/entry.service';
-import AuthService from '../services/auth.service';
-import SessionService from '../services/session.service';
+import {
+  GuestService,
+  EntryService,
+  AuthService,
+  SessionService,
+} from '../services';
 
 const mockContext = {
   headers: {

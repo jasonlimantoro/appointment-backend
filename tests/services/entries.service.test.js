@@ -1,5 +1,5 @@
 import { InvalidArgumentError } from '../../libs/errors';
-import EntryService from '../../services/entry.service';
+import { EntryService } from '../../services';
 import mockEntries from '../../fixtures/entries';
 import mockGuests from '../../fixtures/guests';
 
