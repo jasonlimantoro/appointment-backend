@@ -1,8 +1,16 @@
+import { getNestedObjectValue } from 'appointment_common';
 import Auth from '../../auth';
 import { AuthenticationError } from '../../libs/errors';
 
-const checkAuthentication = async (context, controller) => {
-  const token = context.headers.Authorization.split(' ')[1];
+export const checkAuthentication = async (context, controller) => {
+  const authorization = getNestedObjectValue(context)([
+    'headers',
+    'Authorization',
+  ]);
+  if (!authorization) {
+    throw new AuthenticationError('Provided header is invalid');
+  }
+  const token = authorization.split(' ')[1];
   const user = await Auth.verifyJwt(token);
   if (!user) throw new AuthenticationError();
   return controller();

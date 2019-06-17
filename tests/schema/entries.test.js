@@ -65,6 +65,33 @@ describe('Entry Schema', () => {
     expect(guestAPI.get).not.toBeCalled();
   });
 
+  it('listEntry: should Authentication error if user does not exist', async () => {
+    const { query, entryAPI, guestAPI } = createTestClientAndServer();
+    Auth.verifyJwt = jest.fn().mockResolvedValue(false);
+    const LIST_ENTRY = gql`
+      query {
+        listEntry {
+          Guest {
+            firstName
+            lastName
+            NIK
+          }
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    entryAPI.list = jest.fn();
+    guestAPI.get = jest.fn();
+    const res = await query({ query: LIST_ENTRY });
+    expect(res.errors[0].extensions.exception.name).toEqual(
+      'AuthenticationError',
+    );
+    expect(entryAPI.list).not.toBeCalled();
+    expect(guestAPI.get).not.toBeCalled();
+  });
+
   it('createEntry: should work', async () => {
     const { mutate, entryAPI, guestAPI } = createTestClientAndServer();
     const attributes = {
