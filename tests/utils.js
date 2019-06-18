@@ -10,7 +10,7 @@ import {
 
 const mockContext = {
   headers: {
-    Authorization: 'Bearer TOKEN_STRING',
+    authorization: 'Bearer TOKEN_STRING',
   },
 };
 

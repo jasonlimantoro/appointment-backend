@@ -19,7 +19,7 @@ describe('Authentication middleware', () => {
 
     const context = {
       headers: {
-        Authorization: 'Bearer some-token',
+        authorization: 'Bearer some-token',
       },
     };
     await expect(checkAuthentication(context, controller)).rejects.toThrow(
@@ -33,7 +33,7 @@ describe('Authentication middleware', () => {
     Auth.verifyJwt = jest.fn().mockResolvedValue(true);
     const context = {
       headers: {
-        Authorization: 'Bearer some-token',
+        authorization: 'Bearer some-token',
       },
     };
     const res = await checkAuthentication(context, controller);

@@ -5,7 +5,7 @@ import { AuthenticationError } from '../../libs/errors';
 export const checkAuthentication = async (context, controller) => {
   const authorization = getNestedObjectValue(context)([
     'headers',
-    'Authorization',
+    'authorization',
   ]);
   if (!authorization) {
     throw new AuthenticationError('Provided header is invalid');
