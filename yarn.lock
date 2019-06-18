@@ -1557,10 +1557,10 @@ apollo-utilities@^1.0.1, apollo-utilities@^1.2.1:
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
 
-appointment-common@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/appointment-common/-/appointment-common-1.0.0.tgz#7fbb879d850c5da6c4a919a0666b3a2443b3e79f"
-  integrity sha512-Rtymm08L9mX3IQa61IyrbQRA/3k1XoC1L1wPoGkrBIcAJQpO1/1MheBPZSvVSNQZdbLRXLIlDuUatAN7oanQ8g==
+appointment-common@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/appointment-common/-/appointment-common-1.0.1.tgz#c741d0fd8545ede2b5de8b62f84109d601cdf3f3"
+  integrity sha512-FTRGjSa4zQ8ExM8j0H/BwQgHbD6u4bsWfHyNisUuR/QgOC/MpTtnZFfzPSd2IXtLVmGwSf3Krh76jtac2vCN9g==
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
