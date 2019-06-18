@@ -10,6 +10,15 @@ const resolvers = {
       });
       return res;
     },
+    logout: async (_source, args, { dataSources }) => {
+      const endSession = await dataSources.sessionAPI.end({
+        id: args.sessionId,
+      });
+      if (endSession) {
+        return true;
+      }
+      return false;
+    },
   },
 };
 

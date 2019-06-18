@@ -29,6 +29,24 @@ class SessionService extends BaseService {
       .promise()
       .then(() => params.Item);
   };
+
+  end = async ({ id } = {}) => {
+    if (!id) {
+      this.constructor.throwInvalidArgumentsError();
+    }
+    return this.dataSource
+      .update({
+        TableName: this.tableName,
+        Key: { id },
+        UpdateExpression: 'set endedAt = :now',
+        ExpressionAttributeValues: {
+          ':now': new Date().toLocaleString(),
+        },
+        ReturnValues: 'ALL_NEW',
+      })
+      .promise()
+      .then(r => r.Attributes);
+  };
 }
 
 export default SessionService;

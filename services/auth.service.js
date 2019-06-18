@@ -1,10 +1,15 @@
 import { Auth } from 'aws-amplify';
 import fs from 'fs';
+import { getNestedObjectValue } from 'appointment-common';
 import BaseService from './base';
 import { AuthenticationError } from '../libs/errors';
 
 class AuthService extends BaseService {
-  static getJWTFromCognitoUser = CognitoUser => CognitoUser.signInUserSession.idToken.jwtToken;
+  static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)([
+    'signInUserSession',
+    'idToken',
+    'jwtToken',
+  ]);
 
   login = async ({ username, password }) => {
     try {
@@ -15,7 +20,8 @@ class AuthService extends BaseService {
           JSON.stringify(res, null, 2),
         );
       }
-      return this.constructor.getJWTFromCognitoUser(res);
+      const token = this.constructor.getJWTFromCognitoUser(res);
+      return token;
     } catch (e) {
       throw new AuthenticationError(e.message);
     }

@@ -1,19 +1,29 @@
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken';
+import { Auth } from 'aws-amplify';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
 
 jest.mock('jsonwebtoken');
+jest.mock('aws-amplify');
 
 describe('Authentication', () => {
   it('login: should work', async () => {
     const decoded = {
       sub: 'uuid-user',
     };
+    const mockCognito = {
+      signInUserSession: {
+        idToken: {
+          jwtToken: 'some-token',
+        },
+      },
+    };
     const { mutate, authAPI, sessionAPI } = createTestClientAndServer();
-    authAPI.login = jest.fn().mockResolvedValue('some-random-token');
+    Auth.signIn = jest.fn().mockResolvedValue(mockCognito);
+    const spiedLogin = jest.spyOn(authAPI, 'login');
+    const speiedSessionCreation = jest.spyOn(sessionAPI, 'create');
     jwt.decode = jest.fn().mockReturnValue(decoded);
-    sessionAPI.create = jest.fn();
     const LOGIN = gql`
       mutation Login($username: String!, $password: String!) {
         login(username: $username, password: $password)
@@ -21,8 +31,42 @@ describe('Authentication', () => {
     `;
     const res = await mutate({ mutation: LOGIN, variables: mockUser });
     expect(res).toMatchSnapshot();
-    expect(authAPI.login).toBeCalledWith(mockUser);
-    expect(jwt.decode).toBeCalledWith('some-random-token');
-    expect(sessionAPI.create).toBeCalledWith({ userId: decoded.sub });
+
+    expect(spiedLogin).toBeCalledWith(mockUser);
+    expect(jwt.decode).toBeCalledWith(
+      mockCognito.signInUserSession.idToken.jwtToken,
+    );
+    expect(speiedSessionCreation).toBeCalledWith({ userId: decoded.sub });
+  });
+
+  it('logout: should work', async () => {
+    const { mutate, sessionAPI } = createTestClientAndServer();
+    const spyEndSession = jest.spyOn(sessionAPI, 'end');
+    const LOGOUT = gql`
+      mutation Logout($sessionId: String!) {
+        logout(sessionId: $sessionId)
+      }
+    `;
+    const res = await mutate({
+      mutation: LOGOUT,
+      variables: { sessionId: 'some-session-id' },
+    });
+    expect(res).toMatchSnapshot();
+    expect(spyEndSession).toBeCalledWith({ id: 'some-session-id' });
+  });
+
+  it('should return false when logout fails', async () => {
+    const { mutate, sessionAPI } = createTestClientAndServer();
+    sessionAPI.end = jest.fn().mockResolvedValue(false);
+    const LOGOUT = gql`
+      mutation Logout($sessionId: String!) {
+        logout(sessionId: $sessionId)
+      }
+    `;
+    const res = await mutate({
+      mutation: LOGOUT,
+      variables: { sessionId: 'some-session-id' },
+    });
+    expect(res.data.logout).toEqual(false);
   });
 });

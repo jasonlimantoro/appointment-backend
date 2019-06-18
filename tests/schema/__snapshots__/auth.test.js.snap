@@ -3,7 +3,22 @@
 exports[`Authentication login: should work 1`] = `
 Object {
   "data": Object {
-    "login": "some-random-token",
+    "login": "some-token",
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Authentication logout: should work 1`] = `
+Object {
+  "data": Object {
+    "logout": true,
   },
   "errors": undefined,
   "extensions": undefined,
