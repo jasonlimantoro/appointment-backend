@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server-lambda';
-import Amplify from 'aws-amplify';
+import Amplify from '@aws-amplify/core';
 import AWSConfiguration from './config/aws-exports';
 import { resolvers, typeDefs } from './schema';
 import GuestService from './services/guest.service';

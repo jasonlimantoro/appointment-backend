@@ -1,8 +1,8 @@
-import { Auth } from 'aws-amplify';
+import Auth from '@aws-amplify/auth';
 import { AuthService } from '../../services';
 import mockUser from '../../fixtures/users';
 
-jest.mock('aws-amplify');
+jest.mock('@aws-amplify/auth');
 
 const service = new AuthService();
 

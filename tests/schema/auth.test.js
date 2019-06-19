@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid';
-import { Auth } from 'aws-amplify';
+import Auth from '@aws-amplify/auth';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
 
 jest.mock('jsonwebtoken');
-jest.mock('aws-amplify');
+jest.mock('@aws-amplify/auth');
 jest.mock('uuid');
 
 describe('Authentication', () => {

@@ -1,4 +1,4 @@
-import { Auth } from 'aws-amplify';
+import Auth from '@aws-amplify/auth';
 import fs from 'fs';
 import { getNestedObjectValue } from 'appointment-common';
 import BaseService from './base';
