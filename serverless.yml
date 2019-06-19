@@ -85,6 +85,10 @@ provider:
         - Fn::GetAtt:
           - EntryTable
           - Arn
+        # Session table
+        - Fn::GetAtt:
+          - SessionTable
+          - Arn
 functions:
   graphql:
     handler: graphql.hello
@@ -93,12 +97,12 @@ functions:
           path: graphql
           method: post
           cors: true
-          authorizer: aws_iam
+          # authorizer: aws_iam
       - http:
           path: graphql
           method: get
           cors: true
-          authorizer: aws_iam
+          # authorizer: aws_iam
 resources:
   # Dynamodb
   - ${file(resources/dynamodb.yml)}
