@@ -1,11 +1,13 @@
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken';
+import uuid from 'uuid';
 import { Auth } from 'aws-amplify';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
 
 jest.mock('jsonwebtoken');
 jest.mock('aws-amplify');
+jest.mock('uuid');
 
 describe('Authentication', () => {
   it('login: should work', async () => {
@@ -21,22 +23,29 @@ describe('Authentication', () => {
     };
     const { mutate, authAPI, sessionAPI } = createTestClientAndServer();
     Auth.signIn = jest.fn().mockResolvedValue(mockCognito);
-    const spiedLogin = jest.spyOn(authAPI, 'login');
-    const speiedSessionCreation = jest.spyOn(sessionAPI, 'create');
+    uuid.v1 = jest.fn().mockReturnValue('some-unique-id');
     jwt.decode = jest.fn().mockReturnValue(decoded);
+    const spiedLogin = jest.spyOn(authAPI, 'login');
+    const spiedSessionCreation = jest.spyOn(sessionAPI, 'create');
+    const spiedBtoa = jest.spyOn(window, 'btoa');
     const LOGIN = gql`
       mutation Login($username: String!, $password: String!) {
-        login(username: $username, password: $password)
+        login(username: $username, password: $password) {
+          token
+          session {
+            id
+          }
+        }
       }
     `;
     const res = await mutate({ mutation: LOGIN, variables: mockUser });
     expect(res).toMatchSnapshot();
-
+    expect(spiedBtoa).toBeCalledWith('some-unique-id');
     expect(spiedLogin).toBeCalledWith(mockUser);
     expect(jwt.decode).toBeCalledWith(
       mockCognito.signInUserSession.idToken.jwtToken,
     );
-    expect(speiedSessionCreation).toBeCalledWith({ userId: decoded.sub });
+    expect(spiedSessionCreation).toBeCalledWith({ userId: decoded.sub });
   });
 
   it('logout: should work', async () => {

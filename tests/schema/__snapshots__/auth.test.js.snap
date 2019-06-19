@@ -3,7 +3,12 @@
 exports[`Authentication login: should work 1`] = `
 Object {
   "data": Object {
-    "login": "some-token",
+    "login": Object {
+      "session": Object {
+        "id": "c29tZS11bmlxdWUtaWQ=",
+      },
+      "token": "some-token",
+    },
   },
   "errors": undefined,
   "extensions": undefined,
