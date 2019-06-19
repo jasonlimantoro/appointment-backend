@@ -27,7 +27,7 @@ describe('Authentication', () => {
     jwt.decode = jest.fn().mockReturnValue(decoded);
     const spiedLogin = jest.spyOn(authAPI, 'login');
     const spiedSessionCreation = jest.spyOn(sessionAPI, 'create');
-    const spiedBtoa = jest.spyOn(window, 'btoa');
+    const spiedEncryption = jest.spyOn(Buffer, 'from');
     const LOGIN = gql`
       mutation Login($username: String!, $password: String!) {
         login(username: $username, password: $password) {
@@ -40,7 +40,7 @@ describe('Authentication', () => {
     `;
     const res = await mutate({ mutation: LOGIN, variables: mockUser });
     expect(res).toMatchSnapshot();
-    expect(spiedBtoa).toBeCalledWith('some-unique-id');
+    expect(spiedEncryption).toBeCalledWith('some-unique-id');
     expect(spiedLogin).toBeCalledWith(mockUser);
     expect(jwt.decode).toBeCalledWith(
       mockCognito.signInUserSession.idToken.jwtToken,
@@ -61,7 +61,9 @@ describe('Authentication', () => {
       variables: { sessionId: 'some-session-id' },
     });
     expect(res).toMatchSnapshot();
-    expect(spyEndSession).toBeCalledWith({ id: 'some-session-id' });
+    expect(spyEndSession).toBeCalledWith({
+      id: Buffer.from('some-session-id', 'base64').toString('ascii'),
+    });
   });
 
   it('should return false when logout fails', async () => {

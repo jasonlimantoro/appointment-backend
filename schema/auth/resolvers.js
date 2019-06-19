@@ -13,13 +13,13 @@ const resolvers = {
         session: {
           ...session,
           // encode the session id
-          id: btoa(session.id),
+          id: Buffer.from(session.id).toString('base64'),
         },
       };
     },
     logout: async (_source, args, { dataSources }) => {
       const endSession = await dataSources.sessionAPI.end({
-        id: args.sessionId,
+        id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
       });
       if (endSession) {
         return true;
