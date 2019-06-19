@@ -35,7 +35,7 @@ describe('Entry Schema', () => {
     const { query, entryAPI, guestAPI } = createTestClientAndServer({
       context: {
         headers: {
-          authorization: 'Bearer some-token',
+          Authorization: 'Bearer some-token',
         },
       },
     });
