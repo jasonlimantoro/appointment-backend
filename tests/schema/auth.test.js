@@ -5,10 +5,6 @@ import Auth from '@aws-amplify/auth';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
 
-jest.mock('jsonwebtoken');
-jest.mock('@aws-amplify/auth');
-jest.mock('uuid');
-
 describe('Authentication', () => {
   it('login: should work', async () => {
     const decoded = {
@@ -50,7 +46,29 @@ describe('Authentication', () => {
 
   it('logout: should work', async () => {
     const { mutate, sessionAPI } = createTestClientAndServer();
+    const loginSession = await sessionAPI.create({ userId: 'some-user-id' });
     const spyEndSession = jest.spyOn(sessionAPI, 'end');
+    const LOGOUT = gql`
+      mutation Logout($sessionId: String!) {
+        logout(sessionId: $sessionId)
+      }
+    `;
+    const encryptedSessionId = Buffer.from(loginSession.id).toString('base64');
+    const res = await mutate({
+      mutation: LOGOUT,
+      variables: {
+        sessionId: encryptedSessionId,
+      },
+    });
+    expect(res).toMatchSnapshot();
+    expect(spyEndSession).toBeCalledWith({
+      id: Buffer.from(encryptedSessionId, 'base64').toString('ascii'),
+    });
+  });
+
+  it('should handle error when logout fails', async () => {
+    const { mutate, sessionAPI } = createTestClientAndServer();
+    sessionAPI.end = jest.fn().mockRejectedValue(false);
     const LOGOUT = gql`
       mutation Logout($sessionId: String!) {
         logout(sessionId: $sessionId)
@@ -61,23 +79,5 @@ describe('Authentication', () => {
       variables: { sessionId: 'some-session-id' },
     });
     expect(res).toMatchSnapshot();
-    expect(spyEndSession).toBeCalledWith({
-      id: Buffer.from('some-session-id', 'base64').toString('ascii'),
-    });
-  });
-
-  it('should return false when logout fails', async () => {
-    const { mutate, sessionAPI } = createTestClientAndServer();
-    sessionAPI.end = jest.fn().mockResolvedValue(false);
-    const LOGOUT = gql`
-      mutation Logout($sessionId: String!) {
-        logout(sessionId: $sessionId)
-      }
-    `;
-    const res = await mutate({
-      mutation: LOGOUT,
-      variables: { sessionId: 'some-session-id' },
-    });
-    expect(res.data.logout).toEqual(false);
   });
 });

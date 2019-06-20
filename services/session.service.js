@@ -42,6 +42,8 @@ class SessionService extends BaseService {
         ExpressionAttributeValues: {
           ':now': new Date().toLocaleString(),
         },
+        ConditionExpression:
+          'attribute_not_exists(endedAt) AND attribute_exists(id)',
         ReturnValues: 'ALL_NEW',
       })
       .promise()
