@@ -10,11 +10,7 @@ const resolvers = {
       });
       return {
         token,
-        session: {
-          ...session,
-          // encode the session id
-          id: Buffer.from(session.id).toString('base64'),
-        },
+        session,
       };
     },
     logout: async (_source, args, { dataSources }) => {
@@ -29,6 +25,9 @@ const resolvers = {
         throw e;
       }
     },
+  },
+  Session: {
+    id: source => Buffer.from(source.id).toString('base64'),
   },
 };
 
