@@ -39,7 +39,7 @@ exports[`Authentication should handle error when logout fails 1`] = `
 Object {
   "data": null,
   "errors": Array [
-    [GraphQLError: Unexpected error value: false],
+    [GraphQLError: Logout fails],
   ],
   "extensions": undefined,
   "http": Object {

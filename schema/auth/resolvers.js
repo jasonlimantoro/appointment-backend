@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { LogoutError } from '../../libs/errors';
 
 const resolvers = {
   Mutation: {
@@ -22,7 +23,7 @@ const resolvers = {
           return true;
         }
       } catch (e) {
-        throw e;
+        throw new LogoutError(e.message);
       }
     },
   },

@@ -29,8 +29,6 @@ class AuthenticationError extends BaseError {
   }
 }
 
-class TokenVerificationError extends BaseError {}
-
 class InvalidArgumentError extends BaseError {
   constructor(message = 'Invalid argument') {
     super(message);
@@ -43,12 +41,18 @@ class NotImplementedError extends BaseError {
   }
 }
 
+class LogoutError extends BaseError {
+  constructor(message = 'Logout fails') {
+    super(message);
+  }
+}
+
 export {
   PublicKeyNotFoundError,
   TokenExpiredError,
   TokenNotIssuedError,
-  TokenVerificationError,
   AuthenticationError,
+  LogoutError,
   InvalidArgumentError,
   NotImplementedError,
 };
