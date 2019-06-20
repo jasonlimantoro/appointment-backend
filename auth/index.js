@@ -39,7 +39,7 @@ class Auth {
     }
     // and the Audience (use claims.client_id if verifying an access token)
     if (claims.aud !== AWSConfiguration.Auth.userPoolWebClientId) {
-      throw new TokenNotIssuedError('Token was not issued for this audience');
+      throw new TokenNotIssuedError();
     }
     return claims;
   };
