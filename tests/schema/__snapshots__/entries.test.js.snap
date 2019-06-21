@@ -43,6 +43,21 @@ Object {
 }
 `;
 
+exports[`Entry Schema getByGuestId: should work 1`] = `
+Object {
+  "data": Object {
+    "byGuestId": Array [],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Entry Schema getEntry: should work 1`] = `
 Object {
   "data": Object {

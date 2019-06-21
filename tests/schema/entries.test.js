@@ -186,4 +186,27 @@ describe('Entry Schema', () => {
     expect(entryAPI.end).toBeCalledWith(mock.id);
     expect(res).toMatchSnapshot();
   });
+
+  it('getByGuestId: should work', async () => {
+    const { query, entryAPI } = createTestClientAndServer();
+    entryAPI.byGuestId = jest.fn().mockResolvedValue([]);
+    const BY_GUEST_ID = gql`
+      query byGuestId($id: String!) {
+        byGuestId(id: $id) {
+          id
+          see
+          createdAt
+          Guest {
+            id
+          }
+        }
+      }
+    `;
+    const res = await query({
+      query: BY_GUEST_ID,
+      variables: { id: mockedGuest[0].id },
+    });
+    expect(res).toMatchSnapshot();
+    expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].id);
+  });
 });

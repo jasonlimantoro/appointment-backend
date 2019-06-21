@@ -51,4 +51,14 @@ describe('Entry Service', () => {
     const mock = mockEntries[0];
     await expect(service.end(mock.id)).rejects.toThrow();
   });
+
+  it('byGuestId: should work', async () => {
+    const attributes = {
+      see: 'foobar',
+      guestId: mockGuests[1].id,
+    };
+    await service.create(attributes);
+    const res = await service.byGuestId(mockGuests[1].id);
+    res.forEach(({ guestId }) => expect(guestId).toEqual(attributes.guestId));
+  });
 });

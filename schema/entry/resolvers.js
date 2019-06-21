@@ -24,6 +24,7 @@ const resolvers = {
   Query: {
     listEntry: (_source, _args, context) => checkAuthentication(context, context.dataSources.entryAPI.list),
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
+    byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.id),
   },
   Mutation: {
     createEntry: async (_source, { input }, { dataSources }) => {

@@ -15,7 +15,8 @@ input CreateEntryInput {
 
 extend type Query {
   listEntry: [Entry]
-  getEntry(id: String): Entry
+  getEntry(id: String!): Entry
+  byGuestId(id: String!): [Entry]
 }
 
 extend type Mutation {
