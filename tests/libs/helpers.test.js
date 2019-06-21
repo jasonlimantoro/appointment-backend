@@ -1,4 +1,8 @@
-import { transformObjectKeysToLower } from '../../libs/helpers';
+import {
+  transformObjectKeysToLower,
+  encryptBase64,
+  decryptBase64,
+} from '../../libs/helpers';
 
 describe('helpers', () => {
   describe('transformOjectKeysToLower', () => {
@@ -136,6 +140,22 @@ describe('helpers', () => {
           ],
         },
       });
+    });
+  });
+
+  describe('encryptBase64', () => {
+    it('should work', () => {
+      const given = 'abcdef';
+      const actual = encryptBase64(given);
+      expect(actual).toEqual(Buffer.from(given).toString('base64'));
+    });
+  });
+
+  describe('decryptBase64', () => {
+    it('should work', () => {
+      const given = Buffer.from('abcdef').toString('base64');
+      const actual = decryptBase64(given);
+      expect(actual).toEqual('abcdef');
     });
   });
 });
