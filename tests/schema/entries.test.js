@@ -3,6 +3,7 @@ import { createTestClientAndServer } from '../utils';
 import mockedEntries from '../../fixtures/entries';
 import mockedGuest from '../../fixtures/guests';
 import Auth from '../../auth';
+import { humanFormat } from '../../libs/datetime';
 
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
@@ -175,7 +176,7 @@ describe('Entry Schema', () => {
     const mock = mockedEntries[0];
     entryAPI.end = jest.fn().mockResolvedValue({
       ...mock,
-      endedAt: new Date(2020, 1, 1).toLocaleString(),
+      endedAt: humanFormat(new Date(2020, 1, 1)),
     });
     const res = await mutate({
       mutation: END_ENTRY,

@@ -1,6 +1,7 @@
 import uuid from 'uuid';
 import BaseService from './base';
 import dynamoClient from '../config/dynamodb';
+import { humanFormat } from '../libs/datetime';
 
 class SessionService extends BaseService {
   constructor({
@@ -21,7 +22,7 @@ class SessionService extends BaseService {
       Item: {
         id: uuid.v1(),
         userId,
-        createdAt: new Date().toLocaleString(),
+        createdAt: humanFormat(new Date()),
       },
     };
     return this.dataSource
@@ -40,7 +41,7 @@ class SessionService extends BaseService {
         Key: { id },
         UpdateExpression: 'set endedAt = :now',
         ExpressionAttributeValues: {
-          ':now': new Date().toLocaleString(),
+          ':now': humanFormat(new Date()),
         },
         ConditionExpression:
           'attribute_not_exists(endedAt) AND attribute_exists(id)',

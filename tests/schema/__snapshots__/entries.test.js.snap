@@ -27,8 +27,8 @@ exports[`Entry Schema endEntry: should work 1`] = `
 Object {
   "data": Object {
     "endEntry": Object {
-      "createdAt": "2/1/2018, 10:00:00 AM",
-      "endedAt": "2/1/2020, 12:00:00 AM",
+      "createdAt": "2018-09-10 04:05:33",
+      "endedAt": "2020-01-01 00:00:00",
       "id": "123",
       "see": "person1",
     },
@@ -47,8 +47,8 @@ exports[`Entry Schema getEntry: should work 1`] = `
 Object {
   "data": Object {
     "getEntry": Object {
-      "createdAt": "2/1/2018, 10:00:00 AM",
-      "endedAt": "2/1/2018, 12:00:00 PM",
+      "createdAt": "2018-09-10 04:05:33",
+      "endedAt": "2018-09-10 05:06:44",
       "id": "123",
       "see": "person1",
     },
@@ -90,8 +90,8 @@ Object {
           "firstName": "Andy",
           "lastName": "Huang",
         },
-        "createdAt": "2/1/2018, 10:00:00 AM",
-        "endedAt": "2/1/2018, 12:00:00 PM",
+        "createdAt": "2018-09-10 04:05:33",
+        "endedAt": "2018-09-10 05:06:44",
         "see": "person1",
       },
       Object {
@@ -100,7 +100,7 @@ Object {
           "firstName": "Andy",
           "lastName": "Huang",
         },
-        "createdAt": "2/2/2018, 11:00:00 AM",
+        "createdAt": "2018-02-07 16:00:04",
         "endedAt": null,
         "see": "person2",
       },
@@ -110,8 +110,8 @@ Object {
           "firstName": "Andy",
           "lastName": "Huang",
         },
-        "createdAt": "3/1/2018, 11:00:00 AM",
-        "endedAt": "3/1/2018, 12:00:00 PM",
+        "createdAt": "2019-06-21 17:00:45",
+        "endedAt": "2019-06-21 18:00:00",
         "see": "person2",
       },
     ],

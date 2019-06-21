@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import dynamoClient from '../config/dynamodb';
+import { humanFormat } from '../libs/datetime';
 
 import BaseService from './base';
 
@@ -32,9 +33,7 @@ class EntryService extends BaseService {
 
   create = async ({ see, guestId, id }) => {
     if (!guestId) {
-      throw this.constructor.throwInvalidArgumentsError(
-        'guestID must be provided',
-      );
+      this.constructor.throwInvalidArgumentsError('guestID must be provided');
     }
     const params = {
       TableName: this.tableName,
@@ -42,7 +41,7 @@ class EntryService extends BaseService {
         id: id || uuid.v1(),
         see,
         guestId,
-        createdAt: new Date().toLocaleString(),
+        createdAt: humanFormat(new Date()),
       },
     };
     return this.dataSource
@@ -57,13 +56,26 @@ class EntryService extends BaseService {
       Key: { id },
       UpdateExpression: 'set endedAt = :now',
       ExpressionAttributeValues: {
-        ':now': new Date().toLocaleString(),
+        ':now': humanFormat(new Date()),
       },
       ConditionExpression: 'attribute_not_exists(endedAt)',
       ReturnValues: 'ALL_NEW',
     })
     .promise()
     .then(r => r.Attributes);
+
+  byGuestId = id => this.dataSource
+    .query({
+      TableName: this.tableName,
+      IndexName: 'guestId-index',
+      KeyConditionExpression: 'guestId = :guestId',
+      ExpressionAttributeValues: {
+        ':guestId': id,
+      },
+      ScanIndexForward: false,
+    })
+    .promise()
+    .then(r => r.Items);
 }
 
 export default EntryService;
