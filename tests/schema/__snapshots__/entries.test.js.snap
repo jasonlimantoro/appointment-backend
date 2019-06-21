@@ -28,7 +28,7 @@ Object {
   "data": Object {
     "endEntry": Object {
       "createdAt": "2018-09-10 04:05:33",
-      "endedAt": "2020-01-01 00:00:00",
+      "endedAt": "2020-02-01 00:00:00",
       "id": "123",
       "see": "person1",
     },

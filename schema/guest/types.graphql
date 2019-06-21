@@ -5,6 +5,7 @@ type Guest {
   email: String!
   company: String
   NIK: String!
+  entryToday: [Entry]
 }
 
 input CreateGuestInput {

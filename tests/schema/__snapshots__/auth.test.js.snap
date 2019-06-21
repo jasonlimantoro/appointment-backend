@@ -35,6 +35,21 @@ Object {
 }
 `;
 
+exports[`Authentication logout: should work 2`] = `
+Object {
+  "data": Object {
+    "logout": true,
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Authentication should handle error when logout fails 1`] = `
 Object {
   "data": null,

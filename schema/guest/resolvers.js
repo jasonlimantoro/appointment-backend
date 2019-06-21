@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const resolvers = {
   Query: {
     listGuest: (_source, _args, context) => context.dataSources.guestAPI.list(),
@@ -6,6 +8,15 @@ const resolvers = {
   },
   Mutation: {
     createGuest: (_source, args, context) => context.dataSources.guestAPI.create(args.input),
+  },
+  Guest: {
+    entryToday: async (source, _args, { dataSources }) => {
+      let res = await dataSources.entryAPI.byGuestId(source.id);
+      const today = moment();
+      const yesterday = moment().subtract(1, 'days');
+      res = res.filter(({ createdAt }) => moment(createdAt).isBetween(yesterday, today));
+      return res;
+    },
   },
 };
 
