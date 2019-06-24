@@ -3,6 +3,7 @@ import { createTestClientAndServer } from '../utils';
 import mockedEntries from '../../fixtures/entries';
 import mockedGuest from '../../fixtures/guests';
 import Auth from '../../libs/auth';
+import * as resolverUtils from '../../libs/resolverUtils';
 import { humanFormat } from '../../libs/datetime';
 
 describe('Entry Schema', () => {
@@ -91,6 +92,31 @@ describe('Entry Schema', () => {
     );
     expect(entryAPI.list).not.toBeCalled();
     expect(guestAPI.get).not.toBeCalled();
+  });
+
+  it('listEntryToday: should work', async () => {
+    const { query, entryAPI } = createTestClientAndServer();
+    const LIST_TODAY_ENTRY = gql`
+      query {
+        listTodayEntry {
+          Guest {
+            firstName
+            lastName
+            NIK
+          }
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
+    resolverUtils.filterToday = jest.fn().mockReturnValue([]);
+    const res = await query({ query: LIST_TODAY_ENTRY });
+    expect(res).toMatchSnapshot();
+    expect(entryAPI.list).toBeCalled();
+    expect(resolverUtils.filterToday).toBeCalledWith(mockedEntries);
   });
 
   it('createEntry: should work', async () => {

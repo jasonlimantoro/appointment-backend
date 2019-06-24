@@ -1,9 +1,12 @@
-import moment from 'moment';
-import { checkAuthentication } from '../common';
+import { checkAuthentication, filterToday } from '../../libs/resolverUtils';
 
 const resolvers = {
   Query: {
     listEntry: (_source, _args, context) => checkAuthentication(context, context.dataSources.entryAPI.list),
+    listTodayEntry: (_source, args, context) => checkAuthentication(context, async () => {
+      const res = await context.dataSources.entryAPI.list();
+      return filterToday(res);
+    }),
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
     byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.id),
   },

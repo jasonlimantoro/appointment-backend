@@ -140,3 +140,18 @@ Object {
   },
 }
 `;
+
+exports[`Entry Schema listEntryToday: should work 1`] = `
+Object {
+  "data": Object {
+    "listTodayEntry": Array [],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
