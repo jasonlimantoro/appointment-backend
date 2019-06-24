@@ -14,7 +14,7 @@ const resolvers = {
       let res = await dataSources.entryAPI.byGuestId(source.id);
       const today = moment();
       const yesterday = moment().subtract(1, 'days');
-      res = res.filter(({ createdAt }) => moment(createdAt).isBetween(yesterday, today));
+      res = res.filter(({ createdAt, endedAt }) => !endedAt && moment(createdAt).isBetween(yesterday, today));
       return res;
     },
   },

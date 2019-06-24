@@ -1,5 +1,5 @@
 import Auth from '../../auth';
-import { checkAuthentication } from '../../schema/entry/resolvers';
+import { checkAuthentication } from '../../schema/common';
 import { AuthenticationError } from '../../libs/errors';
 
 jest.mock('jsonwebtoken');

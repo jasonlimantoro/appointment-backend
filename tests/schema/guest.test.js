@@ -26,6 +26,7 @@ describe('Guest schema', () => {
     const result = await query({ query: LIST_GUEST });
     expect(result).toMatchSnapshot();
     expect(guestAPI.list).toBeCalled();
+    expect(entryAPI.byGuestId).toBeCalled();
   });
 
   it('getGuest: should work', async () => {

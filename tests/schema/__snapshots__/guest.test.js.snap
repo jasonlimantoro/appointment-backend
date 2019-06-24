@@ -68,39 +68,21 @@ Object {
     "listGuest": Array [
       Object {
         "email": "andy@gmail.com",
-        "entryToday": Array [
-          Object {
-            "createdAt": "2019-06-21 17:00:45",
-            "id": "456k",
-            "see": "person2",
-          },
-        ],
+        "entryToday": Array [],
         "firstName": "Andy",
         "id": "ah",
         "lastName": "Huang",
       },
       Object {
         "email": "budy@gmail.com",
-        "entryToday": Array [
-          Object {
-            "createdAt": "2019-06-21 17:00:45",
-            "id": "456k",
-            "see": "person2",
-          },
-        ],
+        "entryToday": Array [],
         "firstName": "Budy",
         "id": "bh",
         "lastName": "Harjo",
       },
       Object {
         "email": "charlie@gmail.com",
-        "entryToday": Array [
-          Object {
-            "createdAt": "2019-06-21 17:00:45",
-            "id": "456k",
-            "see": "person2",
-          },
-        ],
+        "entryToday": Array [],
         "firstName": "Charlie",
         "id": "cp",
         "lastName": "Putt",
