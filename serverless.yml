@@ -110,3 +110,5 @@ resources:
   - ${file(resources/cognito-user.yml)}
   # Cognito identity
   - ${file(resources/cognito-identity.yml)}
+  # S3 Bucket
+  - ${file(resources/s3.yml)}
