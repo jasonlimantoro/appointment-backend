@@ -4,7 +4,7 @@ import {
   TokenExpiredError,
   TokenNotIssuedError,
   PublicKeyNotFoundError,
-} from '../libs/errors';
+} from './errors';
 
 const keysUrl = `https://cognito-idp.${
   AWSConfiguration.Auth.region

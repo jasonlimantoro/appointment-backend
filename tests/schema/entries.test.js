@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { createTestClientAndServer } from '../utils';
 import mockedEntries from '../../fixtures/entries';
 import mockedGuest from '../../fixtures/guests';
-import Auth from '../../auth';
+import Auth from '../../libs/auth';
 import { humanFormat } from '../../libs/datetime';
 
 describe('Entry Schema', () => {

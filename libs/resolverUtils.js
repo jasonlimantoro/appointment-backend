@@ -1,7 +1,8 @@
+import moment from 'moment';
 import { getNestedObjectValue } from 'appointment-common';
-import Auth from '../../auth';
-import { AuthenticationError } from '../../libs/errors';
-import { transformObjectKeysToLower } from '../../libs/helpers';
+import Auth from './auth';
+import { AuthenticationError } from './errors';
+import { transformObjectKeysToLower } from './helpers';
 
 export const checkAuthentication = async (context, controller) => {
   context.headers = transformObjectKeysToLower(context.headers);
@@ -18,4 +19,16 @@ export const checkAuthentication = async (context, controller) => {
   const user = await Auth.verifyJwt(token);
   if (!user) throw new AuthenticationError();
   return controller();
+};
+
+export const filterToday = list => {
+  const midnight = moment()
+    .hours(0)
+    .minutes(0);
+  const later = moment()
+    .hours(23)
+    .minutes(59);
+  return list.filter(
+    ({ createdAt, endedAt }) => !endedAt && moment(createdAt).isBetween(midnight, later),
+  );
 };

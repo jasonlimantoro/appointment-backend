@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { filterToday } from '../../libs/resolverUtils';
 
 const resolvers = {
   Query: {
@@ -11,11 +11,8 @@ const resolvers = {
   },
   Guest: {
     entryToday: async (source, _args, { dataSources }) => {
-      let res = await dataSources.entryAPI.byGuestId(source.id);
-      const today = moment();
-      const yesterday = moment().subtract(1, 'days');
-      res = res.filter(({ createdAt, endedAt }) => !endedAt && moment(createdAt).isBetween(yesterday, today));
-      return res;
+      const res = await dataSources.entryAPI.byGuestId(source.id);
+      return filterToday(res);
     },
   },
 };
