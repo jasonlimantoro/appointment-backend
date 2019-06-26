@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Upload S3Sign: should work 1`] = `
+Object {
+  "data": Object {
+    "s3Sign": Object {
+      "signedRequest": "http://bucketname/user/file",
+      "url": "http://bucketname/user/file",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

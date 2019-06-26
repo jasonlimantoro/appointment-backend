@@ -6,6 +6,7 @@ import {
   EntryService,
   AuthService,
   SessionService,
+  UploadService,
 } from '../services';
 
 const mockContext = {
@@ -19,6 +20,7 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
   const entryAPI = new EntryService();
   const authAPI = new AuthService();
   const sessionAPI = new SessionService();
+  const uploadAPI = new UploadService();
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -27,6 +29,7 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
       entryAPI,
       authAPI,
       sessionAPI,
+      uploadAPI,
     }),
     context: ({ event }) => ({
       headers: context.headers,
@@ -41,5 +44,6 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
     entryAPI,
     authAPI,
     sessionAPI,
+    uploadAPI,
   };
 };

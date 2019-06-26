@@ -2,10 +2,13 @@ import { ApolloServer } from 'apollo-server-lambda';
 import Amplify from '@aws-amplify/core';
 import AWSConfiguration from './config/aws-exports';
 import { resolvers, typeDefs } from './schema';
-import GuestService from './services/guest.service';
-import EntryService from './services/entry.service';
-import AuthService from './services/auth.service';
-import SessionService from './services/session.service';
+import {
+  GuestService,
+  EntryService,
+  AuthService,
+  SessionService,
+  UploadService,
+} from './services';
 
 Amplify.configure(AWSConfiguration);
 
@@ -19,6 +22,7 @@ const server = new ApolloServer({
     entryAPI: new EntryService(),
     authAPI: new AuthService(),
     sessionAPI: new SessionService(),
+    uploadAPI: new UploadService(),
   }),
   context: ({ event, context }) => ({
     headers: event.headers,

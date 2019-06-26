@@ -1,0 +1,8 @@
+type SignRequestPayload {
+  url: String!
+  signedRequest: String!
+}
+
+extend type Query {
+  s3Sign(fileName: String!, fileType: String!): SignRequestPayload!
+}
