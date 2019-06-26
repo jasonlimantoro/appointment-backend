@@ -4,7 +4,7 @@ import Auth from './auth';
 import { AuthenticationError } from './errors';
 import { transformObjectKeysToLower } from './helpers';
 
-export const checkAuthentication = async (context, controller) => {
+export const checkAuthentication = async (context, controller, ...params) => {
   context.headers = transformObjectKeysToLower(context.headers);
   const authorization = getNestedObjectValue(context)([
     'headers',
@@ -18,7 +18,7 @@ export const checkAuthentication = async (context, controller) => {
   const token = authorization.split(' ')[1];
   const user = await Auth.verifyJwt(token);
   if (!user) throw new AuthenticationError();
-  return controller();
+  return controller.apply(this, params);
 };
 
 export const filterToday = list => {
