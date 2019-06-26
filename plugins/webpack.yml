@@ -1,3 +1,5 @@
 webpack:
   webpackConfig: ./webpack.config.js
   includeModules: true
+  keepOutputDirectory: true
+  packager: yarn
