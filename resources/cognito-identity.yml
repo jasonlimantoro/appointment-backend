@@ -81,9 +81,8 @@ Resources:
                     - ''
                     -
                       - Fn::GetAtt: [GuestCredentialsBucket, Arn]
-                      - '/photos/*'
-                      # - '$'
-                      # - '{cognito-identity.amazonaws.com:sub}/*'
+                      - '/$'
+                      - '{cognito-identity.amazonaws.com:sub}/*'
   
 # Print out the Id of the Identity Pool that is created
 Outputs:
