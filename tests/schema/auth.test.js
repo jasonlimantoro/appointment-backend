@@ -34,10 +34,10 @@ describe('Authentication', () => {
         }
       }
     `;
-    const res = await mutate({ mutation: LOGIN, variables: mockUser });
+    const res = await mutate({ mutation: LOGIN, variables: mockUser[0] });
     expect(res).toMatchSnapshot();
     expect(spiedEncryption).toBeCalledWith('some-unique-id');
-    expect(spiedLogin).toBeCalledWith(mockUser);
+    expect(spiedLogin).toBeCalledWith(mockUser[0]);
     expect(jwt.decode).toBeCalledWith(
       mockCognito.signInUserSession.idToken.jwtToken,
     );
