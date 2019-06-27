@@ -1,36 +1,20 @@
 import uuid from 'uuid';
-import dynamoClient from '../config/dynamodb';
 
 import BaseService from './base';
 
 class GuestService extends BaseService {
-  constructor({
-    tableName = process.env.guestsTable,
-    dataSource = dynamoClient,
-  } = {}) {
-    super();
-    this.dataSource = dataSource;
-    this.tableName = tableName;
+  constructor({ tableName = process.env.guestsTable } = {}) {
+    super({ tableName });
   }
 
-  list = async () => this.dataSource
-    .scan({
-      TableName: this.tableName,
-    })
-    .promise()
-    .then(r => r.Items);
+  list = async () => this._util.list();
 
-  get = async id => this.dataSource
-    .get({
-      TableName: this.tableName,
-      Key: { id },
-    })
-    .promise()
-    .then(r => r.Item);
+  get = async id => this._util.get({
+    Key: { id },
+  });
 
-  byName = async ({ firstName, lastName }) => this.dataSource
-    .query({
-      TableName: this.tableName,
+  byName = async ({ firstName, lastName }) => {
+    const res = await this._util.where({
       IndexName: 'firstName-index',
       KeyConditionExpression: 'firstName = :firstName',
       FilterExpression: 'lastName = :lastName',
@@ -38,9 +22,9 @@ class GuestService extends BaseService {
         ':firstName': firstName,
         ':lastName': lastName,
       },
-    })
-    .promise()
-    .then(response => response.Items[0]);
+    });
+    return res[0];
+  };
 
   getByIds = async ids => Promise.all(ids.map(id => this.get(id)));
 
@@ -67,23 +51,16 @@ class GuestService extends BaseService {
 
   create = async ({
     firstName, lastName, email, company, NIK, id,
-  }) => {
-    const params = {
-      TableName: this.tableName,
-      Item: {
-        id: id || uuid.v1(),
-        firstName,
-        lastName,
-        email,
-        company,
-        NIK,
-      },
-    };
-    return this.dataSource
-      .put(params)
-      .promise()
-      .then(() => params.Item);
-  };
+  }) => this._util.put({
+    Item: {
+      id: id || uuid.v1(),
+      firstName,
+      lastName,
+      email,
+      company,
+      NIK,
+    },
+  });
 }
 
 export default GuestService;

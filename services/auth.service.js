@@ -1,10 +1,9 @@
 import Auth from '@aws-amplify/auth';
 import fs from 'fs';
 import { getNestedObjectValue } from 'appointment-common';
-import BaseService from './base';
 import { AuthenticationError } from '../libs/errors';
 
-class AuthService extends BaseService {
+class AuthService {
   static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)([
     'signInUserSession',
     'idToken',

@@ -8,6 +8,7 @@ import {
   AuthService,
   SessionService,
   UploadService,
+  PhotoService,
 } from './services';
 
 Amplify.configure(AWSConfiguration);
@@ -23,6 +24,7 @@ const server = new ApolloServer({
     authAPI: new AuthService(),
     sessionAPI: new SessionService(),
     uploadAPI: new UploadService(),
+    photoAPI: new PhotoService(),
   }),
   context: ({ event, context }) => ({
     headers: event.headers,

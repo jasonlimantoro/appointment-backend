@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`photo createPhoto: should work 1`] = `
+Object {
+  "data": Object {
+    "createPhoto": Object {
+      "createdAt": "some-date-now",
+      "id": "some-id",
+      "key": "some-s3-key/to/file",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

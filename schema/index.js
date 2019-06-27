@@ -9,6 +9,10 @@ import {
   resolvers as uploadResolver,
   typeDefs as uploadTypeDefs,
 } from './upload';
+import {
+  resolvers as photoResolver,
+  typeDefs as photoTypeDefs,
+} from './photos';
 
 const typeDefs = [
   root,
@@ -17,12 +21,14 @@ const typeDefs = [
   authTypeDefs,
   sessionTypeDefs,
   uploadTypeDefs,
+  photoTypeDefs,
 ];
 const resolvers = merge(
   entryResolver,
   guestResolver,
   authResolver,
   uploadResolver,
+  photoResolver,
 );
 
 export { typeDefs, resolvers };
