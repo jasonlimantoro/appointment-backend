@@ -4,8 +4,8 @@ exports[`Upload S3Sign: should work 1`] = `
 Object {
   "data": Object {
     "s3Sign": Object {
+      "key": "random-file.jpeg/some-unique-timestamp",
       "signedRequest": "http://bucketname/user/file",
-      "url": "http://bucketname/user/file",
     },
   },
   "errors": undefined,

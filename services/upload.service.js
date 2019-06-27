@@ -13,14 +13,9 @@ export default class UploadService extends BaseService {
       ContentType: fileType,
     };
     const signedRequest = await s3.getSignedUrl('putObject', params);
-    const url = await s3.getSignedUrl('getObject', {
-      Bucket: params.Bucket,
-      Key: params.Key,
-      Expires: 30,
-    });
     return {
       signedRequest,
-      url,
+      key: params.Key,
     };
   };
 }

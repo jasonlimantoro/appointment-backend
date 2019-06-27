@@ -1,25 +1,27 @@
 import gql from 'graphql-tag';
-import Auth from '@aws-amplify/auth';
 import { S3 } from 'aws-sdk';
 import authUtil from '../../libs/auth';
+import * as datetimeUtils from '../../libs/datetime';
 import { createTestClientAndServer } from '../utils';
 
 describe('Upload', () => {
   it('S3Sign: should work', async () => {
     const { query, uploadAPI } = createTestClientAndServer();
-    const spiedSign = jest.spyOn(S3.prototype, 'getSignedUrl');
+    const spiedSign = jest
+      .spyOn(S3.prototype, 'getSignedUrl')
+      .mockResolvedValue('http://bucketname/user/file');
     const spiedAuthentication = jest
       .spyOn(authUtil, 'verifyJwt')
       .mockResolvedValue(true);
     const spiedService = jest.spyOn(uploadAPI, 'sign');
-    const spiedCurrentUserInfo = jest.spyOn(Auth, 'currentUserInfo');
-
-    spiedSign.mockResolvedValue('http://bucketname/user/file');
+    const spiedHumanFormat = jest
+      .spyOn(datetimeUtils, 'humanFormat')
+      .mockReturnValue('some-unique-timestamp');
 
     const GET_SIGNED_REQUEST = gql`
       query GetSignRequest($fileName: String!, $fileType: String!) {
         s3Sign(fileName: $fileName, fileType: $fileType) {
-          url
+          key
           signedRequest
         }
       }
@@ -34,13 +36,12 @@ describe('Upload', () => {
     });
     expect(res).toMatchSnapshot();
     const { calls } = spiedSign.mock;
-    expect(calls.length).toEqual(2);
+    expect(calls.length).toEqual(1);
     expect(calls[0][0]).toEqual('putObject');
-    expect(calls[1][0]).toEqual('getObject');
-
-    expect(spiedCurrentUserInfo).toBeCalled();
 
     expect(spiedService).toBeCalledWith(file);
+
+    expect(spiedHumanFormat).toBeCalled();
 
     expect(spiedAuthentication).toBeCalled();
 

@@ -1,5 +1,5 @@
 type SignRequestPayload {
-  url: String!
+  key: String!
   signedRequest: String!
 }
 
