@@ -22,6 +22,7 @@ custom:
     guests: ${self:custom.stage}-guests
     entries: ${self:custom.stage}-entries
     sessions: ${self:custom.stage}-sessions
+    photos: ${self:custom.stage}-photos
   webpack: ${file(plugins/webpack.yml):webpack}
   # Due to dynamodb-local bug, the configurations cannot be loaded from external file
   # dynamodb: ${file(plugins/dynamodb-local.yml):dynamodb}
