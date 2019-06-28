@@ -1,5 +1,11 @@
 import moment from 'moment';
-import { filterToday, checkAuthentication } from '../../libs/resolverUtils';
+import mime from 'mime-types';
+import {
+  filterToday,
+  checkAuthentication,
+  constructFileName,
+} from '../../libs/resolverUtils';
+import * as datetimeUtils from '../../libs/datetime';
 import Auth from '../../libs/auth';
 import { AuthenticationError } from '../../libs/errors';
 
@@ -61,6 +67,24 @@ describe('resolverUtils', () => {
       expect(controller).toBeCalled();
       expect(Auth.verifyJwt).toBeCalledWith('some-token');
       expect(res).toEqual({ message: 'some-value' });
+    });
+  });
+  describe('constructFileName', () => {
+    it('should work', () => {
+      const spiedHumanFormat = jest
+        .spyOn(datetimeUtils, 'humanFormat')
+        .mockReturnValue(new Date(2012, 2, 10).toLocaleTimeString());
+
+      const spiedMime = jest.spyOn(mime, 'extension').mockReturnValue('png');
+      expect(
+        constructFileName({
+          prefix: 'some-file-dir',
+          fileName: 'jason-gunawan',
+          fileType: 'image/png',
+        }),
+      ).toMatchSnapshot();
+      expect(spiedHumanFormat).toBeCalled();
+      expect(spiedMime).toBeCalledWith('image/png');
     });
   });
 });
