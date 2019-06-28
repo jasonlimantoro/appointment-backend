@@ -4,6 +4,6 @@ describe('Datetime', () => {
   it('should properly format', () => {
     const date = new Date(2012, 7, 12, 17, 9, 10);
     const actual = humanFormat(date);
-    expect(actual).toEqual('2012-08-12 17:09:10');
+    expect(actual).toEqual('2012-08-12T17:09:10');
   });
 });

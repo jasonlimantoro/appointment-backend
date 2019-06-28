@@ -1,11 +1,3 @@
-const pad = n => (n < 10 ? `0${n}` : n);
+import moment from 'moment';
 
-export const humanFormat = obj => {
-  const y = obj.getFullYear();
-  const mon = pad(obj.getMonth() + 1);
-  const d = pad(obj.getDate());
-  const h = pad(obj.getHours());
-  const min = pad(obj.getMinutes());
-  const s = pad(obj.getSeconds());
-  return `${y}-${mon}-${d} ${h}:${min}:${s}`;
-};
+export const humanFormat = obj => moment(obj).format('YYYY-MM-DDTHH:mm:ss');
