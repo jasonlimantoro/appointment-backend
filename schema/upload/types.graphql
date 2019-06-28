@@ -3,6 +3,12 @@ type SignRequestPayload {
   signedRequest: String!
 }
 
+input S3SignInput {
+  fileName: String!
+  fileType: String!
+  entryId: String!
+}
+
 extend type Query {
-  s3Sign(fileName: String!, fileType: String!): SignRequestPayload!
+  s3Sign(input: S3SignInput!): SignRequestPayload!
 }
