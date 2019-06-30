@@ -1,22 +1,27 @@
-const casual = require('casual');
+const faker = require('faker');
+const moment = require('moment');
 
-casual.seed(123);
-casual.define('datetime', () => `${casual.date()}T${casual.time()}`);
-casual.define('guest', () => ({
-  firstName: casual.first_name,
-  lastName: casual.last_name,
-  NIK: casual.card_data.number,
-  company: casual.company_name,
-  email: casual.email,
-}));
-
-casual.define('entry', (guestId, ended = true) => ({
-  id: casual.uuid,
-  see: casual.full_name,
-  guestId,
-  createdAt: casual.datetime,
-  endedAt: ended ? casual.datetime : null,
-}));
+faker.seed(123);
+module.exports.Seeder = {
+  guest: () => ({
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    NIK: faker.finance.account(16),
+    company: faker.company.companyName(),
+    email: faker.internet.email(),
+  }),
+  entry: (guestId, ended = true) => ({
+    id: faker.random.uuid(),
+    see: faker.name.findName(),
+    createdAt: moment(faker.date.past(1, '2019-08-01')).format(
+      'YYYY-MM-DDTHH:mm:ss',
+    ),
+    guestId,
+    endedAt: ended
+      ? moment(faker.date.future(1, '2019-08-01')).format('YYYY-MM-DDTHH:mm:ss')
+      : null,
+  }),
+};
 
 module.exports.arrayOf = function arrayOf(
   times,

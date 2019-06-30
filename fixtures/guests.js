@@ -1,6 +1,5 @@
-const casual = require('casual');
 const seeder = require('../libs/seeder');
 
-const guests = seeder.arrayOf(seeder.seederNum.guests, casual._guest);
+const guests = seeder.arrayOf(seeder.seederNum.guests, seeder.Seeder.guest);
 
 module.exports = guests;

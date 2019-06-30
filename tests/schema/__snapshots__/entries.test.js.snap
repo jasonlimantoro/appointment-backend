@@ -27,10 +27,10 @@ exports[`Entry Schema endEntry: should work 1`] = `
 Object {
   "data": Object {
     "endEntry": Object {
-      "createdAt": "1992-02-16T08:00:35",
+      "createdAt": "2019-03-15T00:57:13",
       "endedAt": "2020-02-01T00:00:00",
-      "id": "5d62ccc4-b4fa-4613-a7e8-a67270c9941e",
-      "see": "Krystel Schumm",
+      "id": "9fd5fd11-603e-47e8-b104-de39071c7b80",
+      "see": "Derrick Smitham",
     },
   },
   "errors": undefined,
@@ -62,10 +62,10 @@ exports[`Entry Schema getEntry: should work 1`] = `
 Object {
   "data": Object {
     "getEntry": Object {
-      "createdAt": "1992-02-16T08:00:35",
-      "endedAt": "1977-12-13T01:23:20",
-      "id": "5d62ccc4-b4fa-4613-a7e8-a67270c9941e",
-      "see": "Krystel Schumm",
+      "createdAt": "2019-03-15T00:57:13",
+      "endedAt": "2019-09-30T20:36:57",
+      "id": "9fd5fd11-603e-47e8-b104-de39071c7b80",
+      "see": "Derrick Smitham",
     },
   },
   "errors": undefined,
@@ -101,33 +101,33 @@ Object {
     "listEntry": Array [
       Object {
         "Guest": Object {
-          "NIK": "4532711991301150",
+          "NIK": "2426577447946541",
           "firstName": "Maurine",
-          "lastName": "Rau",
+          "lastName": "Rath",
         },
-        "createdAt": "1992-02-16T08:00:35",
-        "endedAt": "1977-12-13T01:23:20",
-        "see": "Krystel Schumm",
+        "createdAt": "2019-03-15T00:57:13",
+        "endedAt": "2019-09-30T20:36:57",
+        "see": "Derrick Smitham",
       },
       Object {
         "Guest": Object {
-          "NIK": "4532711991301150",
+          "NIK": "2426577447946541",
           "firstName": "Maurine",
-          "lastName": "Rau",
+          "lastName": "Rath",
         },
-        "createdAt": "2012-09-24T02:37:58",
-        "endedAt": "2008-12-26T23:41:48",
-        "see": "Gabriel Koelpin",
+        "createdAt": "2018-10-31T06:43:08",
+        "endedAt": "2019-09-27T14:37:43",
+        "see": "Timmy Bednar",
       },
       Object {
         "Guest": Object {
-          "NIK": "4532711991301150",
+          "NIK": "2426577447946541",
           "firstName": "Maurine",
-          "lastName": "Rau",
+          "lastName": "Rath",
         },
-        "createdAt": "2004-10-23T18:48:06",
-        "endedAt": "1993-09-11T17:56:57",
-        "see": "Lacy Ziemann",
+        "createdAt": "2018-12-05T00:35:34",
+        "endedAt": "2020-02-18T14:57:08",
+        "see": "Roman Adams",
       },
     ],
   },
