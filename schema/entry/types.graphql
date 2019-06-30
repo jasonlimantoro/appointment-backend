@@ -17,7 +17,7 @@ extend type Query {
   listEntry: [Entry]
   listTodayEntry: [Entry]
   getEntry(id: String!): Entry
-  byGuestId(id: String!): [Entry]
+  byGuestId(NIK: String!): [Entry]
 }
 
 extend type Mutation {

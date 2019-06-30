@@ -1,5 +1,3 @@
-import uuid from 'uuid';
-
 import BaseService from './base';
 
 class GuestService extends BaseService {
@@ -10,14 +8,13 @@ class GuestService extends BaseService {
   list = async () => this._util.list();
 
   get = async id => this._util.get({
-    Key: { id },
+    Key: { NIK: id },
   });
 
   byName = async ({ firstName, lastName }) => {
     const res = await this._util.where({
       IndexName: 'firstName-index',
-      KeyConditionExpression: 'firstName = :firstName',
-      FilterExpression: 'lastName = :lastName',
+      KeyConditionExpression: 'firstName = :firstName AND lastName = :lastName',
       ExpressionAttributeValues: {
         ':firstName': firstName,
         ':lastName': lastName,
@@ -29,7 +26,7 @@ class GuestService extends BaseService {
   getByIds = async ids => Promise.all(ids.map(id => this.get(id)));
 
   findOrCreate = async ({
-    firstName, lastName, email, company, NIK, id,
+    firstName, lastName, email, company, NIK,
   }) => {
     const existingData = await this.byName({ firstName, lastName });
     if (existingData) {
@@ -41,7 +38,6 @@ class GuestService extends BaseService {
       email,
       company,
       NIK,
-      id,
     });
     return {
       ...newData,
@@ -50,10 +46,9 @@ class GuestService extends BaseService {
   };
 
   create = async ({
-    firstName, lastName, email, company, NIK, id,
+    firstName, lastName, email, company, NIK,
   }) => this._util.put({
     Item: {
-      id: id || uuid.v1(),
       firstName,
       lastName,
       email,

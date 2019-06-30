@@ -1,20 +1,18 @@
 type Guest {
-  id: String!
+  NIK: String!
   firstName: String!
   lastName: String
   email: String!
   company: String
-  NIK: String!
   entryToday: [Entry]
 }
 
 input CreateGuestInput {
-  id: String
+  NIK: String!
   firstName: String!
   lastName: String
   email: String!
   company: String
-  NIK: String!
 }
 
 input ByNameInput {
@@ -24,7 +22,7 @@ input ByNameInput {
 
 extend type Query {
   listGuest: [Guest]
-  getGuest(id: String!): Guest
+  getGuest(NIK: String!): Guest
   byName(input: ByNameInput!): Guest
 }
 

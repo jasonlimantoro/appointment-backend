@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import _ from 'lodash';
 import { createTestClientAndServer } from '../utils';
 import mockedEntries from '../../fixtures/entries';
 import mockedGuest from '../../fixtures/guests';
@@ -10,7 +11,7 @@ describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
     const { query, entryAPI, guestAPI } = createTestClientAndServer();
     Auth.verifyJwt = jest.fn().mockResolvedValue(true);
-    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
+    entryAPI.list = jest.fn().mockResolvedValue(_.take(mockedEntries, 3));
     guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
     const LIST_ENTRY = gql`
       query {
@@ -30,7 +31,6 @@ describe('Entry Schema', () => {
     expect(res).toMatchSnapshot();
     expect(Auth.verifyJwt).toBeCalled();
     expect(entryAPI.list).toBeCalled();
-    expect(guestAPI.get).toBeCalledTimes(mockedEntries.length);
   });
 
   it('listEntry should be protected', async () => {
@@ -217,22 +217,22 @@ describe('Entry Schema', () => {
     const { query, entryAPI } = createTestClientAndServer();
     entryAPI.byGuestId = jest.fn().mockResolvedValue([]);
     const BY_GUEST_ID = gql`
-      query byGuestId($id: String!) {
-        byGuestId(id: $id) {
+      query byGuestId($NIK: String!) {
+        byGuestId(NIK: $NIK) {
           id
           see
           createdAt
           Guest {
-            id
+            NIK
           }
         }
       }
     `;
     const res = await query({
       query: BY_GUEST_ID,
-      variables: { id: mockedGuest[0].id },
+      variables: { NIK: mockedGuest[0].NIK },
     });
     expect(res).toMatchSnapshot();
-    expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].id);
+    expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].NIK);
   });
 });

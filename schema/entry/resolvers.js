@@ -8,7 +8,7 @@ const resolvers = {
       return filterToday(res);
     }),
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
-    byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.id),
+    byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.NIK),
   },
   Mutation: {
     createEntry: async (_source, { input }, { dataSources }) => {

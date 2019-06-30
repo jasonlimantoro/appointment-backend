@@ -39,7 +39,6 @@ class EntryService extends BaseService {
   });
 
   byGuestId = id => this._util.where({
-    TableName: this.tableName,
     IndexName: 'guestId-index',
     KeyConditionExpression: 'guestId = :guestId',
     ExpressionAttributeValues: {

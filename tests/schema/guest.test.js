@@ -11,7 +11,7 @@ describe('Guest schema', () => {
     const LIST_GUEST = gql`
       query guests {
         listGuest {
-          id
+          NIK
           firstName
           lastName
           email
@@ -33,9 +33,9 @@ describe('Guest schema', () => {
     const { query, guestAPI } = createTestClientAndServer();
     guestAPI.get = jest.fn(() => mockedGuests[0]);
     const GET_GUEST = gql`
-      query guest($id: String!) {
-        getGuest(id: $id) {
-          id
+      query guest($NIK: String!) {
+        getGuest(NIK: $NIK) {
+          NIK
           firstName
           lastName
           email
@@ -44,7 +44,7 @@ describe('Guest schema', () => {
     `;
     const result = await query({
       query: GET_GUEST,
-      variables: { id: 'some-id' },
+      variables: { NIK: 'some-id' },
     });
     expect(guestAPI.get).toBeCalledWith('some-id');
     expect(result).toMatchSnapshot();
@@ -58,7 +58,7 @@ describe('Guest schema', () => {
     const BY_NAME = gql`
       query guestByName($input: ByNameInput!) {
         byName(input: $input) {
-          id
+          NIK
           firstName
           lastName
           email
@@ -69,8 +69,8 @@ describe('Guest schema', () => {
       query: BY_NAME,
       variables: { input: { firstName, lastName } },
     });
-    expect(guestAPI.byName).toBeCalledWith({ firstName, lastName });
     expect(result).toMatchSnapshot();
+    expect(guestAPI.byName).toBeCalledWith({ firstName, lastName });
   });
 
   it('create guest: should work', async () => {
@@ -88,7 +88,6 @@ describe('Guest schema', () => {
     const CREATE_GUEST = gql`
       mutation CreateGuest($input: CreateGuestInput!) {
         createGuest(input: $input) {
-          id
           firstName
           lastName
           email
@@ -101,7 +100,7 @@ describe('Guest schema', () => {
       mutation: CREATE_GUEST,
       variables: { input: attributes },
     });
-    expect(guestAPI.create).toBeCalledWith(attributes);
     expect(result).toMatchSnapshot();
+    expect(guestAPI.create).toBeCalledWith(attributes);
   });
 });

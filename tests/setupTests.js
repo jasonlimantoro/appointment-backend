@@ -1,4 +1,5 @@
 require('jest-chain');
+require('../libs/seeder');
 
 process.env.guestsTable = 'dev-guests';
 process.env.entriesTable = 'dev-entries';

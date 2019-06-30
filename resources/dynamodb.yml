@@ -34,44 +34,24 @@ Resources:
     Properties:
       TableName: ${self:custom.tableNames.guests}
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: NIK
           AttributeType: S
         - AttributeName: firstName
           AttributeType: S
         - AttributeName: lastName
           AttributeType: S
-        - AttributeName: email
-          AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: NIK
           KeyType: HASH
       GlobalSecondaryIndexes:
         - IndexName: firstName-index
           KeySchema:
             - AttributeName: firstName
               KeyType: HASH
+            - AttributeName: lastName
+              KeyType: RANGE
           Projection:
             ProjectionType: ALL
-          ProvisionedThroughput:
-            ReadCapacityUnits: 1
-            WriteCapacityUnits: 1
-
-        - IndexName: lastName-index
-          KeySchema:
-            - AttributeName: lastName
-              KeyType: HASH
-          Projection:
-            ProjectionType: KEYS_ONLY
-          ProvisionedThroughput:
-            ReadCapacityUnits: 1
-            WriteCapacityUnits: 1
-
-        - IndexName: email-index
-          KeySchema:
-            - AttributeName: email
-              KeyType: HASH
-          Projection:
-            ProjectionType: KEYS_ONLY
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1

@@ -4,6 +4,7 @@ import SessionService from './session.service';
 import EntryService from './entry.service';
 import UploadService from './upload.service';
 import PhotoService from './photo.service';
+import ModelService from './model.service';
 
 export {
   AuthService,
@@ -12,4 +13,5 @@ export {
   EntryService,
   UploadService,
   PhotoService,
+  ModelService,
 };
