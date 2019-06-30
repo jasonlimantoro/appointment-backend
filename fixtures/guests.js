@@ -1,5 +1,5 @@
-const seeder = require('../libs/seeder');
+import Seeder, { arrayOf } from '../libs/seeder';
 
-const guests = seeder.arrayOf(seeder.seederNum.guests, seeder.Seeder.guest);
+const guests = arrayOf(Seeder.seedNumber.guests, Seeder.guest);
 
-module.exports = guests;
+export default guests;

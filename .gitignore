@@ -50,6 +50,10 @@ env.yml
 
 # Jetbrains IDEs
 .idea
+
+# build files
+out/
+dist/
 .dynamodb/
 
 # AWS credentials

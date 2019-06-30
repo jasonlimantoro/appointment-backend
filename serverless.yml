@@ -37,10 +37,10 @@ custom:
         sources:
           - table: dev-guests
             sources: 
-              - ./fixtures/guests.js
+              - ./fixtures/out/guests.js
           - table: dev-entries
             sources:
-              - ./fixtures/entries.js
+              - ./fixtures/out/entries.js
   appSync: ${file(plugins/appsync.yml):appSync}
 
 provider:

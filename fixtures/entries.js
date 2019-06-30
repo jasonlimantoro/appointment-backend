@@ -1,11 +1,9 @@
-const _ = require('lodash');
-const guests = require('./guests');
-const seeder = require('../libs/seeder');
+import sample from 'lodash/sample';
+import guests from './guests';
+import Seeder, { arrayOf } from '../libs/seeder';
 
-const entries = seeder.arrayOf(
-  seeder.seederNum.entries,
-  seeder.Seeder.entry,
-  () => [_.sample(guests).NIK],
-);
+const entries = arrayOf(Seeder.seedNumber.entries, Seeder.entry, () => [
+  sample(guests).NIK,
+]);
 
-module.exports = entries;
+export default entries;

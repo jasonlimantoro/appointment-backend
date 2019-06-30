@@ -1,5 +1,5 @@
 import faker from 'faker';
-import * as seederUtil from '../../libs/seeder';
+import Seeder, { arrayOf } from '../../libs/seeder';
 
 const spiedRNG = jest.spyOn(faker.random, 'number').mockReturnValue(1);
 
@@ -8,14 +8,14 @@ beforeEach(() => {
 });
 describe('seederUtil', () => {
   it('arrayOf: should work', () => {
-    const actual = seederUtil.arrayOf(3, faker.random.number);
+    const actual = arrayOf(3, faker.random.number);
     expect(actual).toEqual([1, 1, 1]);
     expect(spiedRNG).toBeCalledTimes(3);
   });
 
   it('arrayOf: should work when argsProducer argument is provided', () => {
     const argsProducer = jest.fn().mockReturnValue([2, 3, 4]);
-    const actual = seederUtil.arrayOf(3, faker.random.number, argsProducer);
+    const actual = arrayOf(3, faker.random.number, argsProducer);
     expect(actual).toEqual([1, 1, 1]);
     expect(argsProducer).toBeCalledTimes(3);
     expect(spiedRNG)
@@ -24,7 +24,7 @@ describe('seederUtil', () => {
   });
 
   it('seeder: should have guest generator', () => {
-    const actual = seederUtil.Seeder.guest();
+    const actual = Seeder.guest();
     expect(Object.keys(actual)).toEqual(
       expect.arrayContaining([
         'firstName',
@@ -36,7 +36,7 @@ describe('seederUtil', () => {
     );
   });
   it('seeder: should have an entry generator', () => {
-    const actual = seederUtil.Seeder.entry();
+    const actual = Seeder.entry();
     expect(Object.keys(actual)).toEqual(
       expect.arrayContaining(['id', 'see', 'createdAt', 'endedAt']),
     );

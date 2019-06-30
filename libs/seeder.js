@@ -1,42 +1,35 @@
-const faker = require('faker');
-const moment = require('moment');
+import faker from 'faker';
+import { humanFormat } from './datetime';
 
 faker.seed(123);
-module.exports.Seeder = {
-  guest: () => ({
+
+export default class Seeder {
+  static seedNumber = {
+    guests: 10,
+    entries: 15,
+  };
+
+  static guest = () => ({
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
     NIK: faker.finance.account(16),
     company: faker.company.companyName(),
     email: faker.internet.email(),
-  }),
-  entry: (guestId, ended = true) => ({
+  });
+
+  static entry = (guestId, ended = true) => ({
     id: faker.random.uuid(),
     see: faker.name.findName(),
-    createdAt: moment(faker.date.past(1, '2019-08-01')).format(
-      'YYYY-MM-DDTHH:mm:ss',
-    ),
+    createdAt: humanFormat(faker.date.past(1, '2019-08-01')),
     guestId,
-    endedAt: ended
-      ? moment(faker.date.future(1, '2019-08-01')).format('YYYY-MM-DDTHH:mm:ss')
-      : null,
-  }),
-};
-
-module.exports.arrayOf = function arrayOf(
-  times,
-  generator,
-  argsProducer = () => [],
-) {
+    endedAt: ended ? humanFormat(faker.date.future(1, '2019-08-01')) : null,
+  });
+}
+export const arrayOf = (times, generator, argsProducer = () => []) => {
   const result = [];
   for (let i = 0; i < times; ++i) {
     result.push(generator(...argsProducer()));
   }
 
   return result;
-};
-
-module.exports.seederNum = {
-  guests: 10,
-  entries: 15,
 };
