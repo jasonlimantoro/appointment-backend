@@ -11,7 +11,7 @@ const resolvers = {
   },
   Guest: {
     entryToday: async (source, _args, { dataSources }) => {
-      const res = await dataSources.entryAPI.byGuestId(source.id);
+      const res = await dataSources.entryAPI.byGuestId(source.NIK);
       return filterToday(res);
     },
   },

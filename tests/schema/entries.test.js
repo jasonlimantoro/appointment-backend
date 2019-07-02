@@ -146,9 +146,7 @@ describe('Entry Schema', () => {
       }
     `;
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
-    guestAPI.findOrCreate = jest
-      .fn()
-      .mockResolvedValue({ ...attributes.Guest, id: 'some-id' });
+    guestAPI.findOrCreate = jest.fn().mockResolvedValue(attributes.Guest);
     guestAPI.get = jest.fn().mockResolvedValue(attributes.Guest);
 
     const res = await mutate({
@@ -160,7 +158,7 @@ describe('Entry Schema', () => {
     expect(entryAPI.create).toBeCalledWith({
       id: attributes.id,
       see: attributes.see,
-      guestId: 'some-id',
+      guestId: attributes.Guest.NIK,
     });
 
     expect(res).toMatchSnapshot();

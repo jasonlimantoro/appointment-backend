@@ -16,7 +16,7 @@ const resolvers = {
       const res = await dataSources.entryAPI.create({
         id: input.id,
         see: input.see,
-        guestId: guest.id,
+        guestId: guest.NIK,
       });
       return { ...res, Guest: guest };
     },
