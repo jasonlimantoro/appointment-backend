@@ -1,16 +1,12 @@
 import gql from 'graphql-tag';
 import mockEntries from '../../fixtures/entries';
 import { createTestClientAndServer } from '../utils';
+import Seeder from '../../libs/seeder';
 
 describe('photo', () => {
   it('createPhoto: should work', async () => {
     const { mutate, photoAPI } = createTestClientAndServer();
-    const photo = {
-      id: 'some-id',
-      key: 'some-s3-key/to/file',
-      entryId: mockEntries[0].id,
-      createdAt: 'some-date-now',
-    };
+    const photo = Seeder.photo(mockEntries[0].id, 'some-date-now');
 
     const spiedService = jest
       .spyOn(photoAPI, 'create')
@@ -27,7 +23,7 @@ describe('photo', () => {
     const res = await mutate({
       mutation: CREATE_PHOTO,
       variables: {
-        input: { key: 'some-s3-key/to/file', entryId: mockEntries[0].id },
+        input: { key: photo.key, entryId: mockEntries[0].id },
       },
     });
     expect(res).toMatchSnapshot();
@@ -35,5 +31,28 @@ describe('photo', () => {
       key: photo.key,
       entryId: photo.entryId,
     });
+  });
+
+  it('photoByEntryId: should work', async () => {
+    const { query, photoAPI } = createTestClientAndServer();
+
+    const photo = Seeder.photo(mockEntries[0].id, 'some-date-now');
+    const spiedService = jest
+      .spyOn(photoAPI, 'byEntry')
+      .mockResolvedValue([photo]);
+    const PHOTO_BY_ENTRY = gql`
+      query PhotoByEntry($entryId: String!) {
+        photoByEntry(entryId: $entryId) {
+          id
+          key
+        }
+      }
+    `;
+    const res = await query({
+      query: PHOTO_BY_ENTRY,
+      variables: { entryId: mockEntries[0].id },
+    });
+    expect(spiedService).toBeCalledWith(mockEntries[0].id);
+    expect(res).toMatchSnapshot();
   });
 });

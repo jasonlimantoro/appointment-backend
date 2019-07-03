@@ -21,6 +21,9 @@ describe('Entry Schema', () => {
             lastName
             NIK
           }
+          photo {
+            id
+          }
           see
           createdAt
           endedAt

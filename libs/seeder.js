@@ -42,11 +42,11 @@ export default class Seeder {
     endedAt: ended ? humanFormat(faker.date.future(1, '2019-08-01')) : null,
   });
 
-  static photo = entryId => ({
+  static photo = (entryId, createdAt) => ({
     id: faker.random.uuid(),
     key: faker.system.filePath(),
     entryId: entryId || faker.random.uuid(),
-    createdAt: humanFormat(faker.date.past()),
+    createdAt: createdAt || humanFormat(faker.date.past()),
   });
 }
 export const arrayOf = (times, generator, argsProducer = () => []) => {

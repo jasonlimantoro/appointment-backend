@@ -15,4 +15,15 @@ export default class PhotoService extends BaseService {
       createdAt: humanFormat(new Date()),
     },
   });
+
+  byEntry = async entryId => {
+    const res = this._util.where({
+      IndexName: 'entryId-index',
+      KeyConditionExpression: 'entryId = :entryId',
+      ExpressionAttributeValues: {
+        ':entryId': entryId,
+      },
+    });
+    return res;
+  };
 }

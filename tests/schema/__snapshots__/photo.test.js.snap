@@ -5,9 +5,29 @@ Object {
   "data": Object {
     "createPhoto": Object {
       "createdAt": "some-date-now",
-      "id": "some-id",
-      "key": "some-s3-key/to/file",
+      "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+      "key": "bandwidth/investment_account_withdrawal.mp21",
     },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`photo photoByEntryId: should work 1`] = `
+Object {
+  "data": Object {
+    "photoByEntry": Array [
+      Object {
+        "id": "164b4269-20f0-417a-97e6-45fd94101e9d",
+        "key": "bifurcated/guyana/tasty/internal.txf",
+      },
+    ],
   },
   "errors": undefined,
   "extensions": undefined,

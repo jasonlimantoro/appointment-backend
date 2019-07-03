@@ -29,6 +29,7 @@ const resolvers = {
   },
   Entry: {
     Guest: (source, args, context) => context.dataSources.guestAPI.get(source.guestId),
+    photo: (source, args, context) => context.dataSources.photoAPI.byEntry(source.id),
   },
 };
 
