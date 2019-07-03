@@ -41,6 +41,9 @@ custom:
           - table: dev-entries
             sources:
               - ./fixtures/out/entries.js
+          - table: dev-photos
+            sources:
+              - ./fixtures/out/photos.js
   appSync: ${file(plugins/appsync.yml):appSync}
 
 provider:

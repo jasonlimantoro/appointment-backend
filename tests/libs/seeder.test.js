@@ -41,4 +41,11 @@ describe('seederUtil', () => {
       expect.arrayContaining(['id', 'see', 'createdAt', 'endedAt']),
     );
   });
+
+  it('seeder: should have a photo generator', () => {
+    const actual = Seeder.photo();
+    expect(Object.keys(actual)).toEqual(
+      expect.arrayContaining(['id', 'key', 'entryId', 'createdAt']),
+    );
+  });
 });

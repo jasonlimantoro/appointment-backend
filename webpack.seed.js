@@ -4,6 +4,7 @@ module.exports = {
   entry: {
     guests: './fixtures/guests.js',
     entries: './fixtures/entries.js',
+    photos: './fixtures/photos.js',
   },
   output: {
     path: path.resolve(__dirname, 'fixtures/out/'),
