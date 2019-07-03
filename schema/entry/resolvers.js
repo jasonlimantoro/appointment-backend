@@ -16,16 +16,18 @@ const resolvers = {
     byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.NIK),
   },
   Mutation: {
-    createEntry: async (_source, { input }, { dataSources }) => {
-      const guest = await dataSources.guestAPI.findOrCreate(input.Guest);
-      const res = await dataSources.entryAPI.create({
+    createEntry: async (_source, { input }, context) => checkAuthentication(context, async () => {
+      const guest = await context.dataSources.guestAPI.findOrCreate(
+        input.Guest,
+      );
+      const res = await context.dataSources.entryAPI.create({
         id: input.id,
         see: input.see,
         guestId: guest.NIK,
       });
       return { ...res, Guest: guest };
-    },
-    endEntry: async (_source, args, { dataSources }) => dataSources.entryAPI.end(args.id),
+    }),
+    endEntry: async (_source, args, context) => checkAuthentication(context, () => context.dataSources.entryAPI.end(args.id)),
   },
   Entry: {
     Guest: (source, args, context) => context.dataSources.guestAPI.get(source.guestId),

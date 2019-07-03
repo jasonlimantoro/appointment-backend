@@ -78,23 +78,6 @@ Object {
 }
 `;
 
-exports[`Entry Schema listEntry should be protected 1`] = `
-Object {
-  "data": Object {
-    "listEntry": null,
-  },
-  "errors": Array [
-    [GraphQLError: You are not authenticated],
-  ],
-  "extensions": undefined,
-  "http": Object {
-    "headers": Headers {
-      Symbol(map): Object {},
-    },
-  },
-}
-`;
-
 exports[`Entry Schema listEntry: should work 1`] = `
 Object {
   "data": Object {
@@ -107,7 +90,14 @@ Object {
         },
         "createdAt": "2019-03-15T00:57:13",
         "endedAt": "2019-09-30T20:36:57",
-        "photo": Array [],
+        "photo": Array [
+          Object {
+            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+          },
+          Object {
+            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+          },
+        ],
         "see": "Derrick Smitham",
       },
       Object {
@@ -118,7 +108,14 @@ Object {
         },
         "createdAt": "2018-10-31T06:43:08",
         "endedAt": "2019-09-27T14:37:43",
-        "photo": Array [],
+        "photo": Array [
+          Object {
+            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+          },
+          Object {
+            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+          },
+        ],
         "see": "Timmy Bednar",
       },
       Object {
@@ -129,7 +126,14 @@ Object {
         },
         "createdAt": "2018-12-05T00:35:34",
         "endedAt": "2020-02-18T14:57:08",
-        "photo": Array [],
+        "photo": Array [
+          Object {
+            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+          },
+          Object {
+            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+          },
+        ],
         "see": "Roman Adams",
       },
     ],

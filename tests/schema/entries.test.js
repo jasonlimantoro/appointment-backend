@@ -1,18 +1,27 @@
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import { createTestClientAndServer } from '../utils';
-import mockedEntries from '../../fixtures/entries';
-import mockedGuest from '../../fixtures/guests';
+import {
+  entries as mockedEntries,
+  guests as mockedGuest,
+  photos as mockedPhotos,
+} from '../../fixtures';
 import Auth from '../../libs/auth';
 import * as resolverUtils from '../../libs/resolverUtils';
 import { humanFormat } from '../../libs/datetime';
 
+beforeEach(() => {
+  Auth.verifyJwt = jest.fn().mockRejectedValue(new Error());
+});
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
-    const { query, entryAPI, guestAPI } = createTestClientAndServer();
-    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    const {
+      query, entryAPI, guestAPI, photoAPI,
+    } = createTestClientAndServer();
+    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
     entryAPI.list = jest.fn().mockResolvedValue(_.take(mockedEntries, 3));
     guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
+    photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
     const LIST_ENTRY = gql`
       query {
         listEntry {
@@ -34,67 +43,7 @@ describe('Entry Schema', () => {
     expect(res).toMatchSnapshot();
     expect(Auth.verifyJwt).toBeCalled();
     expect(entryAPI.list).toBeCalled();
-  });
-
-  it('listEntry should be protected', async () => {
-    const { query, entryAPI, guestAPI } = createTestClientAndServer({
-      context: {
-        headers: {
-          Authorization: 'Bearer some-token',
-        },
-      },
-    });
-    Auth.verifyJwt = jest
-      .fn()
-      .mockRejectedValue(new Error('You are not authenticated'));
-    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
-    guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
-    const LIST_ENTRY = gql`
-      query {
-        listEntry {
-          Guest {
-            firstName
-            lastName
-            NIK
-          }
-          see
-          createdAt
-          endedAt
-        }
-      }
-    `;
-    const res = await query({ query: LIST_ENTRY });
-    expect(res).toMatchSnapshot();
-    expect(Auth.verifyJwt).toBeCalledWith('some-token');
-    expect(entryAPI.list).not.toBeCalled();
-    expect(guestAPI.get).not.toBeCalled();
-  });
-
-  it('listEntry: should Authentication error if user does not exist', async () => {
-    const { query, entryAPI, guestAPI } = createTestClientAndServer();
-    Auth.verifyJwt = jest.fn().mockResolvedValue(false);
-    const LIST_ENTRY = gql`
-      query {
-        listEntry {
-          Guest {
-            firstName
-            lastName
-            NIK
-          }
-          see
-          createdAt
-          endedAt
-        }
-      }
-    `;
-    entryAPI.list = jest.fn();
-    guestAPI.get = jest.fn();
-    const res = await query({ query: LIST_ENTRY });
-    expect(res.errors[0].extensions.exception.name).toEqual(
-      'AuthenticationError',
-    );
-    expect(entryAPI.list).not.toBeCalled();
-    expect(guestAPI.get).not.toBeCalled();
+    expect(photoAPI.byEntry).toBeCalled();
   });
 
   it('listEntryToday: should work', async () => {
@@ -113,7 +62,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
     entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
     resolverUtils.filterToday = jest.fn().mockReturnValue([]);
     const res = await query({ query: LIST_TODAY_ENTRY });
@@ -133,7 +82,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
     const byGuestId = _.take(mockedEntries, 3);
     const today = _.take(mockedEntries, 1);
     entryAPI.byGuestId = jest.fn().mockResolvedValue(byGuestId);
@@ -173,6 +122,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
+    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
     guestAPI.findOrCreate = jest.fn().mockResolvedValue(attributes.Guest);
     guestAPI.get = jest.fn().mockResolvedValue(attributes.Guest);
@@ -225,6 +175,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
+    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
     const mock = mockedEntries[0];
     entryAPI.end = jest.fn().mockResolvedValue({
       ...mock,
