@@ -4,10 +4,24 @@ import authUtil from '../../libs/auth';
 import mockEntries from '../../fixtures/entries';
 import mockGuests from '../../fixtures/guests';
 import * as resolverUtils from '../../libs/resolverUtils';
+import Seeder from '../../libs/seeder';
 import { createTestClientAndServer } from '../utils';
 
+const spiedAuthentication = jest
+  .spyOn(authUtil, 'verifyJwt')
+  .mockRejectedValue(new Error());
+
+const spiedSign = jest
+  .spyOn(S3.prototype, 'getSignedUrl')
+  .mockResolvedValue('http://bucketname/user/file');
+
+afterEach(() => {
+  spiedAuthentication.mockClear();
+  spiedSign.mockClear();
+});
+
 describe('Upload', () => {
-  it('S3Sign: should work', async () => {
+  it('S3Sign: should work for putObject signing', async () => {
     const {
       query,
       uploadAPI,
@@ -20,12 +34,7 @@ describe('Upload', () => {
       entryId: mockEntries[2].id,
     };
 
-    const spiedSign = jest
-      .spyOn(S3.prototype, 'getSignedUrl')
-      .mockResolvedValue('http://bucketname/user/file');
-    const spiedAuthentication = jest
-      .spyOn(authUtil, 'verifyJwt')
-      .mockResolvedValue(true);
+    spiedAuthentication.mockResolvedValueOnce(true);
     const spiedService = jest.spyOn(uploadAPI, 'sign');
     const spiedEntryAPIGet = jest
       .spyOn(entryAPI, 'get')
@@ -39,8 +48,8 @@ describe('Upload', () => {
       .mockReturnValue('some-file-name');
 
     const GET_SIGNED_REQUEST = gql`
-      query GetSignRequest($input: S3SignInput!) {
-        s3Sign(input: $input) {
+      query GetSignRequest($input: S3SignGuestPhotoInput!) {
+        s3SignUploadGuestPhoto(input: $input) {
           key
           signedRequest
         }
@@ -60,6 +69,11 @@ describe('Upload', () => {
     const { calls } = spiedSign.mock;
     expect(calls.length).toEqual(1);
     expect(calls[0][0]).toEqual('putObject');
+    expect(calls[0][1]).toMatchObject({
+      Bucket: expect.any(String),
+      ContentType: file.fileType,
+      Key: 'some-file-name',
+    });
 
     expect(spiedEntryAPIGet).toBeCalledWith(file.entryId);
     expect(spiedGuestAPIGet).toBeCalledWith(mockEntries[2].guestId);
@@ -67,6 +81,7 @@ describe('Upload', () => {
     expect(spiedService).toBeCalledWith({
       fileType: file.fileType,
       fileName: 'some-file-name',
+      permissionType: 'putObject',
     });
 
     expect(spiedConstructFileName).toBeCalledWith({
@@ -78,7 +93,39 @@ describe('Upload', () => {
     });
 
     expect(spiedAuthentication).toBeCalled();
+  });
+  it('S3Sign: should work for getObject signing', async () => {
+    const { query, uploadAPI } = createTestClientAndServer();
+    const { key } = Seeder.photo();
+    spiedAuthentication.mockResolvedValueOnce(true);
+    const spiedService = jest.spyOn(uploadAPI, 'sign');
 
-    expect(uploadAPI.sign).toBeCalled();
+    const GET_SIGNED_REQUEST = gql`
+      query GetSignRequest($key: String!) {
+        s3SignGetGuestPhoto(key: $key) {
+          key
+          signedRequest
+        }
+      }
+    `;
+    const res = await query({
+      query: GET_SIGNED_REQUEST,
+      variables: { key },
+    });
+    expect(res).toMatchSnapshot();
+    const { calls } = spiedSign.mock;
+    expect(calls.length).toEqual(1);
+    expect(calls[0][0]).toEqual('getObject');
+    expect(calls[0][1]).toMatchObject({
+      Bucket: expect.any(String),
+      Key: key,
+    });
+
+    expect(spiedService).toBeCalledWith({
+      fileName: key,
+      permissionType: 'getObject',
+    });
+
+    expect(spiedAuthentication).toBeCalled();
   });
 });

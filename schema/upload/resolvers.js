@@ -5,7 +5,7 @@ import {
 
 const resolvers = {
   Query: {
-    s3Sign: async (
+    s3SignUploadGuestPhoto: (
       _source,
       { input: { fileName, fileType, entryId } },
       context,
@@ -21,7 +21,15 @@ const resolvers = {
       return context.dataSources.uploadAPI.sign({
         fileName: constructedFileName,
         fileType,
+        permissionType: 'putObject',
       });
+    }),
+    s3SignGetGuestPhoto: (_source, { key }, context) => checkAuthentication(context, async () => {
+      const res = await context.dataSources.uploadAPI.sign({
+        fileName: key,
+        permissionType: 'getObject',
+      });
+      return res;
     }),
   },
 };

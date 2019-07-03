@@ -1,9 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload S3Sign: should work 1`] = `
+exports[`Upload S3Sign: should work for getObject signing 1`] = `
 Object {
   "data": Object {
-    "s3Sign": Object {
+    "s3SignGetGuestPhoto": Object {
+      "key": "bandwidth/investment_account_withdrawal.mp21",
+      "signedRequest": "http://bucketname/user/file",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Upload S3Sign: should work for putObject signing 1`] = `
+Object {
+  "data": Object {
+    "s3SignUploadGuestPhoto": Object {
       "key": "some-file-name",
       "signedRequest": "http://bucketname/user/file",
     },
