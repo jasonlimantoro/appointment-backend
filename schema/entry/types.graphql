@@ -15,7 +15,7 @@ input CreateEntryInput {
 
 extend type Query {
   listEntry: [Entry]
-  listTodayEntry: [Entry]
+  listTodayEntry(NIK: String): [Entry]
   getEntry(id: String!): Entry
   byGuestId(NIK: String!): [Entry]
 }

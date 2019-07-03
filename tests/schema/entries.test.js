@@ -119,6 +119,31 @@ describe('Entry Schema', () => {
     expect(resolverUtils.filterToday).toBeCalledWith(mockedEntries);
   });
 
+  it('listEntryToday: can be filtered by guestID', async () => {
+    const { query, entryAPI } = createTestClientAndServer();
+    const LIST_TODAY_ENTRY = gql`
+      query ListTodayEntry($NIK: String) {
+        listTodayEntry(NIK: $NIK) {
+          see
+          createdAt
+          endedAt
+        }
+      }
+    `;
+    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    const byGuestId = _.take(mockedEntries, 3);
+    const today = _.take(mockedEntries, 1);
+    entryAPI.byGuestId = jest.fn().mockResolvedValue(byGuestId);
+    resolverUtils.filterToday = jest.fn().mockReturnValue(today);
+    const res = await query({
+      query: LIST_TODAY_ENTRY,
+      variables: { NIK: mockedGuest[0].NIK },
+    });
+    expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].NIK);
+    expect(resolverUtils.filterToday).toBeCalledWith(byGuestId);
+    expect(res).toMatchSnapshot();
+  });
+
   it('createEntry: should work', async () => {
     const { mutate, entryAPI, guestAPI } = createTestClientAndServer();
     const attributes = {

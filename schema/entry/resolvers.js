@@ -4,7 +4,12 @@ const resolvers = {
   Query: {
     listEntry: (_source, _args, context) => checkAuthentication(context, context.dataSources.entryAPI.list),
     listTodayEntry: (_source, args, context) => checkAuthentication(context, async () => {
-      const res = await context.dataSources.entryAPI.list();
+      let res;
+      if (args.NIK) {
+        res = await context.dataSources.entryAPI.byGuestId(args.NIK);
+      } else {
+        res = await context.dataSources.entryAPI.list();
+      }
       return filterToday(res);
     }),
     getEntry: (_source, args, context) => context.dataSources.entryAPI.get(args.id),
