@@ -1,6 +1,0 @@
-type Session {
-  id: String!
-  createdAt: String!
-  endedAt: String!
-  userId: String!
-}

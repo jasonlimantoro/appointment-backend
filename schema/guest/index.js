@@ -1,4 +1,4 @@
 import resolvers from './resolvers';
-import typeDefs from './types.graphql';
+import typeDefs from './types';
 
 export { resolvers, typeDefs };

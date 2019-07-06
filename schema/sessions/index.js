@@ -1,3 +1,3 @@
-import typeDefs from './types.graphql';
+import typeDefs from './types';
 
 export { typeDefs };

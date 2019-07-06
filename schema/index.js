@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
-import root from './root.graphql';
+import root from './root';
 import { resolvers as entryResolver, typeDefs as entryTypeDefs } from './entry';
 import { resolvers as guestResolver, typeDefs as guestTypeDefs } from './guest';
 import { resolvers as authResolver, typeDefs as authTypeDefs } from './auth';
