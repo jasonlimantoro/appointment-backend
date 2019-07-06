@@ -26,7 +26,7 @@ export const checkAuthentication = async (context, controller, ...params) => {
   const token = authorization.split(' ')[1];
   const user = await Auth.verifyJwt(token);
   if (!user) throw new AuthenticationError();
-  return controller.apply(this, [...params, context]);
+  return controller.apply(this, [...params, user, context]);
 };
 
 export const filterToday = list => {
