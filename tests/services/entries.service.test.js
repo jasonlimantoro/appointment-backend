@@ -56,6 +56,7 @@ describe('Entry Service', () => {
     const attributes = {
       see: 'xyz',
       guestId: mockGuests[0].NIK,
+      userId: 'some-user-id',
     };
     mockPut.mockResolvedValue({
       ...attributes,
@@ -74,6 +75,7 @@ describe('Entry Service', () => {
         see: attributes.see,
         guestId: attributes.guestId,
         createdAt: 'some-date',
+        userId: 'some-user-id',
       },
     });
     expect(spiedUuid).toBeCalled();

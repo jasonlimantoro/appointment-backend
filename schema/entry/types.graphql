@@ -5,6 +5,7 @@ type Entry {
   endedAt: String
   Guest: Guest!
   photo: [Photo!]!
+  userId: String!
 }
 
 input CreateEntryInput {

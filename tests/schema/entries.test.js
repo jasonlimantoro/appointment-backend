@@ -122,7 +122,9 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+    Auth.verifyJwt = jest.fn().mockResolvedValue({
+      sub: 'some-user-id',
+    });
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
     guestAPI.findOrCreate = jest.fn().mockResolvedValue(attributes.Guest);
     guestAPI.get = jest.fn().mockResolvedValue(attributes.Guest);
@@ -137,6 +139,7 @@ describe('Entry Schema', () => {
       id: attributes.id,
       see: attributes.see,
       guestId: attributes.Guest.NIK,
+      userId: 'some-user-id',
     });
 
     expect(res).toMatchSnapshot();

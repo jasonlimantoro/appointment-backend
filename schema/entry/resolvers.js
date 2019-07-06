@@ -16,7 +16,7 @@ const resolvers = {
     byGuestId: (_source, args, context) => context.dataSources.entryAPI.byGuestId(args.NIK),
   },
   Mutation: {
-    createEntry: async (_source, { input }, context) => checkAuthentication(context, async () => {
+    createEntry: async (_source, { input }, context) => checkAuthentication(context, async user => {
       const guest = await context.dataSources.guestAPI.findOrCreate(
         input.Guest,
       );
@@ -24,6 +24,7 @@ const resolvers = {
         id: input.id,
         see: input.see,
         guestId: guest.NIK,
+        userId: user.sub,
       });
       return { ...res, Guest: guest };
     }),

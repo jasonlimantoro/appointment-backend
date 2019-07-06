@@ -34,11 +34,12 @@ export default class Seeder {
     email: faker.internet.email(),
   });
 
-  static entry = (guestId, ended = true) => ({
+  static entry = (guestId, userId, ended = true) => ({
     id: faker.random.uuid(),
     see: faker.name.findName(),
     createdAt: humanFormat(faker.date.past(1, '2019-08-01')),
-    guestId,
+    guestId: guestId || faker.finance.account(16),
+    userId: userId || faker.random.uuid(),
     endedAt: ended ? humanFormat(faker.date.future(1, '2019-08-01')) : null,
   });
 
