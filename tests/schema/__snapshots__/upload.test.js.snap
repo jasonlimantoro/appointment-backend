@@ -4,7 +4,7 @@ exports[`Upload S3Sign: should work for getObject signing 1`] = `
 Object {
   "data": Object {
     "s3SignGetGuestPhoto": Object {
-      "key": "bandwidth/investment_account_withdrawal.mp21",
+      "key": "invoice/avon/parsing/reactive_iowa_new_mexico.uvvm",
       "signedRequest": "http://bucketname/user/file",
     },
   },

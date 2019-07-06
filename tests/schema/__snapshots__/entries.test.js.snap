@@ -63,7 +63,7 @@ Object {
   "data": Object {
     "getEntry": Object {
       "createdAt": "2019-03-15T00:57:13",
-      "endedAt": "2019-09-30T20:36:57",
+      "endedAt": "2020-01-22T13:33:14",
       "id": "9fd5fd11-603e-47e8-b104-de39071c7b80",
       "see": "Derrick Smitham",
     },
@@ -89,13 +89,13 @@ Object {
           "lastName": "Rath",
         },
         "createdAt": "2019-03-15T00:57:13",
-        "endedAt": "2019-09-30T20:36:57",
+        "endedAt": "2020-01-22T13:33:14",
         "photo": Array [
           Object {
-            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+            "id": "19e073cc-7e37-465e-8f19-1afdce2634ab",
           },
           Object {
-            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+            "id": "af9b8dc7-1103-4fc7-8595-5c862cb73d41",
           },
         ],
         "see": "Derrick Smitham",
@@ -106,17 +106,17 @@ Object {
           "firstName": "Maurine",
           "lastName": "Rath",
         },
-        "createdAt": "2018-10-31T06:43:08",
-        "endedAt": "2019-09-27T14:37:43",
+        "createdAt": "2019-03-18T23:28:27",
+        "endedAt": "2020-07-18T18:30:40",
         "photo": Array [
           Object {
-            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+            "id": "19e073cc-7e37-465e-8f19-1afdce2634ab",
           },
           Object {
-            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+            "id": "af9b8dc7-1103-4fc7-8595-5c862cb73d41",
           },
         ],
-        "see": "Timmy Bednar",
+        "see": "Jerome Schroeder",
       },
       Object {
         "Guest": Object {
@@ -124,17 +124,17 @@ Object {
           "firstName": "Maurine",
           "lastName": "Rath",
         },
-        "createdAt": "2018-12-05T00:35:34",
-        "endedAt": "2020-02-18T14:57:08",
+        "createdAt": "2018-12-05T03:19:56",
+        "endedAt": "2019-11-18T23:31:35",
         "photo": Array [
           Object {
-            "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
+            "id": "19e073cc-7e37-465e-8f19-1afdce2634ab",
           },
           Object {
-            "id": "64b42692-0f01-47ad-be64-5fd94101e9dc",
+            "id": "af9b8dc7-1103-4fc7-8595-5c862cb73d41",
           },
         ],
-        "see": "Roman Adams",
+        "see": "Leda Hammes",
       },
     ],
   },
@@ -154,7 +154,7 @@ Object {
     "listTodayEntry": Array [
       Object {
         "createdAt": "2019-03-15T00:57:13",
-        "endedAt": "2019-09-30T20:36:57",
+        "endedAt": "2020-01-22T13:33:14",
         "see": "Derrick Smitham",
       },
     ],

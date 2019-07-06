@@ -5,8 +5,8 @@ Object {
   "data": Object {
     "createPhoto": Object {
       "createdAt": "some-date-now",
-      "id": "57fc9c52-9c37-42e5-9d48-74ef2da5cfdf",
-      "key": "bandwidth/investment_account_withdrawal.mp21",
+      "id": "19e073cc-7e37-465e-8f19-1afdce2634ab",
+      "key": "invoice/avon/parsing/reactive_iowa_new_mexico.uvvm",
     },
   },
   "errors": undefined,
@@ -24,8 +24,8 @@ Object {
   "data": Object {
     "photoByEntry": Array [
       Object {
-        "id": "164b4269-20f0-417a-97e6-45fd94101e9d",
-        "key": "bifurcated/guyana/tasty/internal.txf",
+        "id": "7af9b8dc-7110-43fc-bc59-55c862cb73d4",
+        "key": "interactive/landing.kml",
       },
     ],
   },
