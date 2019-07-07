@@ -13,11 +13,18 @@ import {
 
 Amplify.configure(AWSConfiguration);
 
+/* eslint-disable no-console */
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  formatError: error => error,
-  formatResponse: response => response,
+  formatError: error => {
+    console.log(error);
+    return error;
+  },
+  formatResponse: response => {
+    console.log(response);
+    return response;
+  },
   dataSources: () => ({
     guestAPI: new GuestService(),
     entryAPI: new EntryService(),
