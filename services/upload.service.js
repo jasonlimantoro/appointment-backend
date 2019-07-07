@@ -8,7 +8,7 @@ export default class UploadService extends BaseService {
     let params = {
       Bucket: AWSConfiguration.Storage.AWSS3.bucket,
       Key: fileName,
-      Expires: 60,
+      Expires: 500,
     };
     if (permissionType === 'putObject') {
       params = {
