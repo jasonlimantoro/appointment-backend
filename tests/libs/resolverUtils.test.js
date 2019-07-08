@@ -35,7 +35,11 @@ describe('resolverUtils', () => {
   describe('checkAuthentication', () => {
     it('should throw error when header is invalid', async () => {
       const controller = jest.fn();
-      const context = {};
+      const context = {
+        headers: {
+          authorization: 'Bearer lallla',
+        },
+      };
       await expect(checkAuthentication(context, controller)).rejects.toThrow(
         AuthenticationError,
       );
