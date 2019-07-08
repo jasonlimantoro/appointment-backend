@@ -2,7 +2,7 @@ import moment from 'moment';
 import mime from 'mime-types';
 import { getNestedObjectValue } from 'appointment-common';
 import Auth from './auth';
-import { AuthenticationError } from './errors';
+import { AuthenticationError, AuthorizationError } from './errors';
 import { transformObjectKeysToLower } from './helpers';
 import { humanFormat } from './datetime';
 
@@ -26,6 +26,36 @@ export const checkAuthentication = async (context, controller, ...params) => {
   const token = authorization.split(' ')[1];
   const user = await Auth.verifyJwt(token);
   if (!user) throw new AuthenticationError();
+  return controller.apply(this, [...params, user, context]);
+};
+
+export const checkAuthGroup = async (
+  context,
+  expectedGroups,
+  controller,
+  ...params
+) => {
+  context.headers = transformObjectKeysToLower(context.headers);
+  const authorization = getNestedObjectValue(context)([
+    'headers',
+    'authorization',
+  ]);
+  if (!authorization) {
+    throw new AuthenticationError(
+      `Provided header is invalid: ${JSON.stringify(context.headers)}`,
+    );
+  }
+  const token = authorization.split(' ')[1];
+  const user = await Auth.verifyJwt(token);
+  const groups = user['cognito:groups'];
+  if (!groups) {
+    throw new AuthorizationError('No group is attached');
+  }
+  if (groups && expectedGroups.some(group => !groups.includes(group))) {
+    throw new AuthorizationError(
+      `You are not authorized. Expected scopes: ${expectedGroups.join(', ')}`,
+    );
+  }
   return controller.apply(this, [...params, user, context]);
 };
 
