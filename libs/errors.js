@@ -28,6 +28,11 @@ class AuthenticationError extends BaseError {
     super(message);
   }
 }
+class AuthorizationError extends BaseError {
+  constructor(message = 'Forbidden access') {
+    super(message);
+  }
+}
 
 class InvalidArgumentError extends BaseError {
   constructor(message = 'Invalid argument') {
@@ -52,6 +57,7 @@ export {
   TokenExpiredError,
   TokenNotIssuedError,
   AuthenticationError,
+  AuthorizationError,
   LogoutError,
   InvalidArgumentError,
   NotImplementedError,
