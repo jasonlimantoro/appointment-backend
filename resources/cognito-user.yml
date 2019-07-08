@@ -12,6 +12,18 @@ Resources:
           RequireSymbols: True
           RequireUppercase: False
 
+  CognitoAdminUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: ${self:custom.stage}-admin-pool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: False
+          RequireNumbers: False
+          RequireSymbols: True
+          RequireUppercase: False
+
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -23,6 +35,31 @@ Resources:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: false
 
+  CognitoAdminUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ${self:custom.stage}-admin-user-pool-client
+      UserPoolId:
+        Ref: CognitoAdminUserPool
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      GenerateSecret: false
+  
+  CognitoAdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Admin user who can access dashboard pages
+      GroupName: admin
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  CognitoStaffGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Staff user who can only access the core app
+      GroupName: staff
+      UserPoolId:
+        Ref: CognitoUserPool
 # Print out the Id of the User Pool that is created
 Outputs:
   UserPoolId:
@@ -32,3 +69,19 @@ Outputs:
   UserPoolClientId:
     Value:
       Ref: CognitoUserPoolClient
+
+  AdminUserPoolId:
+    Value:
+      Ref: CognitoAdminUserPool
+  
+  AdminUserPoolClientId:
+    Value:
+      Ref: CognitoAdminUserPoolClient
+  
+  CognitoAdminGroupName:
+    Value:
+      Ref: CognitoAdminGroup
+
+  CognitoStaffGroupName:
+    Value:
+      Ref: CognitoStaffGroup
