@@ -13,15 +13,9 @@ class AuthService {
   ]);
 
   updateConfig = token => {
-    const credentials = new AWS.CognitoIdentityCredentials({
-      IdentityId: config.Auth.identityPoolId,
-      Logins: {
-        [config.providerName]: token,
-      },
-    });
-    AWS.config.update({
-      credentials,
-    });
+    AWS.config.credentials.params.Logins = AWS.config.credentials.params.Logins || {};
+    AWS.config.credentials.params.Logins[config.providerName] = token;
+    AWS.config.credentials.expired = true;
   };
 
   login = async ({ username, password }) => {
@@ -42,7 +36,7 @@ class AuthService {
   };
 
   logout = () => {
-    AWS.config.credentials.params.Logins = {};
+    AWS.config.credentials.params.Logins = undefined;
   };
 }
 
