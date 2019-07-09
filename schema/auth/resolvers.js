@@ -16,6 +16,7 @@ const resolvers = {
     },
     logout: async (_source, args, { dataSources }) => {
       try {
+        await dataSources.authAPI.logout();
         const endSession = await dataSources.sessionAPI.end({
           id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
         });

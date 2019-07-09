@@ -1,5 +1,6 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import Amplify from '@aws-amplify/core';
+import AWS from 'aws-sdk';
 import AWSConfiguration from './config/aws-exports';
 import { resolvers, typeDefs } from './schema';
 import {
@@ -12,6 +13,15 @@ import {
 } from './services';
 
 Amplify.configure(AWSConfiguration);
+
+const credentials = new AWS.CognitoIdentityCredentials({
+  IdentityPoolId: AWSConfiguration.Auth.identityPoolId,
+  Logins:
+    (AWS.config.credentials.params && AWS.config.credentials.params.Logins)
+    || {},
+});
+
+AWS.config.credentials = credentials;
 
 /* eslint-disable no-console */
 const server = new ApolloServer({
