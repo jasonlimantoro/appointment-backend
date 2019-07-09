@@ -3,11 +3,9 @@ service: appointment-backend
 tenant: 'jasonlimantoro'
 app: 'appointment'
 
-# Use the serverless-webpack plugin to transpile ES6
 plugins:
   - serverless-webpack
   - serverless-dynamodb-local
-  - serverless-appsync-plugin
   - serverless-offline
 
 # serverless-webpack configuration

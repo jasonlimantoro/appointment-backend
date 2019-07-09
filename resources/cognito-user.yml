@@ -50,6 +50,8 @@ Resources:
     Properties:
       Description: Admin user who can access dashboard pages
       GroupName: admin
+      RoleArn: 
+        Fn::GetAtt: [AdminRole, Arn]
       UserPoolId:
         Ref: CognitoUserPool
 
@@ -58,6 +60,8 @@ Resources:
     Properties:
       Description: Staff user who can only access the core app
       GroupName: staff
+      RoleArn: 
+        Fn::GetAtt: [StaffRole, Arn]
       UserPoolId:
         Ref: CognitoUserPool
 # Print out the Id of the User Pool that is created
