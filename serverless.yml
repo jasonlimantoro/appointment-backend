@@ -69,27 +69,17 @@ provider:
       # the specific table for the stage
       Resource:
         # Guest table
-        - Fn::GetAtt: 
-          - GuestTable
-          - Arn
-        # the firstName index
+        - Fn::GetAtt: [GuestTable, Arn]
         - Fn::Join: 
             - '/' 
             -
-              - Fn::GetAtt: 
-                - GuestTable
-                - Arn 
+              - Fn::GetAtt: [GuestTable, Arn]
               - index
               - firstName-index
-
-        # Entry table
-        - Fn::GetAtt:
-          - EntryTable
-          - Arn
-        # Session table
-        - Fn::GetAtt:
-          - SessionTable
-          - Arn
+        - Fn::GetAtt: [EntryTable, Arn]
+        - Fn::GetAtt: [SessionTable, Arn]
+        - Fn::GetAtt: [PhotoTable, Arn]
+        - Fn::Join: ['/', [Fn::GetAtt: [PhotoTable, Arn], index, '*']]
 functions:
   graphql:
     handler: graphql.hello
