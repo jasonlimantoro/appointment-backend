@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { createTestClient } from 'apollo-server-testing';
-import { typeDefs, resolvers } from '../schema';
+import schema from '../schema';
 import {
   GuestService,
   EntryService,
@@ -24,8 +24,7 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
   const uploadAPI = new UploadService();
   const photoAPI = new PhotoService();
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     dataSources: () => ({
       guestAPI,
       entryAPI,

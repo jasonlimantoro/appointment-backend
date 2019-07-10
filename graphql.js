@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-lambda';
 import Amplify from '@aws-amplify/core';
 import AWS from 'aws-sdk';
 import AWSConfiguration from './config/aws-exports';
-import { resolvers, typeDefs } from './schema';
+import schema from './schema';
 import {
   GuestService,
   EntryService,
@@ -25,8 +25,7 @@ AWS.config.credentials = credentials;
 
 /* eslint-disable no-console */
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   formatError: error => {
     console.log(error);
     return error;

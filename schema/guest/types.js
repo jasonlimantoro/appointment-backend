@@ -23,13 +23,13 @@ export default gql`
     lastName: String!
   }
 
-  extend type Query {
+  type Query {
     listGuest: [Guest]
     getGuest(NIK: String!): Guest
     byName(input: ByNameInput!): Guest
   }
 
-  extend type Mutation {
+  type Mutation {
     createGuest(input: CreateGuestInput!): Guest
   }
 `;

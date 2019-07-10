@@ -18,14 +18,14 @@ const typeDefs = gql`
     Guest: CreateGuestInput!
   }
 
-  extend type Query {
+  type Query {
     listEntry: [Entry]
     listTodayEntry(NIK: String): [Entry]
     getEntry(id: String!): Entry
     byGuestId(NIK: String!): [Entry]
   }
 
-  extend type Mutation {
+  type Mutation {
     createEntry(input: CreateEntryInput!): Entry!
     endEntry(id: String!): Entry!
   }

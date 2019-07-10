@@ -14,10 +14,10 @@ export default gql`
     key: String!
   }
 
-  extend type Query {
+  type Query {
     photoByEntry(entryId: String!): [Photo]!
   }
-  extend type Mutation {
+  type Mutation {
     createPhoto(input: CreatePhotoInput!): Photo!
   }
 `;

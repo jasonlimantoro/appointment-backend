@@ -5,7 +5,7 @@ const typeDefs = gql`
     session: Session!
     token: String!
   }
-  extend type Mutation {
+  type Mutation {
     login(username: String!, password: String!): LoginPayload!
     logout(sessionId: String!): Boolean!
   }
