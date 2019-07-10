@@ -23,6 +23,7 @@
     "@playlyfe/gql": "^2.6.1",
     "@types/jest": "^24.0.15",
     "apollo-server-testing": "^2.6.2",
+    "aws-sdk-mock": "^4.5.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",

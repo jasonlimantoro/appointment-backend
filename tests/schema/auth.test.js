@@ -1,9 +1,16 @@
 import gql from 'graphql-tag';
+import AWS from 'aws-sdk';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid';
 import Auth from '@aws-amplify/auth';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
+
+AWS.config.credentials = {
+  params: {
+    Logins: {},
+  },
+};
 
 describe('Authentication', () => {
   it('login: should work', async () => {
