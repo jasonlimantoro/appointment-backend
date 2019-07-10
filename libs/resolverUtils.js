@@ -20,7 +20,7 @@ export const checkAuthentication = async (context, controller, ...params) => {
   ]);
   if (!authorization) {
     throw new AuthenticationError(
-      `Provided header is invalid: ${JSON.stringify(context.headers)}`,
+      `Provided header is invalid: ${JSON.stringify(context.headers, null, 2)}`,
     );
   }
   const token = authorization.split(' ')[1];
@@ -29,6 +29,8 @@ export const checkAuthentication = async (context, controller, ...params) => {
     if (!user) throw new AuthenticationError();
     return controller.apply(this, [...params, user, context]);
   } catch (e) {
+    // eslint-disable-next-line
+    console.log(`Received Header: ${JSON.stringify(context.headers, null, 2)}`);
     throw new AuthenticationError(e.message);
   }
 };
