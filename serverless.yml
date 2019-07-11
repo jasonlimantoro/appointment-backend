@@ -7,9 +7,6 @@ plugins:
   - serverless-webpack
   - serverless-dynamodb-local
   - serverless-offline
-
-# serverless-webpack configuration
-# Enable auto-packing of external modules
 custom:
   stage: ${self:provider.stage}
   tableThroughputs:
@@ -42,44 +39,20 @@ custom:
           - table: dev-photos
             sources:
               - ./fixtures/out/photos.js
-
 provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
   region: ${opt:region, 'us-east-1'} # Overwrite the default region used. Default is us-east-1
-  # To load environment variables externally
-  # rename env.example to env.yml and uncomment
-  # the following line. Also, make sure to not
-  # commit your env.yml.
-  #
   environment: ${file(env.yml):${self:provider.stage}}
 
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      # Restrict our IAM role permissions to
-      # the specific table for the stage
+        - sts:AssumeRole
       Resource:
-        # Guest table
-        - Fn::GetAtt: [GuestTable, Arn]
-        - Fn::Join: 
-            - '/' 
-            -
-              - Fn::GetAtt: [GuestTable, Arn]
-              - index
-              - firstName-index
-        - Fn::GetAtt: [EntryTable, Arn]
-        - Fn::GetAtt: [SessionTable, Arn]
-        - Fn::GetAtt: [PhotoTable, Arn]
-        - Fn::Join: ['/', [Fn::GetAtt: [PhotoTable, Arn], index, '*']]
+        - Fn::GetAtt: [StaffRole, Arn]
+        - Fn::GetAtt: [AdminRole, Arn]
 functions:
   graphql:
     handler: graphql.hello
@@ -88,12 +61,10 @@ functions:
           path: graphql
           method: post
           cors: true
-          # authorizer: aws_iam
       - http:
           path: graphql
           method: get
           cors: true
-          # authorizer: aws_iam
 resources:
   # Dynamodb
   - ${file(resources/dynamodb.yml)}
