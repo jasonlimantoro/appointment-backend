@@ -16,4 +16,12 @@ describe('Base Service', () => {
   it('create: should not be callable', async () => {
     await expect(service.create()).rejects.toThrow(NotImplementedError);
   });
+
+  it('replaceDataSource: should be able to replace data source', () => {
+    class DataSource {}
+    const newDataSource = new DataSource();
+    service.replaceDataSource(newDataSource);
+    expect(service.dataSource).toBeInstanceOf(DataSource);
+    expect(service._util.dataSource).toBeInstanceOf(DataSource);
+  });
 });

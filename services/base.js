@@ -28,4 +28,9 @@ export default class BaseService {
   create = async () => {
     this.constructor.throwNotImplementedError();
   };
+
+  replaceDataSource = newDataSource => {
+    this.dataSource = newDataSource;
+    this._util.dataSource = newDataSource;
+  };
 }
