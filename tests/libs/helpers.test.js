@@ -2,6 +2,7 @@ import {
   transformObjectKeysToLower,
   encryptBase64,
   decryptBase64,
+  selfOrFirstInArray,
 } from '../../libs/helpers';
 
 describe('helpers', () => {
@@ -156,6 +157,12 @@ describe('helpers', () => {
       const given = Buffer.from('abcdef').toString('base64');
       const actual = decryptBase64(given);
       expect(actual).toEqual('abcdef');
+    });
+  });
+  describe('selfOrFirstInArray', () => {
+    it('should work', () => {
+      expect(selfOrFirstInArray(['admin'])).toEqual('admin');
+      expect(selfOrFirstInArray('admin')).toEqual('admin');
     });
   });
 });

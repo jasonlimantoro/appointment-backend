@@ -25,3 +25,5 @@ export const transformObjectKeysToLower = obj => {
 export const encryptBase64 = str => Buffer.from(str).toString('base64');
 
 export const decryptBase64 = base64 => Buffer.from(base64, 'base64').toString('ascii');
+
+export const selfOrFirstInArray = item => (Array.isArray(item) ? item[0] : item);
