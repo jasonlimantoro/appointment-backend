@@ -65,15 +65,10 @@ Resources:
         Statement:
           - Effect: 'Allow'
             Principal:
-              Federated: 'cognito-identity.amazonaws.com'
+              AWS: '*'
             Action:
-              - 'sts:AssumeRoleWithWebIdentity'
-            Condition:
-              StringEquals:
-                'cognito-identity.amazonaws.com:aud':
-                  Ref: CognitoIdentityPool
-              'ForAnyValue:StringLike':
-                'cognito-identity.amazonaws.com:amr': authenticated
+              - sts:AssumeRoleWithWebIdentity
+              - sts:AssumeRole 
       Policies:
         - PolicyName: 'CognitoAdminPolicy'
           PolicyDocument:
@@ -101,17 +96,13 @@ Resources:
                       - ':'
                       - Ref: ApiGatewayRestApi
                       - '/*'
-              
-              # Allow users to upload attachments to their
-              # folder inside our S3 bucket
               - Effect: 'Allow'
                 Action:
                   - 's3:*'
                 Resource:
                   - Fn::Join:
                     - ''
-                    -
-                      - Fn::GetAtt: [GuestCredentialsBucket, Arn]
+                    - - Fn::GetAtt: [GuestCredentialsBucket, Arn]
                       - '/*'
   StaffRole:
     Type: AWS::IAM::Role
@@ -122,15 +113,11 @@ Resources:
         Statement:
           - Effect: 'Allow'
             Principal:
-              Federated: 'cognito-identity.amazonaws.com'
+              AWS: '*'
             Action:
               - 'sts:AssumeRoleWithWebIdentity'
-            Condition:
-              StringEquals:
-                'cognito-identity.amazonaws.com:aud':
-                  Ref: CognitoIdentityPool
-              'ForAnyValue:StringLike':
-                'cognito-identity.amazonaws.com:amr': authenticated
+              - 'sts:AssumeRole'
+
       Policies:
         - PolicyName: 'CognitoStaffPolicy'
           PolicyDocument:
@@ -158,10 +145,10 @@ Resources:
                       - ':'
                       - Ref: ApiGatewayRestApi
                       - '/*'
-              - Effect: 'Allow'
+              - Effect: Allow
                 Action:
-                  - 's3:GetObject'
-                  - 's3:PutObject'
+                  - s3:GetObject
+                  - s3:PutObject
                 Resource:
                   - Fn::Join:
                     - ''
