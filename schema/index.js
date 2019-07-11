@@ -1,5 +1,5 @@
-import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
+import { mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import root from './root';
 import { resolvers as entryResolver, typeDefs as entryTypeDefs } from './entry';
 import { resolvers as guestResolver, typeDefs as guestTypeDefs } from './guest';
@@ -23,13 +23,16 @@ const typeDefs = [
   uploadTypeDefs,
   photoTypeDefs,
 ];
-const resolvers = merge(
+const resolvers = [
   entryResolver,
   guestResolver,
   authResolver,
   uploadResolver,
   photoResolver,
-);
+];
 
 export { typeDefs, resolvers };
-export default makeExecutableSchema({ typeDefs, resolvers });
+export default makeExecutableSchema({
+  typeDefs: mergeTypes(typeDefs),
+  resolvers: mergeResolvers(resolvers),
+});
