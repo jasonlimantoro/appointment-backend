@@ -12,18 +12,6 @@ Resources:
           RequireSymbols: True
           RequireUppercase: False
 
-  CognitoAdminUserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: ${self:custom.stage}-admin-pool
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 6
-          RequireLowercase: False
-          RequireNumbers: False
-          RequireSymbols: True
-          RequireUppercase: False
-
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -31,16 +19,6 @@ Resources:
       ClientName: ${self:custom.stage}-user-pool-client
       UserPoolId:
         Ref: CognitoUserPool
-      ExplicitAuthFlows:
-        - ADMIN_NO_SRP_AUTH
-      GenerateSecret: false
-
-  CognitoAdminUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ClientName: ${self:custom.stage}-admin-user-pool-client
-      UserPoolId:
-        Ref: CognitoAdminUserPool
       ExplicitAuthFlows:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: false
@@ -74,14 +52,6 @@ Outputs:
     Value:
       Ref: CognitoUserPoolClient
 
-  AdminUserPoolId:
-    Value:
-      Ref: CognitoAdminUserPool
-  
-  AdminUserPoolClientId:
-    Value:
-      Ref: CognitoAdminUserPoolClient
-  
   CognitoAdminGroupName:
     Value:
       Ref: CognitoAdminGroup
