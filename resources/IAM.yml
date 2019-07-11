@@ -81,15 +81,13 @@ Resources:
                   - 'cognito-identity:*'
                 Resource: '*'
               
-              # Allow users to invoke our API
               - Effect: 'Allow'
                 Action:
                   - 'execute-api:Invoke'
                 Resource:
                   Fn::Join:
                     - ''
-                    -
-                      - 'arn:aws:execute-api:'
+                    - - 'arn:aws:execute-api:'
                       - Ref: AWS::Region
                       - ':'
                       - Ref: AWS::AccountId
@@ -104,6 +102,11 @@ Resources:
                     - ''
                     - - Fn::GetAtt: [GuestCredentialsBucket, Arn]
                       - '/*'
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                Resource: '*'
+
   StaffRole:
     Type: AWS::IAM::Role
     Properties:
@@ -130,7 +133,6 @@ Resources:
                   - 'cognito-identity:*'
                 Resource: '*'
               
-              # Allow users to invoke our API
               - Effect: 'Allow'
                 Action:
                   - 'execute-api:Invoke'
@@ -152,9 +154,46 @@ Resources:
                 Resource:
                   - Fn::Join:
                     - ''
-                    -
-                      - Fn::GetAtt: [GuestCredentialsBucket, Arn]
+                    - - Fn::GetAtt: [GuestCredentialsBucket, Arn]
                       - '/*'
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                Resource:
+                  - Fn::GetAtt: [SessionTable, Arn]
+                  - Fn::Join:
+                    - '/'
+                    - - Fn::GetAtt: [SessionTable, Arn]
+                      - 'index'
+                      - '*'
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                Resource:
+                  - Fn::GetAtt: [GuestTable, Arn]
+                  - Fn::Join:
+                    - '/'
+                    - - Fn::GetAtt: [GuestTable, Arn]
+                      - 'index'
+                      - '*'
+
+                  - Fn::GetAtt: [EntryTable, Arn]
+
+                  - Fn::Join:
+                    - '/'
+                    - - Fn::GetAtt: [EntryTable, Arn]
+                      - 'index'
+                      - '*'
+                  - Fn::GetAtt: [PhotoTable, Arn]
+                  - Fn::Join:
+                    - '/'
+                    - - Fn::GetAtt: [PhotoTable, Arn]
+                      - 'index'
+                      - '*'
 
 Outputs:
   StaffUserRole:
