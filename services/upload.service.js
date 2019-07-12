@@ -3,9 +3,12 @@ import BaseService from './base';
 import AWSConfiguration from '../config/aws-exports';
 
 export default class UploadService extends BaseService {
+  constructor() {
+    super({ dataSource: new AWS.S3() });
+  }
+
   createSignature = (permission, params) => new Promise((resolve, reject) => {
-    const s3 = new AWS.S3();
-    s3.getSignedUrl(permission, params, (error, url) => {
+    this.dataSource.getSignedUrl(permission, params, (error, url) => {
       if (error) {
         reject(error);
       } else {

@@ -22,7 +22,7 @@ class AuthService {
         );
       }
       const token = this.constructor.getJWTFromCognitoUser(res);
-      updateLoginConfig({
+      await updateLoginConfig({
         [config.providerName]: token,
       });
       return token;
@@ -33,7 +33,7 @@ class AuthService {
 
   logout = async () => {
     await Auth.signOut();
-    updateLoginConfig(undefined);
+    await updateLoginConfig(undefined);
   };
 }
 

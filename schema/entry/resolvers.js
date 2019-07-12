@@ -1,4 +1,3 @@
-import AWS from 'aws-sdk';
 import { checkAuthentication, filterToday } from '../../libs/resolverUtils';
 import * as credentials from '../../libs/credentials';
 
