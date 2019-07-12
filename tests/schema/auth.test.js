@@ -5,12 +5,20 @@ import uuid from 'uuid';
 import Auth from '@aws-amplify/auth';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
+import * as credentialUtils from '../../libs/credentials';
 
 AWS.config.credentials = {
   params: {
     Logins: {},
   },
 };
+
+jest.mock('@aws-amplify/auth');
+beforeEach(() => {
+  credentialUtils.getServiceWithAssumedCredentials = jest
+    .fn()
+    .mockResolvedValue(true);
+});
 
 describe('Authentication', () => {
   it('login: should work', async () => {
@@ -81,6 +89,7 @@ describe('Authentication', () => {
         logout(sessionId: $sessionId)
       }
     `;
+    Auth.signOut = jest.fn().mockResolvedValue(true);
     const res = await mutate({
       mutation: LOGOUT,
       variables: { sessionId: 'some-session-id' },

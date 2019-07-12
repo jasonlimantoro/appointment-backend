@@ -1,8 +1,17 @@
+import AWS from 'aws-sdk';
 import { checkAuthentication, filterToday } from '../../libs/resolverUtils';
+import * as credentials from '../../libs/credentials';
 
 const resolvers = {
   Query: {
-    listEntry: (_source, _args, context) => checkAuthentication(context, context.dataSources.entryAPI.list),
+    listEntry: (_source, _args, context) => checkAuthentication(context, async user => {
+      await credentials.getServiceWithAssumedCredentials(
+        user,
+        'DynamoDB.DocumentClient',
+        replacedService => context.dataSources.entryAPI.replaceDataSource(replacedService),
+      );
+      return context.dataSources.entryAPI.list();
+    }),
     listTodayEntry: (_source, args, context) => checkAuthentication(context, async () => {
       let res;
       if (args.NIK) {

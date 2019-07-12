@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk';
 import Auth from '@aws-amplify/auth';
 import fs from 'fs';
 import { getNestedObjectValue } from 'appointment-common';
 import config from '../config/aws-exports';
 import { AuthenticationError } from '../libs/errors';
+import { updateLoginConfig } from '../libs/credentials';
 
 class AuthService {
   static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)([
@@ -11,12 +11,6 @@ class AuthService {
     'idToken',
     'jwtToken',
   ]);
-
-  updateConfig = token => {
-    AWS.config.credentials.params.Logins = AWS.config.credentials.params.Logins || {};
-    AWS.config.credentials.params.Logins[config.providerName] = token;
-    AWS.config.credentials.expired = true;
-  };
 
   login = async ({ username, password }) => {
     try {
@@ -28,15 +22,18 @@ class AuthService {
         );
       }
       const token = this.constructor.getJWTFromCognitoUser(res);
-      this.updateConfig(token);
+      updateLoginConfig({
+        [config.providerName]: token,
+      });
       return token;
     } catch (e) {
       throw new AuthenticationError(e.message);
     }
   };
 
-  logout = () => {
-    AWS.config.credentials.params.Logins = undefined;
+  logout = async () => {
+    await Auth.signOut();
+    updateLoginConfig(undefined);
   };
 }
 

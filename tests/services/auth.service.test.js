@@ -1,10 +1,16 @@
 import Auth from '@aws-amplify/auth';
+import AWS from 'aws-sdk';
 import { AuthService } from '../../services';
 import mockUser from '../../fixtures/users';
 
 jest.mock('@aws-amplify/auth');
 
 const service = new AuthService();
+AWS.config.credentials = {
+  params: {
+    Logins: {},
+  },
+};
 
 describe('Auth Service', () => {
   it('login: should get the token', async () => {

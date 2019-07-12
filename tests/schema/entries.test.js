@@ -1,6 +1,4 @@
 import gql from 'graphql-tag';
-import AWSMock from 'aws-sdk-mock';
-import AWS from 'aws-sdk';
 import _ from 'lodash';
 import { createTestClientAndServer } from '../utils';
 import {
@@ -11,13 +9,16 @@ import {
 import Auth from '../../libs/auth';
 import * as resolverUtils from '../../libs/resolverUtils';
 import { humanFormat } from '../../libs/datetime';
+import * as credentialUtils from '../../libs/credentials';
 
 beforeEach(() => {
   Auth.verifyJwt = jest.fn().mockRejectedValue(new Error());
-  AWSMock.setSDKInstance(AWS);
-  AWSMock.mock('STS', 'assumeRole', (params, callback) => {
-    callback(null);
-  });
+  credentialUtils.getServiceWithAssumedCredentials = jest
+    .fn()
+    .mockResolvedValue(true);
+});
+afterEach(() => {
+  credentialUtils.getServiceWithAssumedCredentials.mockClear();
 });
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {

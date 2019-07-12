@@ -1,13 +1,15 @@
 import moment from 'moment';
 import mime from 'mime-types';
+import Auth from '@aws-amplify/auth';
 import {
   filterToday,
   checkAuthentication,
   checkAuthGroup,
   constructFileName,
+  checkNotAuthenticated,
 } from '../../libs/resolverUtils';
 import * as datetimeUtils from '../../libs/datetime';
-import Auth from '../../libs/auth';
+import CustomAuth from '../../libs/auth';
 import { AuthenticationError, AuthorizationError } from '../../libs/errors';
 
 jest.mock('jsonwebtoken');
@@ -47,7 +49,7 @@ describe('resolverUtils', () => {
 
     it('should throw error when jwt verification fails', async () => {
       const controller = jest.fn();
-      Auth.verifyJwt = jest.fn().mockResolvedValue(false);
+      CustomAuth.verifyJwt = jest.fn().mockResolvedValue(false);
 
       const context = {
         headers: {
@@ -57,12 +59,12 @@ describe('resolverUtils', () => {
       await expect(checkAuthentication(context, controller)).rejects.toThrow(
         AuthenticationError,
       );
-      expect(Auth.verifyJwt).toBeCalledWith('some-token');
+      expect(CustomAuth.verifyJwt).toBeCalledWith('some-token');
     });
 
     it('should work', async () => {
       const controller = jest.fn().mockResolvedValue({ message: 'some-value' });
-      Auth.verifyJwt = jest.fn().mockResolvedValue(true);
+      CustomAuth.verifyJwt = jest.fn().mockResolvedValue(true);
       const context = {
         headers: {
           authorization: 'Bearer some-token',
@@ -70,7 +72,7 @@ describe('resolverUtils', () => {
       };
       const res = await checkAuthentication(context, controller);
       expect(controller).toBeCalled();
-      expect(Auth.verifyJwt).toBeCalledWith('some-token');
+      expect(CustomAuth.verifyJwt).toBeCalledWith('some-token');
       expect(res).toEqual({ message: 'some-value' });
     });
   });
@@ -81,7 +83,7 @@ describe('resolverUtils', () => {
         'cognito:groups': ['admin'],
       };
       const spiedJwtVerification = jest
-        .spyOn(Auth, 'verifyJwt')
+        .spyOn(CustomAuth, 'verifyJwt')
         .mockResolvedValue(mockUser);
       const context = {
         headers: {
@@ -105,7 +107,7 @@ describe('resolverUtils', () => {
         'cognito:groups': ['admin'],
       };
       const spiedJwtVerification = jest
-        .spyOn(Auth, 'verifyJwt')
+        .spyOn(CustomAuth, 'verifyJwt')
         .mockResolvedValue(mockUser);
       const context = {
         headers: {
@@ -121,6 +123,28 @@ describe('resolverUtils', () => {
       );
       expect(spiedJwtVerification).toBeCalledWith('some-token');
       expect(controller).not.toBeCalled();
+    });
+  });
+  describe('checkNotAuth', () => {
+    it('should throw error if there is an authenticated user', async () => {
+      const spiedUserInfo = jest
+        .spyOn(Auth, 'currentUserInfo')
+        .mockResolvedValue(true);
+      const controller = jest.fn().mockResolvedValue({ message: 'success' });
+      await expect(checkNotAuthenticated({}, controller)).rejects.toThrow(
+        AuthenticationError,
+      );
+      expect(spiedUserInfo).toBeCalled();
+    });
+    it('should pass if no authenticated user', async () => {
+      const spiedUserInfo = jest
+        .spyOn(Auth, 'currentUserInfo')
+        .mockResolvedValue(false);
+      const controller = jest.fn().mockResolvedValue({ message: 'success' });
+      expect(await checkNotAuthenticated({}, controller)).toEqual({
+        message: 'success',
+      });
+      expect(spiedUserInfo).toBeCalled();
     });
   });
   describe('constructFileName', () => {

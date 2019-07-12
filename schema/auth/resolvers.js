@@ -1,19 +1,28 @@
 import jwt from 'jsonwebtoken';
 import { LogoutError } from '../../libs/errors';
+import { getServiceWithAssumedCredentials } from '../../libs/credentials';
+import { checkNotAuthenticated } from '../../libs/resolverUtils';
 
 const resolvers = {
   Mutation: {
-    login: async (_source, args, { dataSources }) => {
-      const token = await dataSources.authAPI.login(args);
+    login: async (_source, args, context) => checkNotAuthenticated(context, async () => {
+      const token = await context.dataSources.authAPI.login(args);
       const decoded = jwt.decode(token);
-      const session = await dataSources.sessionAPI.create({
+      await getServiceWithAssumedCredentials(
+        decoded,
+        'DynamoDB.DocumentClient',
+        replacedService => {
+          context.dataSources.sessionAPI.replaceDataSource(replacedService);
+        },
+      );
+      const session = await context.dataSources.sessionAPI.create({
         userId: decoded.sub,
       });
       return {
         token,
         session,
       };
-    },
+    }),
     logout: async (_source, args, { dataSources }) => {
       try {
         await dataSources.authAPI.logout();

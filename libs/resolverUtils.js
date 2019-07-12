@@ -1,7 +1,8 @@
 import moment from 'moment';
+import Auth from '@aws-amplify/auth';
 import mime from 'mime-types';
 import { getNestedObjectValue } from 'appointment-common';
-import Auth from './auth';
+import CustomAuth from './auth';
 import { AuthenticationError, AuthorizationError } from './errors';
 import { transformObjectKeysToLower } from './helpers';
 import { humanFormat } from './datetime';
@@ -25,7 +26,7 @@ export const checkAuthentication = async (context, controller, ...params) => {
   }
   const token = authorization.split(' ')[1];
   try {
-    const user = await Auth.verifyJwt(token);
+    const user = await CustomAuth.verifyJwt(token);
     if (!user) throw new AuthenticationError();
     return controller.apply(this, [...params, user, context]);
   } catch (e) {
@@ -52,7 +53,7 @@ export const checkAuthGroup = async (
     );
   }
   const token = authorization.split(' ')[1];
-  const user = await Auth.verifyJwt(token);
+  const user = await CustomAuth.verifyJwt(token);
   const groups = user['cognito:groups'];
   if (!groups) {
     throw new AuthorizationError('No group is attached');
@@ -63,6 +64,16 @@ export const checkAuthGroup = async (
     );
   }
   return controller.apply(this, [...params, user, context]);
+};
+
+export const checkNotAuthenticated = async (context, controller, ...params) => {
+  const user = await Auth.currentUserInfo();
+  if (user) {
+    throw new AuthenticationError(
+      `You are already logged in as ${user.username}`,
+    );
+  }
+  return controller.apply(this, [...params, context]);
 };
 
 export const filterToday = list => {
