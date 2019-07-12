@@ -1,14 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { LogoutError } from '../../libs/errors';
 import { getServiceWithAssumedCredentials } from '../../libs/credentials';
-import {
-  checkNotAuthenticated,
-  checkAuthentication,
-} from '../../libs/resolverUtils';
+import { checkAuthentication } from '../../libs/resolverUtils';
 
 const resolvers = {
   Mutation: {
-    login: async (_source, args, context) => checkNotAuthenticated(context, async () => {
+    login: async (_source, args, context) => {
       const token = await context.dataSources.authAPI.login(args);
       const decoded = jwt.decode(token);
       await getServiceWithAssumedCredentials(
@@ -25,7 +22,7 @@ const resolvers = {
         token,
         session,
       };
-    }),
+    },
     logout: async (_source, args, context) => checkAuthentication(
       context,
       async () => {

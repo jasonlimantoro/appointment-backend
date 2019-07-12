@@ -30,8 +30,3 @@ export const getServiceWithAssumedCredentials = async (
     throw e;
   }
 };
-
-export const updateLoginConfig = async config => {
-  AWS.config.credentials.params.Logins = AWS.config.credentials.params.Logins || {};
-  AWS.config.credentials.params.Logins = config;
-};

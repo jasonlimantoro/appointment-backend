@@ -66,6 +66,12 @@ export const checkAuthGroup = async (
   return controller.apply(this, [...params, user, context]);
 });
 
+/**
+ * @deprecated
+ * @param {context} context context object
+ * @param {*} controller function to be executed when checking passes
+ * @param  {...any} params any params for the controller
+ */
 export const checkNotAuthenticated = async (context, controller, ...params) => {
   const user = await Auth.currentUserInfo();
   if (user) {
