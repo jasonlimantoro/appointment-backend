@@ -1,7 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { LogoutError } from '../../libs/errors';
 import { getServiceWithAssumedCredentials } from '../../libs/credentials';
-import { checkNotAuthenticated } from '../../libs/resolverUtils';
+import {
+  checkNotAuthenticated,
+  checkAuthentication,
+} from '../../libs/resolverUtils';
 
 const resolvers = {
   Mutation: {
@@ -23,19 +26,24 @@ const resolvers = {
         session,
       };
     }),
-    logout: async (_source, args, { dataSources }) => {
-      try {
-        await dataSources.authAPI.logout();
-        const endSession = await dataSources.sessionAPI.end({
-          id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
-        });
-        if (endSession) {
-          return true;
+    logout: async (_source, args, context) => checkAuthentication(
+      context,
+      async () => {
+        try {
+          await context.dataSources.authAPI.logout();
+          const endSession = await context.dataSources.sessionAPI.end({
+            id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
+          });
+          if (endSession) {
+            return true;
+          }
+        } catch (e) {
+          throw new LogoutError(e.message);
         }
-      } catch (e) {
-        throw new LogoutError(e.message);
-      }
-    },
+      },
+      'DynamoDB.DocumentClient',
+      service => context.dataSources.sessionAPI.replaceDataSource(service),
+    ),
   },
   Session: {
     id: source => Buffer.from(source.id).toString('base64'),

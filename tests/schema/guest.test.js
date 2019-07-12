@@ -1,7 +1,23 @@
 import gql from 'graphql-tag';
 import { createTestClientAndServer } from '../utils';
+import * as credentialUtils from '../../libs/credentials';
+import Auth from '../../libs/auth';
 import mockedGuests from '../../fixtures/guests';
 import mockedEntries from '../../fixtures/entries';
+
+const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
+credentialUtils.getServiceWithAssumedCredentials = jest
+  .fn()
+  .mockResolvedValue(true);
+
+beforeEach(() => {
+  spiedJwtVerification.mockRejectedValue(
+    new Error('Authenticated routes should be protected'),
+  );
+});
+afterEach(() => {
+  spiedJwtVerification.mockClear();
+});
 
 describe('Guest schema', () => {
   it('listGuest: should work', async () => {
@@ -23,6 +39,7 @@ describe('Guest schema', () => {
         }
       }
     `;
+    spiedJwtVerification.mockResolvedValue(true);
     const result = await query({ query: LIST_GUEST });
     expect(result).toMatchSnapshot();
     expect(guestAPI.list).toBeCalled();
@@ -42,12 +59,13 @@ describe('Guest schema', () => {
         }
       }
     `;
+    spiedJwtVerification.mockResolvedValue(true);
     const result = await query({
       query: GET_GUEST,
       variables: { NIK: 'some-id' },
     });
-    expect(guestAPI.get).toBeCalledWith('some-id');
     expect(result).toMatchSnapshot();
+    expect(guestAPI.get).toBeCalledWith('some-id');
   });
 
   it('byName: should work', async () => {
@@ -65,6 +83,7 @@ describe('Guest schema', () => {
         }
       }
     `;
+    spiedJwtVerification.mockResolvedValue(true);
     const result = await query({
       query: BY_NAME,
       variables: { input: { firstName, lastName } },
@@ -96,6 +115,7 @@ describe('Guest schema', () => {
         }
       }
     `;
+    spiedJwtVerification.mockResolvedValue(true);
     const result = await mutate({
       mutation: CREATE_GUEST,
       variables: { input: attributes },

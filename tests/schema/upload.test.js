@@ -4,6 +4,7 @@ import authUtil from '../../libs/auth';
 import mockEntries from '../../fixtures/entries';
 import mockGuests from '../../fixtures/guests';
 import * as resolverUtils from '../../libs/resolverUtils';
+import * as credentialUtils from '../../libs/credentials';
 import Seeder from '../../libs/seeder';
 import { createTestClientAndServer } from '../utils';
 
@@ -15,9 +16,14 @@ const spiedSign = jest
   .spyOn(S3.prototype, 'getSignedUrl')
   .mockResolvedValue('http://bucketname/user/file');
 
+const spiedGetServiceWithAssumedCredentials = jest
+  .spyOn(credentialUtils, 'getServiceWithAssumedCredentials')
+  .mockResolvedValue(true);
+
 afterEach(() => {
   spiedAuthentication.mockClear();
   spiedSign.mockClear();
+  spiedGetServiceWithAssumedCredentials.mockClear();
 });
 
 describe('Upload', () => {

@@ -6,18 +6,26 @@ import Auth from '@aws-amplify/auth';
 import { createTestClientAndServer } from '../utils';
 import mockUser from '../../fixtures/users';
 import * as credentialUtils from '../../libs/credentials';
+import CustomAuth from '../../libs/auth';
 
 AWS.config.credentials = {
   params: {
     Logins: {},
   },
 };
+const spiedJwtVerification = jest.spyOn(CustomAuth, 'verifyJwt');
 
 jest.mock('@aws-amplify/auth');
 beforeEach(() => {
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
     .mockResolvedValue(true);
+  spiedJwtVerification.mockRejectedValue(
+    new Error('Authenticated routes should be protected'),
+  );
+});
+afterEach(() => {
+  spiedJwtVerification.mockClear();
 });
 
 describe('Authentication', () => {
@@ -69,6 +77,7 @@ describe('Authentication', () => {
       }
     `;
     const encryptedSessionId = Buffer.from(loginSession.id).toString('base64');
+    spiedJwtVerification.mockResolvedValue(true);
     const res = await mutate({
       mutation: LOGOUT,
       variables: {
@@ -90,6 +99,7 @@ describe('Authentication', () => {
       }
     `;
     Auth.signOut = jest.fn().mockResolvedValue(true);
+    spiedJwtVerification.mockResolvedValue(true);
     const res = await mutate({
       mutation: LOGOUT,
       variables: { sessionId: 'some-session-id' },

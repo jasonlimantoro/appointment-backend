@@ -3,6 +3,7 @@ import Auth from '@aws-amplify/auth';
 import mime from 'mime-types';
 import { getNestedObjectValue } from 'appointment-common';
 import CustomAuth from './auth';
+import { getServiceWithAssumedCredentials } from './credentials';
 import { AuthenticationError, AuthorizationError } from './errors';
 import { transformObjectKeysToLower } from './helpers';
 import { humanFormat } from './datetime';
@@ -11,9 +12,17 @@ import { humanFormat } from './datetime';
  * Authenticates request using the JWT token in the header
  * @param {object} context the context object sent
  * @param {function} controller the function to be executed if authentication is successful
+ * @param {function} replacerCb the function to replace AWS service with updated credentials
+ * @param {String} AWSService the service
  * @param  {...any} params arguments for the controller function
  */
-export const checkAuthentication = async (context, controller, ...params) => {
+export const checkAuthentication = async (
+  context,
+  controller,
+  AWSService,
+  replacerCb,
+  ...params
+) => {
   context.headers = transformObjectKeysToLower(context.headers);
   const authorization = getNestedObjectValue(context)([
     'headers',
@@ -28,6 +37,9 @@ export const checkAuthentication = async (context, controller, ...params) => {
   try {
     const user = await CustomAuth.verifyJwt(token);
     if (!user) throw new AuthenticationError();
+    if (replacerCb && AWSService) {
+      await getServiceWithAssumedCredentials(user, AWSService, replacerCb);
+    }
     return controller.apply(this, [...params, user, context]);
   } catch (e) {
     // eslint-disable-next-line
@@ -41,19 +53,7 @@ export const checkAuthGroup = async (
   expectedGroups,
   controller,
   ...params
-) => {
-  context.headers = transformObjectKeysToLower(context.headers);
-  const authorization = getNestedObjectValue(context)([
-    'headers',
-    'authorization',
-  ]);
-  if (!authorization) {
-    throw new AuthenticationError(
-      `Provided header is invalid: ${JSON.stringify(context.headers)}`,
-    );
-  }
-  const token = authorization.split(' ')[1];
-  const user = await CustomAuth.verifyJwt(token);
+) => checkAuthentication(context, async user => {
   const groups = user['cognito:groups'];
   if (!groups) {
     throw new AuthorizationError('No group is attached');
@@ -64,7 +64,7 @@ export const checkAuthGroup = async (
     );
   }
   return controller.apply(this, [...params, user, context]);
-};
+});
 
 export const checkNotAuthenticated = async (context, controller, ...params) => {
   const user = await Auth.currentUserInfo();

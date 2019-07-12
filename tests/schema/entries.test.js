@@ -11,21 +11,25 @@ import * as resolverUtils from '../../libs/resolverUtils';
 import { humanFormat } from '../../libs/datetime';
 import * as credentialUtils from '../../libs/credentials';
 
+const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 beforeEach(() => {
-  Auth.verifyJwt = jest.fn().mockRejectedValue(new Error());
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
     .mockResolvedValue(true);
+  spiedJwtVerification.mockRejectedValue(
+    new Error('Authenticated routes should be proteced'),
+  );
 });
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
+  spiedJwtVerification.mockClear();
 });
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
     const {
       query, entryAPI, guestAPI, photoAPI,
     } = createTestClientAndServer();
-    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
+    spiedJwtVerification.mockResolvedValueOnce(true);
     entryAPI.list = jest.fn().mockResolvedValue(_.take(mockedEntries, 3));
     guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
     photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
@@ -48,7 +52,7 @@ describe('Entry Schema', () => {
     `;
     const res = await query({ query: LIST_ENTRY });
     expect(res).toMatchSnapshot();
-    expect(Auth.verifyJwt).toBeCalled();
+    expect(spiedJwtVerification).toBeCalled();
     expect(entryAPI.list).toBeCalled();
     expect(photoAPI.byEntry).toBeCalled();
   });
@@ -69,7 +73,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
+    spiedJwtVerification.mockResolvedValueOnce(true);
     entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
     resolverUtils.filterToday = jest.fn().mockReturnValue([]);
     const res = await query({ query: LIST_TODAY_ENTRY });
@@ -89,7 +93,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
+    spiedJwtVerification.mockResolvedValueOnce(true);
     const byGuestId = _.take(mockedEntries, 3);
     const today = _.take(mockedEntries, 1);
     entryAPI.byGuestId = jest.fn().mockResolvedValue(byGuestId);
@@ -129,7 +133,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValue({
+    spiedJwtVerification.mockResolvedValue({
       sub: 'some-user-id',
     });
     entryAPI.create = jest.fn().mockResolvedValue(attributes);
@@ -166,11 +170,10 @@ describe('Entry Schema', () => {
     `;
     const mock = mockedEntries[0];
     entryAPI.get = jest.fn().mockResolvedValue(mock);
+    spiedJwtVerification.mockResolvedValue(true);
     const res = await query({ query: GET_ENTRY, variables: { id: mock.id } });
-
-    expect(entryAPI.get).toBeCalledWith(mock.id);
-
     expect(res).toMatchSnapshot();
+    expect(entryAPI.get).toBeCalledWith(mock.id);
   });
 
   it('endEntry: should work', async () => {
@@ -185,7 +188,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    Auth.verifyJwt = jest.fn().mockResolvedValueOnce(true);
+    spiedJwtVerification.mockResolvedValueOnce(true);
     const mock = mockedEntries[0];
     entryAPI.end = jest.fn().mockResolvedValue({
       ...mock,
@@ -215,6 +218,7 @@ describe('Entry Schema', () => {
         }
       }
     `;
+    spiedJwtVerification.mockResolvedValueOnce(true);
     const res = await query({
       query: BY_GUEST_ID,
       variables: { NIK: mockedGuest[0].NIK },
