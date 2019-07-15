@@ -27,10 +27,10 @@ const resolvers = {
       context,
       async () => {
         try {
-          await context.dataSources.authAPI.logout();
           const endSession = await context.dataSources.sessionAPI.end({
             id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
           });
+          await context.dataSources.authAPI.logout();
           if (endSession) {
             return true;
           }
