@@ -8,7 +8,6 @@ export const getServiceWithAssumedCredentials = async (
   replacerFn,
   sessionName = 'proxiedCognitoRole',
 ) => {
-  if (process.env.IS_OFFLINE) return;
   const sts = new AWS.STS();
   const role = helpers.selfOrFirstInArray(user['cognito:roles']);
   try {
@@ -20,6 +19,10 @@ export const getServiceWithAssumedCredentials = async (
       accessKeyId: Credentials.AccessKeyId,
       secretAccessKey: Credentials.SecretAccessKey,
       sessionToken: Credentials.SessionToken,
+      ...(process.env.IS_OFFLINE && {
+        endpoint: 'http://localhost:8000',
+        region: 'localhost',
+      }),
     });
     if (typeof replacerFn === 'function') {
       replacerFn(replacedService);
