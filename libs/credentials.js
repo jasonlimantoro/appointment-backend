@@ -19,7 +19,8 @@ export const getServiceWithAssumedCredentials = async (
       accessKeyId: Credentials.AccessKeyId,
       secretAccessKey: Credentials.SecretAccessKey,
       sessionToken: Credentials.SessionToken,
-      ...(process.env.IS_OFFLINE && {
+      ...(process.env.IS_OFFLINE
+        && Service.indexOf('DynamoDB') !== -1 && {
         endpoint: 'http://localhost:8000',
         region: 'localhost',
       }),
