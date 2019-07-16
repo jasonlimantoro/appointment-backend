@@ -183,3 +183,18 @@ Object {
   },
 }
 `;
+
+exports[`Entry Schema listOngoingEntry: should work 1`] = `
+Object {
+  "data": Object {
+    "listOngoingEntry": Array [],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

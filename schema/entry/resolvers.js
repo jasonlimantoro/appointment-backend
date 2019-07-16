@@ -26,6 +26,17 @@ const resolvers = {
         context.dataSources.entryAPI.replaceDataSource(service);
       },
     ),
+    listOngoingEntry: (_source, args, context) => checkAuthentication(
+      context,
+      async () => {
+        const res = await context.dataSources.entryAPI.onGoing();
+        return res;
+      },
+      'DynamoDB.DocumentClient',
+      service => {
+        context.dataSources.entryAPI.replaceDataSource(service);
+      },
+    ),
     getEntry: (_source, args, context) => checkAuthentication(
       context,
       async () => context.dataSources.entryAPI.get(args.id),

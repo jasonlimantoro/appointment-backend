@@ -10,6 +10,8 @@ Resources:
           AttributeType: S
         - AttributeName: createdAt
           AttributeType: S
+        - AttributeName: status
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
@@ -20,6 +22,18 @@ Resources:
         - IndexName: guestId-index
           KeySchema:
             - AttributeName: guestId
+              KeyType: HASH
+            - AttributeName: createdAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+
+        - IndexName: status-index
+          KeySchema:
+            - AttributeName: status
               KeyType: HASH
             - AttributeName: createdAt
               KeyType: RANGE

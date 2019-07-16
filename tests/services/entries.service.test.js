@@ -72,6 +72,7 @@ describe('Entry Service', () => {
     expect(mockPut).toBeCalledWith({
       Item: {
         id: 'some-id',
+        status: 'ONGOING',
         see: attributes.see,
         guestId: attributes.guestId,
         createdAt: 'some-date',
@@ -93,9 +94,13 @@ describe('Entry Service', () => {
     expect(res).toEqual(mockEntries[3]);
     expect(mockUpdate.mock.calls[0][0]).toMatchObject({
       Key: { id: mockEntries[3].id },
-      UpdateExpression: 'set endedAt = :now',
+      UpdateExpression: 'set endedAt = :now, #stats = :finished',
+      ExpressionAttributeNames: {
+        '#stats': 'status',
+      },
       ExpressionAttributeValues: {
         ':now': 'some-date',
+        ':finished': 'FINISHED',
       },
       ConditionExpression: 'attribute_not_exists(endedAt)',
       ReturnValues: 'ALL_NEW',

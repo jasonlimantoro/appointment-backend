@@ -38,6 +38,7 @@ export default class Seeder {
     id: faker.random.uuid(),
     see: faker.name.findName(),
     createdAt: humanFormat(faker.date.past(1, '2019-08-01')),
+    status: ended ? 'FINISHED' : 'ONGOING',
     guestId: guestId || faker.finance.account(16),
     userId: userId || faker.random.uuid(),
     endedAt: ended ? humanFormat(faker.date.future(1, '2019-08-01')) : null,

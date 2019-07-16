@@ -1,5 +1,6 @@
 import uuid from 'uuid';
-import { humanFormat } from '../libs/datetime';
+import moment from 'moment';
+import { humanFormat, commonFormat } from '../libs/datetime';
 
 import BaseService from './base';
 
@@ -26,6 +27,7 @@ class EntryService extends BaseService {
         see,
         guestId,
         userId,
+        status: 'ONGOING',
         createdAt: humanFormat(new Date()),
       },
     });
@@ -33,9 +35,13 @@ class EntryService extends BaseService {
 
   end = async id => this._util.update({
     Key: { id },
-    UpdateExpression: 'set endedAt = :now',
+    UpdateExpression: 'set endedAt = :now, #stats = :finished',
+    ExpressionAttributeNames: {
+      '#stats': 'status',
+    },
     ExpressionAttributeValues: {
       ':now': humanFormat(new Date()),
+      ':finished': 'FINISHED',
     },
     ConditionExpression: 'attribute_not_exists(endedAt)',
     ReturnValues: 'ALL_NEW',
@@ -49,6 +55,31 @@ class EntryService extends BaseService {
     },
     ScanIndexForward: false,
   });
+
+  onGoing = () => {
+    const midnight = moment()
+      .hours(0)
+      .minutes(0)
+      .format(commonFormat);
+    const later = moment()
+      .hours(23)
+      .minutes(59)
+      .format(commonFormat);
+    return this._util.where({
+      IndexName: 'status-index',
+      KeyConditionExpression:
+        '#stats = :onGoing AND createdAt BETWEEN :start AND :end',
+      ExpressionAttributeNames: {
+        '#stats': 'status',
+      },
+      ExpressionAttributeValues: {
+        ':start': midnight,
+        ':end': later,
+        ':onGoing': 'ONGOING',
+      },
+      ScanIndexForward: false,
+    });
+  };
 }
 
 export default EntryService;

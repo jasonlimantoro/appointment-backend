@@ -22,7 +22,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
-  spiedJwtVerification.mockClear();
+  spiedJwtVerification.mockReset();
 });
 describe('Entry Schema', () => {
   it('listEntry: should work', async () => {
@@ -105,6 +105,24 @@ describe('Entry Schema', () => {
     expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].NIK);
     expect(resolverUtils.filterToday).toBeCalledWith(byGuestId);
     expect(res).toMatchSnapshot();
+  });
+
+  it('listOngoingEntry: should work', async () => {
+    const { query, entryAPI } = createTestClientAndServer();
+    const LIST_ONGOING = gql`
+      query {
+        listOngoingEntry {
+          see
+          id
+          createdAt
+        }
+      }
+    `;
+    entryAPI.onGoing = jest.fn().mockResolvedValue([]);
+    spiedJwtVerification.mockResolvedValueOnce(true);
+    const res = await query({ query: LIST_ONGOING });
+    expect(res).toMatchSnapshot();
+    expect(entryAPI.onGoing).toBeCalled();
   });
 
   it('createEntry: should work', async () => {
