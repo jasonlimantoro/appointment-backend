@@ -4,7 +4,7 @@ const typeDefs = gql`
   type Entry {
     id: String!
     see: String!
-    createdAt: String!
+    createdAt: String! @date
     endedAt: String
     Guest: Guest!
     photo: [Photo!]!

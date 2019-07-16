@@ -45,7 +45,7 @@ describe('Entry Schema', () => {
             id
           }
           see
-          createdAt
+          createdAt(format: "YYYY-MM-DD HH:MM")
           endedAt
         }
       }

@@ -1,6 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
-import root from './root';
 import { resolvers as entryResolver, typeDefs as entryTypeDefs } from './entry';
 import { resolvers as guestResolver, typeDefs as guestTypeDefs } from './guest';
 import { resolvers as authResolver, typeDefs as authTypeDefs } from './auth';
@@ -13,15 +12,16 @@ import {
   resolvers as photoResolver,
   typeDefs as photoTypeDefs,
 } from './photos';
+import { typeDefs as directiveTypeDefs, DateDirective } from './directives';
 
 const typeDefs = [
-  root,
   entryTypeDefs,
   guestTypeDefs,
   authTypeDefs,
   sessionTypeDefs,
   uploadTypeDefs,
   photoTypeDefs,
+  directiveTypeDefs,
 ];
 const resolvers = [
   entryResolver,
@@ -35,4 +35,7 @@ export { typeDefs, resolvers };
 export default makeExecutableSchema({
   typeDefs: mergeTypes(typeDefs),
   resolvers: mergeResolvers(resolvers),
+  schemaDirectives: {
+    date: DateDirective,
+  },
 });
