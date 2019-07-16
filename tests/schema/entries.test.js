@@ -125,6 +125,31 @@ describe('Entry Schema', () => {
     expect(entryAPI.onGoing).toBeCalled();
   });
 
+  it('Entry can automatically sign the photos url', async () => {
+    const { query, entryAPI, uploadAPI } = createTestClientAndServer();
+    const QUERY = gql`
+      query {
+        listOngoingEntry {
+          see
+          id
+          photo {
+            signedUrl(permissions: [GET]) {
+              get
+            }
+          }
+        }
+      }
+    `;
+    uploadAPI.sign = jest
+      .fn()
+      .mockResolvedValue({ signedRequest: 'signed-request-for-get' });
+    entryAPI.onGoing = jest.fn().mockResolvedValue(_.take(mockedEntries, 1));
+    spiedJwtVerification.mockResolvedValueOnce(true);
+    const res = await query({ query: QUERY });
+    expect(res).toMatchSnapshot();
+    expect(uploadAPI.sign).toBeCalled();
+  });
+
   it('createEntry: should work', async () => {
     const { mutate, entryAPI, guestAPI } = createTestClientAndServer();
     const attributes = {
