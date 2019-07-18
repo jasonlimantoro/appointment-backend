@@ -1,5 +1,5 @@
-import Auth from '@aws-amplify/auth';
 import AWS from 'aws-sdk';
+import CustomAuth from '../../libs/auth';
 import { AuthService } from '../../services';
 import mockUser from '../../fixtures/users';
 
@@ -15,23 +15,19 @@ AWS.config.credentials = {
 describe('Auth Service', () => {
   it('login: should get the token', async () => {
     const CognitoUser = {
-      signInUserSession: {
-        idToken: {
-          jwtToken: 'some-token',
-        },
+      idToken: {
+        jwtToken: 'some-token',
       },
     };
-    Auth.signIn = jest.fn().mockResolvedValue(CognitoUser);
-    const JWTSelector = jest.spyOn(AuthService, 'getJWTFromCognitoUser');
+    CustomAuth.login = jest.fn().mockResolvedValue(CognitoUser);
 
     const res = await service.login(mockUser);
     // Sign in using amplify
-    expect(Auth.signIn).toBeCalledWith(mockUser.username, mockUser.password);
+    expect(CustomAuth.login).toBeCalledWith({
+      username: mockUser.username,
+      password: mockUser.password,
+    });
 
-    // check the jwt selector
-    expect(JWTSelector)
-      .toBeCalledWith(CognitoUser)
-      .toReturnWith('some-token');
     expect(res).toEqual('some-token');
   });
 });

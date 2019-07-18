@@ -1,32 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Entry Schema Entry can automatically sign the photos url 1`] = `
-Object {
-  "data": Object {
-    "listOngoingEntry": Array [
-      Object {
-        "id": "9fd5fd11-603e-47e8-b104-de39071c7b80",
-        "photo": Array [
-          Object {
-            "signedUrl": Object {
-              "get": "signed-request-for-get",
-            },
-          },
-        ],
-        "see": "Derrick Smitham",
-      },
-    ],
-  },
-  "errors": undefined,
-  "extensions": undefined,
-  "http": Object {
-    "headers": Headers {
-      Symbol(map): Object {},
-    },
-  },
-}
-`;
-
 exports[`Entry Schema createEntry: should work 1`] = `
 Object {
   "data": Object {

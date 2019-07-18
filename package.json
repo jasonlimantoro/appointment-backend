@@ -47,6 +47,8 @@
     "@aws-amplify/auth": "^1.2.25",
     "@aws-amplify/core": "^1.0.28",
     "@babel/runtime": "^7.4.5",
+    "amazon-cognito-identity-js": "^3.0.13",
+    "apollo-errors": "^1.9.0",
     "apollo-server-lambda": "^2.6.4",
     "appointment-common": "^1.0.1",
     "aws-sdk": "^2.473.0",

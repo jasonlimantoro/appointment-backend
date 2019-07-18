@@ -1,12 +1,18 @@
 import moment from 'moment';
+import AWS from 'aws-sdk';
 import Auth from '@aws-amplify/auth';
 import mime from 'mime-types';
 import { getNestedObjectValue } from 'appointment-common';
 import CustomAuth from './auth';
 import { getServiceWithAssumedCredentials } from './credentials';
-import { AuthenticationError, AuthorizationError } from './errors';
+import {
+  AuthenticationError,
+  AuthorizationError,
+  ApolloTokenExpiredError,
+} from './errors';
 import { transformObjectKeysToLower } from './helpers';
 import { humanFormat } from './datetime';
+import config from '../config/aws-exports';
 
 /**
  * Authenticates request using the JWT token in the header
@@ -44,7 +50,22 @@ export const checkAuthentication = async (
   } catch (e) {
     // eslint-disable-next-line
     console.log(`Received Header: ${JSON.stringify(context.headers, null, 2)}`);
-    throw new AuthenticationError(e.message);
+    if (e instanceof ApolloTokenExpiredError) {
+      const claim = e.data.claims;
+      const session = await CustomAuth.refresh(claim);
+      const refreshedToken = session.getIdToken().getJwtToken();
+      const credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: config.Auth.identityPoolId,
+        Logins: {
+          [config.providerName]: token,
+        },
+      });
+      AWS.config.update({ credentials });
+      AWS.config.credentials.refreshPromise();
+      context.headers.authorization = refreshedToken;
+    } else {
+      throw new AuthenticationError(e.message);
+    }
   }
 };
 

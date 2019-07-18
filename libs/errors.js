@@ -1,3 +1,5 @@
+import { createError } from 'apollo-errors';
+
 class BaseError extends Error {
   constructor(message) {
     super(message);
@@ -51,6 +53,9 @@ class LogoutError extends BaseError {
     super(message);
   }
 }
+const ApolloTokenExpiredError = createError('Token Expired', {
+  message: 'Token has expired',
+});
 
 export {
   PublicKeyNotFoundError,
@@ -61,4 +66,5 @@ export {
   LogoutError,
   InvalidArgumentError,
   NotImplementedError,
+  ApolloTokenExpiredError,
 };

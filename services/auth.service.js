@@ -1,26 +1,15 @@
 import AWS from 'aws-sdk';
-import Auth from '@aws-amplify/auth';
-import fs from 'fs';
 import { getNestedObjectValue } from 'appointment-common';
 import config from '../config/aws-exports';
 import { AuthenticationError } from '../libs/errors';
+import CustomAuth from '../libs/auth';
 
 class AuthService {
-  static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)([
-    'signInUserSession',
-    'idToken',
-    'jwtToken',
-  ]);
+  static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)(['idToken', 'jwtToken']);
 
   login = async ({ username, password }) => {
     try {
-      const res = await Auth.signIn(username, password);
-      if (process.env.NODE_ENV === 'development') {
-        fs.writeFileSync(
-          './fixtures/cognito-user.json',
-          JSON.stringify(res, null, 2),
-        );
-      }
+      const res = await CustomAuth.login({ username, password });
       const token = this.constructor.getJWTFromCognitoUser(res);
       const credentials = new AWS.CognitoIdentityCredentials({
         IdentityPoolId: config.Auth.identityPoolId,
@@ -28,6 +17,7 @@ class AuthService {
           [config.providerName]: token,
         },
       });
+      AWS.config.region = config.Auth.region;
       AWS.config.credentials = credentials;
       return token;
     } catch (e) {
@@ -36,8 +26,8 @@ class AuthService {
   };
 
   logout = async () => {
-    await Auth.signOut();
-    AWS.config.credentials = {};
+    // await CustomAuth.logout();
+    delete AWS.config.credentials.params.Logins;
   };
 }
 

@@ -34,14 +34,12 @@ describe('Authentication', () => {
       sub: 'uuid-user',
     };
     const mockCognito = {
-      signInUserSession: {
-        idToken: {
-          jwtToken: 'some-token',
-        },
+      idToken: {
+        jwtToken: 'some-token',
       },
     };
     const { mutate, authAPI, sessionAPI } = createTestClientAndServer();
-    Auth.signIn = jest.fn().mockResolvedValue(mockCognito);
+    CustomAuth.login = jest.fn().mockResolvedValue(mockCognito);
     uuid.v1 = jest.fn().mockReturnValue('some-unique-id');
     jwt.decode = jest.fn().mockReturnValue(decoded);
     const spiedLogin = jest.spyOn(authAPI, 'login');
@@ -61,9 +59,7 @@ describe('Authentication', () => {
     expect(res).toMatchSnapshot();
     expect(spiedEncryption).toBeCalledWith('some-unique-id');
     expect(spiedLogin).toBeCalledWith(mockUser[0]);
-    expect(jwt.decode).toBeCalledWith(
-      mockCognito.signInUserSession.idToken.jwtToken,
-    );
+    expect(jwt.decode).toBeCalledWith(mockCognito.idToken.jwtToken);
     expect(spiedSessionCreation).toBeCalledWith({ userId: decoded.sub });
   });
 
