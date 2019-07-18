@@ -30,71 +30,99 @@ describe('Entry Schema', () => {
       query, entryAPI, guestAPI, photoAPI,
     } = createTestClientAndServer();
     spiedJwtVerification.mockResolvedValueOnce(true);
-    entryAPI.list = jest.fn().mockResolvedValue(_.take(mockedEntries, 3));
+    entryAPI.list = jest
+      .fn()
+      .mockResolvedValue({ Items: _.take(mockedEntries, 3), Count: 3 });
     guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
     photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
     const LIST_ENTRY = gql`
       query {
-        listEntry {
-          Guest {
-            firstName
-            lastName
-            NIK
+        listEntry(paginate: { first: 15, after: "some-id" }) {
+          edges {
+            node {
+              Guest {
+                firstName
+                lastName
+                NIK
+              }
+              photo {
+                id
+              }
+              id
+              see
+              createdAt(format: "YYYY-MM-DD HH:MM")
+              endedAt
+            }
+            cursor
           }
-          photo {
-            id
+          pagination {
+            hasNext
+            count
           }
-          see
-          createdAt(format: "YYYY-MM-DD HH:MM")
-          endedAt
         }
       }
     `;
     const res = await query({ query: LIST_ENTRY });
-    expect(res).toMatchSnapshot();
-    expect(spiedJwtVerification).toBeCalled();
-    expect(entryAPI.list).toBeCalled();
-    expect(photoAPI.byEntry).toBeCalled();
+    expect(res.errors).toBeUndefined();
+    expect(entryAPI.list).toBeCalledWith({ first: 15, after: 'some-id' });
   });
 
   it('listEntryToday: should work', async () => {
     const { query, entryAPI } = createTestClientAndServer();
     const LIST_TODAY_ENTRY = gql`
       query {
-        listTodayEntry {
-          Guest {
-            firstName
-            lastName
-            NIK
+        listTodayEntry(paginate: { after: "some-id" }) {
+          edges {
+            node {
+              Guest {
+                firstName
+                lastName
+                NIK
+              }
+              see
+              createdAt
+              endedAt
+            }
           }
-          see
-          createdAt
-          endedAt
+          pagination {
+            hasNext
+            count
+          }
         }
       }
     `;
     spiedJwtVerification.mockResolvedValueOnce(true);
-    entryAPI.list = jest.fn().mockResolvedValue(mockedEntries);
-    resolverUtils.filterToday = jest.fn().mockReturnValue([]);
+    entryAPI.list = jest
+      .fn()
+      .mockResolvedValue({ Items: _.take(mockedEntries, 5), Count: 5 });
+    resolverUtils.filterToday = jest
+      .fn()
+      .mockReturnValue(_.take(mockedEntries, 3));
     const res = await query({ query: LIST_TODAY_ENTRY });
-    expect(res).toMatchSnapshot();
-    expect(entryAPI.list).toBeCalled();
-    expect(resolverUtils.filterToday).toBeCalledWith(mockedEntries);
+    expect(res.errors).toBeUndefined();
+    expect(entryAPI.list).toBeCalledWith({ after: 'some-id', first: 10 });
   });
 
   it('listEntryToday: can be filtered by guestID', async () => {
     const { query, entryAPI } = createTestClientAndServer();
     const LIST_TODAY_ENTRY = gql`
       query ListTodayEntry($NIK: String) {
-        listTodayEntry(NIK: $NIK) {
-          see
-          createdAt
-          endedAt
+        listTodayEntry(NIK: $NIK, paginate: { first: 3, after: "some-id" }) {
+          edges {
+            node {
+              see
+              createdAt
+            }
+          }
+          pagination {
+            hasNext
+            count
+          }
         }
       }
     `;
     spiedJwtVerification.mockResolvedValueOnce(true);
-    const byGuestId = _.take(mockedEntries, 3);
+    const byGuestId = { Items: _.take(mockedEntries, 3), Count: 3 };
     const today = _.take(mockedEntries, 1);
     entryAPI.byGuestId = jest.fn().mockResolvedValue(byGuestId);
     resolverUtils.filterToday = jest.fn().mockReturnValue(today);
@@ -102,9 +130,12 @@ describe('Entry Schema', () => {
       query: LIST_TODAY_ENTRY,
       variables: { NIK: mockedGuest[0].NIK },
     });
-    expect(entryAPI.byGuestId).toBeCalledWith(mockedGuest[0].NIK);
-    expect(resolverUtils.filterToday).toBeCalledWith(byGuestId);
-    expect(res).toMatchSnapshot();
+    expect(res.errors).toBeUndefined();
+    expect(entryAPI.byGuestId).toBeCalledWith({
+      id: mockedGuest[0].NIK,
+      first: 3,
+      after: 'some-id',
+    });
   });
 
   it('listOngoingEntry: should work', async () => {
@@ -112,30 +143,53 @@ describe('Entry Schema', () => {
     const LIST_ONGOING = gql`
       query {
         listOngoingEntry {
-          see
-          id
-          createdAt
+          edges {
+            node {
+              see
+              id
+              createdAt
+            }
+          }
+          pagination {
+            hasNext
+            count
+          }
         }
       }
     `;
-    entryAPI.onGoing = jest.fn().mockResolvedValue([]);
+    entryAPI.onGoing = jest
+      .fn()
+      .mockResolvedValue({ Items: _.take(mockedEntries, 3), Count: 3 });
     spiedJwtVerification.mockResolvedValueOnce(true);
     const res = await query({ query: LIST_ONGOING });
-    expect(res).toMatchSnapshot();
+    expect(res.errors).toBeUndefined();
     expect(entryAPI.onGoing).toBeCalled();
   });
 
   it('Entry can automatically sign the photos url', async () => {
-    const { query, entryAPI, uploadAPI } = createTestClientAndServer();
+    const {
+      query,
+      entryAPI,
+      uploadAPI,
+      photoAPI,
+    } = createTestClientAndServer();
     const QUERY = gql`
       query {
         listOngoingEntry {
-          see
-          id
-          photo {
-            signedUrl(permissions: [GET]) {
-              get
+          edges {
+            node {
+              see
+              id
+              photo {
+                signedUrl(permissions: [GET]) {
+                  get
+                }
+              }
             }
+          }
+          pagination {
+            hasNext
+            count
           }
         }
       }
@@ -143,10 +197,13 @@ describe('Entry Schema', () => {
     uploadAPI.sign = jest
       .fn()
       .mockResolvedValue({ signedRequest: 'signed-request-for-get' });
-    entryAPI.onGoing = jest.fn().mockResolvedValue(_.take(mockedEntries, 1));
+    entryAPI.onGoing = jest
+      .fn()
+      .mockResolvedValue({ Items: _.take(mockedEntries, 2), Count: 2 });
+    photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
     spiedJwtVerification.mockResolvedValueOnce(true);
-    await query({ query: QUERY });
-    // expect(res).toMatchSnapshot();
+    const res = await query({ query: QUERY });
+    expect(res.errors).toBeUndefined();
     expect(uploadAPI.sign).toBeCalled();
   });
 

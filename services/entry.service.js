@@ -11,7 +11,10 @@ class EntryService extends BaseService {
     super({ tableName });
   }
 
-  list = () => this._util.list();
+  list = ({ first, after } = {}) => this._util.list({
+    ...(after && { ExclusiveStartKey: { id: after } }),
+    Limit: first,
+  });
 
   get = id => this._util.get({ key: { id } });
 
@@ -47,13 +50,27 @@ class EntryService extends BaseService {
     ReturnValues: 'ALL_NEW',
   });
 
-  byGuestId = id => this._util.where({
+  byGuestId = ({ id, first, after }) => this._util.where({
     IndexName: 'guestId-index',
     KeyConditionExpression: 'guestId = :guestId',
     ExpressionAttributeValues: {
       ':guestId': id,
     },
+    ExclusiveStartKey: after,
+    Limit: first,
     ScanIndexForward: false,
+  });
+
+  createdAt = creationDate => this._util.where({
+    IndexName: 'status-index',
+    KeyConditionExpression: '#stats = :onGoing AND createdAt = :creationDate',
+    ExpressionAttributeNames: {
+      '#stats': 'status',
+    },
+    ExpressionAttributeValues: {
+      ':onGoing': 'FINISHED',
+      ':creationDate': creationDate,
+    },
   });
 
   onGoing = () => {

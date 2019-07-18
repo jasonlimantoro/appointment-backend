@@ -1,25 +1,46 @@
-import { checkAuthentication, filterToday } from '../../libs/resolverUtils';
+import {
+  checkAuthentication,
+  filterToday,
+  paginate,
+} from '../../libs/resolverUtils';
 
 const resolvers = {
   Query: {
-    listEntry: (_source, _args, context) => checkAuthentication(
+    listEntry: (_source, { paginate: { first, after } = {} }, context) => checkAuthentication(
       context,
-      async () => context.dataSources.entryAPI.list(),
+      async () => {
+        const res = await context.dataSources.entryAPI.list({
+          first,
+          after,
+        });
+        const paginated = paginate(res, item => item.createdAt);
+        return paginated;
+      },
       'DynamoDB.DocumentClient',
       service => {
         context.dataSources.entryAPI.replaceDataSource(service);
       },
     ),
-    listTodayEntry: (_source, args, context) => checkAuthentication(
+    listTodayEntry: (
+      _source,
+      { NIK, paginate: { first, after } = {} },
+      context,
+    ) => checkAuthentication(
       context,
       async () => {
         let res;
-        if (args.NIK) {
-          res = await context.dataSources.entryAPI.byGuestId(args.NIK);
+        if (NIK) {
+          res = await context.dataSources.entryAPI.byGuestId({
+            id: NIK,
+            first,
+            after,
+          });
         } else {
-          res = await context.dataSources.entryAPI.list();
+          res = await context.dataSources.entryAPI.list({ first, after });
         }
-        return filterToday(res);
+        res.Items = filterToday(res.Items);
+        const paginated = paginate(res, item => item.createdAt);
+        return paginated;
       },
       'DynamoDB.DocumentClient',
       service => {
@@ -30,7 +51,8 @@ const resolvers = {
       context,
       async () => {
         const res = await context.dataSources.entryAPI.onGoing();
-        return res;
+        const paginated = paginate(res, item => item.createdAt);
+        return paginated;
       },
       'DynamoDB.DocumentClient',
       service => {

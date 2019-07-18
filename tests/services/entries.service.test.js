@@ -44,6 +44,15 @@ describe('Entry Service', () => {
     expect(mockList).toBeCalled();
     expect(res).toEqual(_.take(mockEntries, 3));
   });
+  it('list: should work with pagination', async () => {
+    mockList.mockResolvedValue(_.take(mockEntries, 3));
+    const res = await service.list({ first: 2, after: 'some-id' });
+    expect(mockList).toBeCalledWith({
+      ExclusiveStartKey: { id: 'some-id' },
+      Limit: 2,
+    });
+    expect(res).toEqual(_.take(mockEntries, 3));
+  });
 
   it('get: should work', async () => {
     mockGet.mockResolvedValue(mockEntries[0]);
@@ -117,7 +126,7 @@ describe('Entry Service', () => {
 
   it('byGuestId: should work', async () => {
     mockWhere.mockResolvedValue(_.take(mockEntries, 4));
-    const res = await service.byGuestId(mockGuests[1].NIK);
+    const res = await service.byGuestId({ id: mockGuests[1].NIK });
 
     expect(res).toEqual(_.take(mockEntries, 4));
     expect(mockWhere.mock.calls[0][0]).toMatchObject({

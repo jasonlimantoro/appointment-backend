@@ -20,7 +20,7 @@ export default class ModelService {
       ...rest,
     })
     .promise()
-    .then(r => r.Items);
+    .then(r => r);
 
   update = ({ key, ...rest }) => this.dataSource
     .update({ TableName: this.tableName, Key: key, ...rest })
@@ -33,5 +33,5 @@ export default class ModelService {
       ...rest,
     })
     .promise()
-    .then(r => r.Items);
+    .then(r => r);
 }

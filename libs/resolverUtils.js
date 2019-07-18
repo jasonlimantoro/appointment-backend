@@ -136,3 +136,18 @@ export const getAPIRequestId = context => getNestedObjectValue(context)(['contex
 export const constructFileName = ({ prefix = '', fileName, fileType } = {}) => `${prefix}/${humanFormat(new Date())}-${fileName}.${mime.extension(
   fileType,
 )}`;
+
+export const paginate = (res, itemToCursor) => {
+  const edges = res.Items.map(item => ({
+    node: item,
+    cursor: itemToCursor(item),
+  }));
+  const pagination = {
+    hasNext: !!res.LastEvaluatedKey,
+    count: res.Count,
+  };
+  return {
+    edges,
+    pagination,
+  };
+};
