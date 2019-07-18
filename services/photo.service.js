@@ -17,13 +17,13 @@ export default class PhotoService extends BaseService {
   });
 
   byEntry = async entryId => {
-    const res = this._util.where({
+    const res = await this._util.where({
       IndexName: 'entryId-index',
       KeyConditionExpression: 'entryId = :entryId',
       ExpressionAttributeValues: {
         ':entryId': entryId,
       },
     });
-    return res;
+    return res.Item;
   };
 }

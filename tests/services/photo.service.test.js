@@ -1,5 +1,4 @@
 import { PhotoService } from '../../services';
-import mockEntries from '../../fixtures/entries';
 import Seeder from '../../libs/seeder';
 import * as datetimeUtils from '../../libs/datetime';
 import ModelService, * as mocked from '../../services/model.service';
@@ -36,7 +35,7 @@ describe('Photo service', () => {
   it('byEntry: should work', async () => {
     const NIKPhoto = Seeder.photo('some-id');
     const PersonPhoto = Seeder.photo('some-id');
-    mocked.mockWhere.mockResolvedValue([NIKPhoto, PersonPhoto]);
+    mocked.mockWhere.mockResolvedValue({ Item: [NIKPhoto, PersonPhoto] });
     const res = await service.byEntry('some-id');
     expect(mocked.mockWhere).toBeCalledWith({
       IndexName: 'entryId-index',
