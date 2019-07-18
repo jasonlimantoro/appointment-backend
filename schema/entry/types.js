@@ -9,7 +9,7 @@ const typeDefs = gql`
     id: String!
     see: String!
     createdAt: String! @date
-    endedAt: String
+    endedAt: String @date
     status: Status
     Guest: Guest!
     photo: [Photo!]!
