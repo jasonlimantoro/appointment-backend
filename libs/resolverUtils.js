@@ -57,15 +57,19 @@ export const checkAuthentication = async (
       const credentials = new AWS.CognitoIdentityCredentials({
         IdentityPoolId: config.Auth.identityPoolId,
         Logins: {
-          [config.providerName]: token,
+          [config.providerName]: refreshedToken,
         },
       });
       AWS.config.update({ credentials });
       AWS.config.credentials.refreshPromise();
       context.headers.authorization = refreshedToken;
-    } else {
-      throw new AuthenticationError(e.message);
+      return controller.apply(this, [
+        ...params,
+        session.getIdToken().payload,
+        context,
+      ]);
     }
+    throw new AuthenticationError(e.message);
   }
 };
 
