@@ -12,6 +12,7 @@ class DateDirective extends SchemaDirectiveVisitor {
     });
     field.resolve = async (source, { format, ...restArgs }, context, info) => {
       const date = await resolve.call(this, source, restArgs, context, info);
+      if (!date) return date;
       return moment(date).format(format || defaultFormat);
     };
   }
