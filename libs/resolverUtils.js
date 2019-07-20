@@ -114,9 +114,7 @@ export const filterToday = list => {
   const later = moment()
     .hours(23)
     .minutes(59);
-  return list.filter(
-    ({ createdAt, endedAt }) => !endedAt && moment(createdAt).isBetween(midnight, later),
-  );
+  return list.filter(({ createdAt }) => moment(createdAt).isBetween(midnight, later));
 };
 
 /**

@@ -34,15 +34,18 @@ export default class Seeder {
     email: faker.internet.email(),
   });
 
-  static entry = (guestId, userId, ended = true) => ({
-    id: faker.random.uuid(),
-    see: faker.name.findName(),
-    createdAt: humanFormat(faker.date.past(1, '2019-08-01')),
-    status: ended ? 'FINISHED' : 'ONGOING',
-    guestId: guestId || faker.finance.account(16),
-    userId: userId || faker.random.uuid(),
-    endedAt: ended ? humanFormat(faker.date.future(1, '2019-08-01')) : null,
-  });
+  static entry = (guestId, userId, ended = false) => {
+    const isEnded = ended || faker.random.arrayElement([false, true]);
+    return {
+      id: faker.random.uuid(),
+      see: faker.name.findName(),
+      createdAt: humanFormat(faker.date.recent(0.1)),
+      status: isEnded ? 'FINISHED' : 'ONGOING',
+      guestId: guestId || faker.finance.account(16),
+      userId: userId || faker.random.uuid(),
+      endedAt: isEnded ? humanFormat(faker.date.future(0.1)) : null,
+    };
+  };
 
   static photo = (entryId, createdAt) => ({
     id: faker.random.uuid(),

@@ -39,6 +39,7 @@ const resolvers = {
           res = await context.dataSources.entryAPI.list({ first, after });
         }
         res.Items = filterToday(res.Items);
+        res.Count = res.Items.length;
         const paginated = paginate(res, item => item.createdAt);
         return paginated;
       },
