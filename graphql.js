@@ -2,6 +2,7 @@ import { ApolloServer } from 'apollo-server-lambda';
 import Amplify from '@aws-amplify/core';
 import AWSConfiguration from './config/aws-exports';
 import schema from './schema';
+import './config/init';
 import {
   GuestService,
   EntryService,
