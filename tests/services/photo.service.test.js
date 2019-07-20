@@ -35,7 +35,7 @@ describe('Photo service', () => {
   it('byEntry: should work', async () => {
     const NIKPhoto = Seeder.photo('some-id');
     const PersonPhoto = Seeder.photo('some-id');
-    mocked.mockWhere.mockResolvedValue({ Item: [NIKPhoto, PersonPhoto] });
+    mocked.mockWhere.mockResolvedValue({ Items: [NIKPhoto, PersonPhoto] });
     const res = await service.byEntry('some-id');
     expect(mocked.mockWhere).toBeCalledWith({
       IndexName: 'entryId-index',

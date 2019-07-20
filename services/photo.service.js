@@ -24,6 +24,6 @@ export default class PhotoService extends BaseService {
         ':entryId': entryId,
       },
     });
-    return res.Item;
+    return res.Items;
   };
 }
