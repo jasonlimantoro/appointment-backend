@@ -102,4 +102,21 @@ describe('Authentication', () => {
     });
     expect(res).toMatchSnapshot();
   });
+
+  it('refreshToken: should work', async () => {
+    const { query, authAPI } = createTestClientAndServer();
+    const REFRESH = gql`
+      query RefreshToken($cognitoUsername: String!) {
+        refreshToken(cognitoUsername: $cognitoUsername) {
+          token
+        }
+      }
+    `;
+    authAPI.refresh = jest.fn().mockResolvedValue('refresh-token');
+    const res = await query({
+      query: REFRESH,
+      variables: { cognitoUsername: 'some-username' },
+    });
+    expect(res.errors).toBeUndefined();
+  });
 });

@@ -42,6 +42,20 @@ const resolvers = {
       service => context.dataSources.sessionAPI.replaceDataSource(service),
     ),
   },
+  Query: {
+    refreshToken: async (_source, { cognitoUsername }, context) => {
+      try {
+        const refreshedToken = await context.dataSources.authAPI.refresh(
+          cognitoUsername,
+        );
+        return {
+          token: refreshedToken,
+        };
+      } catch (e) {
+        throw new Error(e.message);
+      }
+    },
+  },
   Session: {
     id: source => Buffer.from(source.id).toString('base64'),
   },

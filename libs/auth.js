@@ -51,17 +51,15 @@ class Auth {
     });
   });
 
-  static getSessionPromise = ({ userData } = {}) => new Promise((resolve, reject) => {
-    const cognitoUser = new CognitoUser(userData);
-    cognitoUser.getSession((err, session) => {
+  static getSessionPromise = () => new Promise((resolve, reject) => {
+    this.cognitoUser.getSession((err, session) => {
       if (err) reject(err);
       resolve(session);
     });
   });
 
-  static refreshSessionPromise = ({ userData, refreshToken } = {}) => new Promise((resolve, reject) => {
-    const cognitoUser = new CognitoUser(userData);
-    cognitoUser.refreshSession(refreshToken, (err, session) => {
+  static refreshSessionPromise = ({ refreshToken } = {}) => new Promise((resolve, reject) => {
+    this.cognitoUser.refreshSession(refreshToken, (err, session) => {
       if (err) reject(err);
       resolve(session);
     });
@@ -77,7 +75,7 @@ class Auth {
       authenticationDetails,
       cognitoUser,
     });
-    this.cognitoUser = user;
+    this.cognitoUser = cognitoUser;
     return user;
   };
 
@@ -94,10 +92,11 @@ class Auth {
 
   static refresh = async claim => {
     const userData = {
-      Username: claim['cognito:username'],
+      Username: claim['cognito:username'] || claim.cognitoUsername,
       Pool: userPool,
     };
-    const session = await this.getSessionPromise({ userData });
+    this.cognitoUser = new CognitoUser(userData);
+    const session = await this.getSessionPromise();
     const refreshToken = session.getRefreshToken();
     const refreshedSession = await this.refreshSessionPromise({
       userData,

@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth refreshToken: should work 1`] = `
+CognitoUserSession {
+  "accessToken": "dummy-accessToken",
+  "getRefreshToken": [MockFunction],
+  "idToken": "dummy-idToken",
+  "refreshToken": "dummy-refreshToken",
+}
+`;

@@ -5,9 +5,15 @@ const typeDefs = gql`
     session: Session!
     token: String!
   }
+  type RefreshPayload {
+    token: String!
+  }
   type Mutation {
     login(username: String!, password: String!): LoginPayload!
     logout(sessionId: String!): Boolean!
+  }
+  type Query {
+    refreshToken(cognitoUsername: String!): RefreshPayload!
   }
 `;
 

@@ -29,6 +29,20 @@ class AuthService {
     // await CustomAuth.logout();
     delete AWS.config.credentials.params.Logins;
   };
+
+  refresh = async cognitoUsername => {
+    const session = await CustomAuth.refresh({ cognitoUsername });
+    const refreshedToken = session.getIdToken().getJwtToken();
+    const credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: config.Auth.identityPoolId,
+      Logins: {
+        [config.providerName]: refreshedToken,
+      },
+    });
+    AWS.config.update({ credentials });
+    AWS.config.credentials.refreshPromise();
+    return refreshedToken;
+  };
 }
 
 export default AuthService;
