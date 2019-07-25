@@ -9,6 +9,7 @@ plugins:
   - serverless-offline
 custom:
   stage: ${self:provider.stage}
+  secrets: ${file(secrets.yml)}
   tableThroughputs:
     prod: 5
     default: 1
@@ -42,9 +43,17 @@ custom:
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
-  region: ${opt:region, 'us-east-1'} # Overwrite the default region used. Default is us-east-1
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
   environment: ${file(env.yml):${self:provider.stage}}
+  vpc:
+    securityGroupIds:
+      - ${self:custom.secrets.SECURITY_GROUP_ID}
+    subnetIds:
+      - ${self:custom.secrets.SUBNET1_ID}
+      - ${self:custom.secrets.SUBNET2_ID}
+      - ${self:custom.secrets.SUBNET3_ID}
+      - ${self:custom.secrets.SUBNET4_ID}
 
   iamRoleStatements:
     - Effect: Allow
@@ -65,6 +74,14 @@ functions:
           path: graphql
           method: get
           cors: true
+  healthCheck:
+    handler: healthCheck.handler
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+
 resources:
   # Dynamodb
   - ${file(resources/dynamodb.yml)}

@@ -1,5 +1,7 @@
 webpack:
   webpackConfig: ./webpack.config.js
-  includeModules: true
+  includeModules:
+    forceInclude:
+      - mysql2
   keepOutputDirectory: true
   packager: yarn

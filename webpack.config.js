@@ -4,6 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = {
   entry: {
     graphql: ['./libs/polyfill.js', './graphql.js'],
+    healthCheck: './healthCheck.js',
   },
   target: 'node',
   // Generate sourcemaps for proper error messages
