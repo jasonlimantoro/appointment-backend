@@ -18,11 +18,11 @@ Amplify.configure(AWSConfiguration);
 const server = new ApolloServer({
   schema,
   formatError: error => {
-    console.log(error);
+    console.log(new Date(), error);
     return error;
   },
   formatResponse: response => {
-    console.log(response);
+    console.log(new Date(), response);
     return response;
   },
   dataSources: () => ({
