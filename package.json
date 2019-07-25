@@ -7,6 +7,7 @@
     "test": "jest --no-cache",
     "test:watch": "yarn test --watch",
     "offline": "webpack --config webpack.seed.js && sls offline start --dontPrintOutput",
+    "offline:no-cache": "webpack --config webpack.seed.js && sls offline start --dontPrintOutput --skipCacheInvalidation",
     "deploy": "sls deploy -v"
   },
   "author": "",
@@ -20,6 +21,7 @@
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.5.5",
     "@types/jest": "^24.0.15",
     "apollo-server-testing": "^2.6.2",
     "aws-sdk-mock": "^4.5.0",
@@ -63,7 +65,10 @@
     "merge-graphql-schemas": "^1.5.8",
     "mime-types": "^2.1.24",
     "moment": "^2.24.0",
+    "mysql2": "^1.6.5",
     "node-jose": "^1.1.3",
+    "sequelize": "^5.10.1",
+    "sequelize-cli": "^5.5.0",
     "serverless-dynamodb-local": "^0.2.38",
     "source-map-support": "^0.4.18",
     "uuid": "^3.3.2"
