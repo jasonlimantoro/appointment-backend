@@ -39,8 +39,10 @@
     "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-prettier": "^3.1.0",
     "faker": "^4.1.0",
+    "husky": "^3.0.2",
     "jest": "^24.8.0",
     "jest-chain": "^1.1.2",
+    "lint-staged": "^9.2.1",
     "serverless-offline": "^3.25.6",
     "serverless-webpack": "^5.1.0",
     "webpack": "^4.16.2",
@@ -74,6 +76,13 @@
     "serverless-dynamodb-local": "^0.2.38",
     "source-map-support": "^0.4.18",
     "uuid": "^3.3.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,css}": [
+      "prettier --write --single-quote",
+      "eslint --fix",
+      "git add"
+    ]
   },
   "jest": {
     "testEnvironment": "jsdom",
