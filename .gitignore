@@ -60,3 +60,4 @@ dist/
 aws-exports.js
 cognito-user.json
 scripts/*.sh
+secrets.yml
