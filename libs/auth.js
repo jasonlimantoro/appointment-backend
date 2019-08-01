@@ -83,8 +83,8 @@ class Auth {
    * @todo: fix issue where cognitoUser is always null
    */
   static logout = () => {
-    const cognitoUser = userPool.getCurrentUser();
-    cognitoUser.globalSignOut({
+    if (this.cognitoUser === null) return;
+    this.cognitoUser.globalSignOut({
       onSuccess: res => console.log(res),
       onFailure: err => console.log(err),
     });
@@ -95,11 +95,9 @@ class Auth {
       Username: claim['cognito:username'] || claim.cognitoUsername,
       Pool: userPool,
     };
-    this.cognitoUser = new CognitoUser(userData);
     const session = await this.getSessionPromise();
     const refreshToken = session.getRefreshToken();
     const refreshedSession = await this.refreshSessionPromise({
-      userData,
       refreshToken,
     });
     return refreshedSession;

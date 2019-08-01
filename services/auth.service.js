@@ -19,6 +19,7 @@ class AuthService {
       });
       AWS.config.region = config.Auth.region;
       AWS.config.credentials = credentials;
+      await AWS.config.credentials.refreshPromise();
       return token;
     } catch (e) {
       throw new AuthenticationError(e.message);
@@ -26,7 +27,7 @@ class AuthService {
   };
 
   logout = async () => {
-    // await CustomAuth.logout();
+    await CustomAuth.logout();
     delete AWS.config.credentials.params.Logins;
   };
 
