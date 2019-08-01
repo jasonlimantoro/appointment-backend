@@ -1,6 +1,7 @@
 import uuid from 'uuid';
 import moment from 'moment';
 import { humanFormat, commonFormat } from '../libs/datetime';
+import models from '../database/models';
 
 import BaseService from './base';
 
@@ -50,16 +51,7 @@ class EntryService extends BaseService {
     ReturnValues: 'ALL_NEW',
   });
 
-  byGuestId = ({ id, first, after }) => this._util.where({
-    IndexName: 'guestId-index',
-    KeyConditionExpression: 'guestId = :guestId',
-    ExpressionAttributeValues: {
-      ':guestId': id,
-    },
-    ExclusiveStartKey: after,
-    Limit: first,
-    ScanIndexForward: false,
-  });
+  byGuestId = ({ id }) => models.entry.findAll({ where: { guestId: id } });
 
   createdAt = creationDate => this._util.where({
     IndexName: 'status-index',

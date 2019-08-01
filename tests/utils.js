@@ -1,5 +1,7 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { createTestClient } from 'apollo-server-testing';
+import map from 'lodash/map';
+import models from '../database/models';
 import schema from '../schema';
 import {
   GuestService,
@@ -49,4 +51,16 @@ export const createTestClientAndServer = ({ context = mockContext } = {}) => {
     uploadAPI,
     photoAPI,
   };
+};
+
+export const truncateDb = async model => {
+  if (model) {
+    return models[model].destroy({ where: {}, force: true });
+  }
+  return Promise.all(
+    map(Object.keys(models), key => {
+      if (['sequelize', 'Sequelize'].includes(key)) return null;
+      return models[key].destroy({ where: {}, force: true });
+    }),
+  );
 };

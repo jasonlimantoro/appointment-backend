@@ -1,26 +1,24 @@
 import BaseService from './base';
+import models from '../database/models';
 
 class GuestService extends BaseService {
   constructor({ tableName = process.env.guestsTable } = {}) {
     super({ tableName });
   }
 
-  list = async () => this._util.list();
+  list = async () => {
+    const { guest } = models;
+    return guest.findAll();
+  };
 
-  get = async id => this._util.get({
-    Key: { NIK: id },
-  });
+  get = async id => {
+    const { guest } = models;
+    return guest.findByPk(id);
+  };
 
   byName = async ({ firstName, lastName }) => {
-    const res = await this._util.where({
-      IndexName: 'firstName-index',
-      KeyConditionExpression: 'firstName = :firstName AND lastName = :lastName',
-      ExpressionAttributeValues: {
-        ':firstName': firstName,
-        ':lastName': lastName,
-      },
-    });
-    return res[0];
+    const { guest } = await models;
+    return guest.findOne({ where: { firstName, lastName } });
   };
 
   getByIds = async ids => Promise.all(ids.map(id => this.get(id)));
@@ -47,15 +45,17 @@ class GuestService extends BaseService {
 
   create = async ({
     firstName, lastName, email, company, NIK,
-  }) => this._util.put({
-    Item: {
+  }) => {
+    const { guest } = models;
+    const { dataValues } = await guest.create({
       firstName,
       lastName,
       email,
       company,
       NIK,
-    },
-  });
+    });
+    return dataValues;
+  };
 }
 
 export default GuestService;

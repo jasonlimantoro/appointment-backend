@@ -8,8 +8,7 @@ export default (sequelize, DataTypes) => {
     {},
   );
   entry.associate = models => {
-    // associations can be defined here
-    entry.belongsTo(models.guest);
+    entry.belongsTo(models.guest, { foreignKey: 'guestId' });
   };
   return entry;
 };

@@ -12,7 +12,10 @@ const resolvers = {
     ),
     getGuest: (_source, args, context) => checkAuthentication(
       context,
-      async () => context.dataSources.guestAPI.get(args.NIK),
+      async () => {
+        const res = await context.dataSources.guestAPI.get(args.NIK);
+        return res;
+      },
       'DynamoDB.DocumentClient',
       service => {
         context.dataSources.guestAPI.replaceDataSource(service);
@@ -39,8 +42,10 @@ const resolvers = {
   },
   Guest: {
     entryToday: async (source, _args, { dataSources }) => {
-      const res = await dataSources.entryAPI.byGuestId(source.NIK);
-      return filterToday(res);
+      const res = await dataSources.entryAPI.byGuestId({
+        id: source.getDataValue('NIK'),
+      });
+      return res;
     },
   },
 };

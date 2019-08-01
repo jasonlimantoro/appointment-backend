@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
     {},
   );
   guest.associate = models => {
-    guest.hasMany(models.entry);
+    guest.hasMany(models.entry, { foreignKey: 'guestId' });
   };
   return guest;
 };
