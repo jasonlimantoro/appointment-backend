@@ -1,29 +1,30 @@
 import gql from 'graphql-tag';
-import { createTestClientAndServer } from '../utils';
+import { createTestClientAndServer, truncateDb } from '../utils';
 import * as credentialUtils from '../../libs/credentials';
 import Auth from '../../libs/auth';
-import mockedGuests from '../../fixtures/guests';
-import mockedEntries from '../../fixtures/entries';
+import { entryFactory, guestFactory } from '../factories';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 credentialUtils.getServiceWithAssumedCredentials = jest
   .fn()
   .mockResolvedValue(true);
 
-beforeEach(() => {
-  spiedJwtVerification.mockRejectedValue(
-    new Error('Authenticated routes should be protected'),
-  );
-});
-afterEach(() => {
-  spiedJwtVerification.mockClear();
-});
-
 describe('Guest schema', () => {
+  beforeEach(async () => {
+    spiedJwtVerification.mockRejectedValue(
+      new Error('Authenticated routes should be protected'),
+    );
+    await truncateDb();
+  });
+  afterEach(async () => {
+    spiedJwtVerification.mockClear();
+    await truncateDb();
+  });
   it('listGuest: should work', async () => {
-    const { query, guestAPI, entryAPI } = createTestClientAndServer();
-    guestAPI.list = jest.fn(() => mockedGuests);
-    entryAPI.byGuestId = jest.fn().mockResolvedValue(mockedEntries);
+    const { query } = createTestClientAndServer();
+    const jane = await guestFactory({ firstName: 'Jane' });
+    await guestFactory({ firstName: 'John' });
+    const entry = await entryFactory({ guestId: jane.getDataValue('NIK') });
     const LIST_GUEST = gql`
       query guests {
         listGuest {
@@ -41,14 +42,14 @@ describe('Guest schema', () => {
     `;
     spiedJwtVerification.mockResolvedValue(true);
     const result = await query({ query: LIST_GUEST });
-    expect(result).toMatchSnapshot();
-    expect(guestAPI.list).toBeCalled();
-    expect(entryAPI.byGuestId).toBeCalled();
+    expect(result.data.listGuest).toHaveLength(2);
+    expect(result.data.listGuest[0].entryToday[0].id).toEqual(entry.id);
+    expect(result.errors).toBeUndefined();
   });
 
   it('getGuest: should work', async () => {
-    const { query, guestAPI } = createTestClientAndServer();
-    guestAPI.get = jest.fn(() => mockedGuests[0]);
+    const { query } = createTestClientAndServer();
+    const john = await guestFactory({ firstName: 'John' });
     const GET_GUEST = gql`
       query guest($NIK: String!) {
         getGuest(NIK: $NIK) {
@@ -62,17 +63,15 @@ describe('Guest schema', () => {
     spiedJwtVerification.mockResolvedValue(true);
     const result = await query({
       query: GET_GUEST,
-      variables: { NIK: 'some-id' },
+      variables: { NIK: john.getDataValue('NIK') },
     });
-    expect(result).toMatchSnapshot();
-    expect(guestAPI.get).toBeCalledWith('some-id');
+    expect(result.errors).toBeUndefined();
+    expect(result.data.getGuest.NIK).toEqual(john.NIK);
   });
 
   it('byName: should work', async () => {
-    const { query, guestAPI } = createTestClientAndServer();
-    const guest = mockedGuests[0];
-    const { firstName, lastName } = guest;
-    guestAPI.byName = jest.fn().mockResolvedValue(guest);
+    const { query } = createTestClientAndServer();
+    const guest = await guestFactory({ firstName: 'John', lastName: 'Doe' });
     const BY_NAME = gql`
       query guestByName($input: ByNameInput!) {
         byName(input: $input) {
@@ -86,23 +85,20 @@ describe('Guest schema', () => {
     spiedJwtVerification.mockResolvedValue(true);
     const result = await query({
       query: BY_NAME,
-      variables: { input: { firstName, lastName } },
+      variables: { input: { firstName: 'John', lastName: 'Doe' } },
     });
-    expect(result).toMatchSnapshot();
-    expect(guestAPI.byName).toBeCalledWith({ firstName, lastName });
+    expect(result.data.byName.NIK).toEqual(guest.NIK);
+    expect(result.errors).toBeUndefined();
   });
 
   it('create guest: should work', async () => {
-    const { mutate, guestAPI } = createTestClientAndServer();
+    const { mutate } = createTestClientAndServer();
     const attributes = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@example.com',
       NIK: '12345',
     };
-    guestAPI.create = jest
-      .fn()
-      .mockResolvedValue({ ...attributes, id: 'some-id' });
 
     const CREATE_GUEST = gql`
       mutation CreateGuest($input: CreateGuestInput!) {
@@ -121,6 +117,5 @@ describe('Guest schema', () => {
       variables: { input: attributes },
     });
     expect(result).toMatchSnapshot();
-    expect(guestAPI.create).toBeCalledWith(attributes);
   });
 });
