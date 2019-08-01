@@ -1,7 +1,7 @@
-import connectToDb from './database';
+import models from './database/models';
 
 const handler = async () => {
-  await connectToDb();
+  await models.sequelize.sync();
   return {
     statusCode: 200,
     body: JSON.stringify({

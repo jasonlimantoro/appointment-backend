@@ -1,5 +1,7 @@
 import Sequelize from 'sequelize';
 import config from '../../config/db';
+import guest from './guest';
+import entry from './entry';
 
 const env = () => {
   switch (true) {
@@ -19,13 +21,13 @@ const sequelize = new Sequelize(
   {
     dialect: 'mysql',
     host: dbConfig.host,
-    logging: false,
+    logging: process.env.NODE_ENV !== 'test',
   },
 );
 
 const models = {
-  guest: sequelize.import('./guest'),
-  entry: sequelize.import('./entry'),
+  guest: sequelize.import('guest', guest),
+  entry: sequelize.import('entry', entry),
 };
 
 Object.keys(models).forEach(modelName => {
