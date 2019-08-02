@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 const typeDefs = gql`
   enum Status {
     ONGOING
-    FINISHED
+    ENDED
   }
   type PageInfo {
     hasNext: Boolean!

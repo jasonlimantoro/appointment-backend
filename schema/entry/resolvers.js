@@ -69,7 +69,7 @@ const resolvers = {
     byGuestId: (_source, args, context) =>
       checkAuthentication(
         context,
-        async () => context.dataSources.entryAPI.byGuestId(args.NIK),
+        async () => context.dataSources.entryAPI.byGuestId({ id: args.NIK }),
         'DynamoDB.DocumentClient',
         service => {
           context.dataSources.entryAPI.replaceDataSource(service);
@@ -90,7 +90,7 @@ const resolvers = {
             guestId: guest.NIK,
             userId: user.sub,
           });
-          return { ...res, Guest: guest };
+          return res;
         },
         'DynamoDB.DocumentClient',
         service => {
@@ -101,7 +101,7 @@ const resolvers = {
     endEntry: async (_source, args, context) =>
       checkAuthentication(
         context,
-        () => context.dataSources.entryAPI.end(args.id),
+        async () => context.dataSources.entryAPI.end(args.id),
         'DynamoDB.DocumentClient',
         service => {
           context.dataSources.entryAPI.replaceDataSource(service);

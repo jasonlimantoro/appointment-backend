@@ -1,6 +1,5 @@
-import uuid from 'uuid';
 import moment from 'moment';
-import { humanFormat, commonFormat } from '../libs/datetime';
+import { humanFormat } from '../libs/datetime';
 import models from '../database/models';
 
 import BaseService from './base';
@@ -40,7 +39,11 @@ class EntryService extends BaseService {
     return res;
   };
 
-  get = id => this._util.get({ key: { id } });
+  get = async id => {
+    const { entry } = models;
+    const res = await entry.findByPk(id);
+    return res;
+  };
 
   create = async ({
     see, guestId, id, userId,
@@ -48,32 +51,30 @@ class EntryService extends BaseService {
     if (!guestId) {
       this.constructor.throwInvalidArgumentsError('guestID must be provided');
     }
-    return this._util.put({
-      Item: {
-        id: id || uuid.v1(),
-        see,
-        guestId,
-        userId,
-        status: 'ONGOING',
-        createdAt: humanFormat(new Date()),
-      },
+    const { entry } = models;
+    return entry.create({
+      see,
+      guestId,
+      id,
+      userId,
     });
   };
 
-  end = async id =>
-    this._util.update({
-      Key: { id },
-      UpdateExpression: 'set endedAt = :now, #stats = :finished',
-      ExpressionAttributeNames: {
-        '#stats': 'status',
+  end = async id => {
+    const { entry } = models;
+    await entry.update(
+      {
+        endedAt: humanFormat(new Date()),
+        status: 'ENDED',
       },
-      ExpressionAttributeValues: {
-        ':now': humanFormat(new Date()),
-        ':finished': 'FINISHED',
+      {
+        where: {
+          id,
+        },
       },
-      ConditionExpression: 'attribute_not_exists(endedAt)',
-      ReturnValues: 'ALL_NEW',
-    });
+    );
+    return entry.findByPk(id);
+  };
 
   byGuestId = ({ id }) => models.entry.findAll({ where: { guestId: id } });
 
@@ -91,27 +92,11 @@ class EntryService extends BaseService {
     });
 
   onGoing = () => {
-    const midnight = moment()
-      .hours(0)
-      .minutes(0)
-      .format(commonFormat);
-    const later = moment()
-      .hours(23)
-      .minutes(59)
-      .format(commonFormat);
-    return this._util.where({
-      IndexName: 'status-index',
-      KeyConditionExpression:
-        '#stats = :onGoing AND createdAt BETWEEN :start AND :end',
-      ExpressionAttributeNames: {
-        '#stats': 'status',
+    const { entry } = models;
+    return entry.findAll({
+      where: {
+        status: 'ONGOING',
       },
-      ExpressionAttributeValues: {
-        ':start': midnight,
-        ':end': later,
-        ':onGoing': 'ONGOING',
-      },
-      ScanIndexForward: false,
     });
   };
 }
