@@ -1,18 +1,18 @@
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import { createTestClientAndServer } from '../utils';
+import { createTestClientAndServer, truncateDb } from '../utils';
 import {
   entries as mockedEntries,
   guests as mockedGuest,
   photos as mockedPhotos,
 } from '../../fixtures';
 import Auth from '../../libs/auth';
-import * as resolverUtils from '../../libs/resolverUtils';
 import { humanFormat } from '../../libs/datetime';
 import * as credentialUtils from '../../libs/credentials';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
-beforeEach(() => {
+beforeEach(async () => {
+  await truncateDb();
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
     .mockResolvedValue(true);
@@ -25,119 +25,6 @@ afterEach(() => {
   spiedJwtVerification.mockReset();
 });
 describe('Entry Schema', () => {
-  it('listEntry: should work', async () => {
-    const {
-      query, entryAPI, guestAPI, photoAPI,
-    } = createTestClientAndServer();
-    spiedJwtVerification.mockResolvedValueOnce(true);
-    entryAPI.list = jest
-      .fn()
-      .mockResolvedValue({ Items: _.take(mockedEntries, 3), Count: 3 });
-    guestAPI.get = jest.fn().mockResolvedValue(mockedGuest[0]);
-    photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
-    const LIST_ENTRY = gql`
-      query {
-        listEntry(paginate: { first: 15, after: "some-id" }) {
-          edges {
-            node {
-              Guest {
-                firstName
-                lastName
-                NIK
-              }
-              photo {
-                id
-              }
-              id
-              see
-              createdAt(format: "YYYY-MM-DD HH:MM")
-              endedAt
-            }
-            cursor
-          }
-          pagination {
-            hasNext
-            count
-          }
-        }
-      }
-    `;
-    const res = await query({ query: LIST_ENTRY });
-    expect(res.errors).toBeUndefined();
-    expect(entryAPI.list).toBeCalledWith({ first: 15, after: 'some-id' });
-  });
-
-  it('listEntryToday: should work', async () => {
-    const { query, entryAPI } = createTestClientAndServer();
-    const LIST_TODAY_ENTRY = gql`
-      query {
-        listTodayEntry(paginate: { after: "some-id" }) {
-          edges {
-            node {
-              Guest {
-                firstName
-                lastName
-                NIK
-              }
-              see
-              createdAt
-              endedAt
-            }
-          }
-          pagination {
-            hasNext
-            count
-          }
-        }
-      }
-    `;
-    spiedJwtVerification.mockResolvedValueOnce(true);
-    entryAPI.list = jest
-      .fn()
-      .mockResolvedValue({ Items: _.take(mockedEntries, 5), Count: 5 });
-    resolverUtils.filterToday = jest
-      .fn()
-      .mockReturnValue(_.take(mockedEntries, 3));
-    const res = await query({ query: LIST_TODAY_ENTRY });
-    expect(res.errors).toBeUndefined();
-    expect(entryAPI.list).toBeCalledWith({ after: 'some-id', first: 10 });
-  });
-
-  it('listEntryToday: can be filtered by guestID', async () => {
-    const { query, entryAPI } = createTestClientAndServer();
-    const LIST_TODAY_ENTRY = gql`
-      query ListTodayEntry($NIK: String) {
-        listTodayEntry(NIK: $NIK, paginate: { first: 3, after: "some-id" }) {
-          edges {
-            node {
-              see
-              createdAt
-            }
-          }
-          pagination {
-            hasNext
-            count
-          }
-        }
-      }
-    `;
-    spiedJwtVerification.mockResolvedValueOnce(true);
-    const byGuestId = { Items: _.take(mockedEntries, 3), Count: 3 };
-    const today = _.take(mockedEntries, 1);
-    entryAPI.byGuestId = jest.fn().mockResolvedValue(byGuestId);
-    resolverUtils.filterToday = jest.fn().mockReturnValue(today);
-    const res = await query({
-      query: LIST_TODAY_ENTRY,
-      variables: { NIK: mockedGuest[0].NIK },
-    });
-    expect(res.errors).toBeUndefined();
-    expect(entryAPI.byGuestId).toBeCalledWith({
-      id: mockedGuest[0].NIK,
-      first: 3,
-      after: 'some-id',
-    });
-  });
-
   it('listOngoingEntry: should work', async () => {
     const { query, entryAPI } = createTestClientAndServer();
     const LIST_ONGOING = gql`
