@@ -6,7 +6,10 @@ export default (sequelize, DataTypes) => {
       status: DataTypes.STRING,
       endedAt: DataTypes.DATE,
     },
-    {},
+    {
+      timestamps: true,
+      updatedAt: false,
+    },
   );
   entry.associate = models => {
     entry.belongsTo(models.guest, { foreignKey: 'guestId' });
