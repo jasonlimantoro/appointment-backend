@@ -33,5 +33,7 @@ export default async (props = {}, options = {}, num = 1) => {
   const filled = await Promise.all(
     Array.from({ length: num }, () => data(props, options)),
   );
-  return models.entry.bulkCreate(filled);
+  const res = await models.entry.bulkCreate(filled);
+  if (num === 1) return res[0];
+  return res;
 };
