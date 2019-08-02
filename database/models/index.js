@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import config from '../../config/db';
 import guest from './guest';
 import entry from './entry';
+import photo from './photo';
 
 const env = () => {
   switch (true) {
@@ -28,6 +29,7 @@ const sequelize = new Sequelize(
 const models = {
   guest: sequelize.import('guest', guest),
   entry: sequelize.import('entry', entry),
+  photo: sequelize.import('photo', photo),
 };
 
 Object.keys(models).forEach(modelName => {

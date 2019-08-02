@@ -13,6 +13,7 @@ export default (sequelize, DataTypes) => {
   );
   entry.associate = models => {
     entry.belongsTo(models.guest, { foreignKey: 'guestId' });
+    entry.hasMany(models.photo, { foreignKey: 'entryId' });
   };
   return entry;
 };
