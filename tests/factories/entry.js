@@ -1,13 +1,16 @@
 import faker from 'faker';
 
 import models from '../../database/models';
+import guestFactory from './guest';
 
-const data = (props = {}, options = {}) => {
+const data = async (props = {}, options = {}) => {
   const defaultProps = {
     id: faker.random.uuid(),
     see: faker.name.findName(),
     status: faker.random.arrayElement(['ONGOING', 'ENDED']),
-    guestId: faker.finance.account(16),
+    guestId: !props.guestId
+      ? (await guestFactory()).getDataValue('NIK')
+      : faker.finance.account(16),
     endedAt: faker.date.future(0.1),
   };
   const { ended } = options;
@@ -27,7 +30,8 @@ const data = (props = {}, options = {}) => {
 };
 
 export default async (props = {}, options = {}, num = 1) => {
-  if (num === 1) return models.entry.create(data(props, options));
-  const filled = Array.from({ length: num }, () => data(props, options));
+  const filled = await Promise.all(
+    Array.from({ length: num }, () => data(props, options)),
+  );
   return models.entry.bulkCreate(filled);
 };
