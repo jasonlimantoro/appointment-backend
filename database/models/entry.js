@@ -4,6 +4,7 @@ export default (sequelize, DataTypes) => {
     {
       see: DataTypes.STRING,
       status: DataTypes.STRING,
+      endedAt: DataTypes.DATE,
     },
     {},
   );
