@@ -1,12 +1,8 @@
 import gql from 'graphql-tag';
-import _ from 'lodash';
-import { createTestClientAndServer, truncateDb } from '../utils';
-import {
-  entries as mockedEntries,
-  photos as mockedPhotos,
-} from '../../fixtures';
-import Auth from '../../libs/auth';
-import * as credentialUtils from '../../libs/credentials';
+import { createTestClientAndServer, truncateDb } from '../../utils';
+import Auth from '../../../libs/auth';
+import { entryFactory, photoFactory } from '../../factories';
+import * as credentialUtils from '../../../libs/credentials';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 beforeEach(async () => {
@@ -24,12 +20,9 @@ afterEach(() => {
 });
 describe('Entry Schema', () => {
   it('Entry can automatically sign the photos url', async () => {
-    const {
-      query,
-      entryAPI,
-      uploadAPI,
-      photoAPI,
-    } = createTestClientAndServer();
+    const { query } = createTestClientAndServer();
+    const entry = await entryFactory({}, { ended: false });
+    await photoFactory({ entryId: entry.getDataValue('id') }, {}, 2);
     const QUERY = gql`
       query {
         listOngoingEntry {
@@ -51,16 +44,9 @@ describe('Entry Schema', () => {
         }
       }
     `;
-    uploadAPI.sign = jest
-      .fn()
-      .mockResolvedValue({ signedRequest: 'signed-request-for-get' });
-    entryAPI.onGoing = jest
-      .fn()
-      .mockResolvedValue({ Items: _.take(mockedEntries, 2), Count: 2 });
-    photoAPI.byEntry = jest.fn().mockResolvedValue(_.take(mockedPhotos, 2));
     spiedJwtVerification.mockResolvedValueOnce(true);
     const res = await query({ query: QUERY });
     expect(res.errors).toBeUndefined();
-    expect(uploadAPI.sign).toBeCalled();
+    expect(res.data.listOngoingEntry.edges[0].node.photo).toHaveLength(2);
   });
 });
