@@ -1,4 +1,5 @@
 import moment from 'moment';
+import uuid from 'uuid';
 import { humanFormat } from '../libs/datetime';
 import models from '../database/models';
 
@@ -53,9 +54,9 @@ class EntryService extends BaseService {
     }
     const { entry } = models;
     return entry.create({
+      id: id || uuid.v4(),
       see,
       guestId,
-      id,
       userId,
     });
   };

@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import uuid from 'uuid';
 import Auth from '../../../libs/auth';
 import { createTestClientAndServer, truncateDb } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
@@ -6,6 +7,8 @@ import models from '../../../database/models';
 import { guestFactory } from '../../factories';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
+const spiedUuid = jest.spyOn(uuid, 'v4');
+const mockUuid = 'some-uuid';
 beforeEach(async () => {
   await truncateDb();
   credentialUtils.getServiceWithAssumedCredentials = jest
@@ -14,6 +17,7 @@ beforeEach(async () => {
   spiedJwtVerification.mockRejectedValue(
     new Error('Authenticated routes should be proteced'),
   );
+  spiedUuid.mockReturnValue(mockUuid);
 });
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
@@ -23,7 +27,6 @@ describe('createEntry', () => {
   it('should work', async () => {
     const { mutate } = createTestClientAndServer();
     const attributes = {
-      id: 'asdf',
       see: 'xyz',
       Guest: {
         firstName: 'Jane',
@@ -61,14 +64,13 @@ describe('createEntry', () => {
     expect(allGuests).toHaveLength(1);
     expect(allGuests[0].getDataValue('NIK')).toEqual(attributes.Guest.NIK);
     expect(allEntries).toHaveLength(1);
-    expect(allEntries[0].getDataValue('id')).toEqual(attributes.id);
+    expect(allEntries[0].getDataValue('id')).toEqual(mockUuid);
     expect(res.errors).toBeUndefined();
-    expect(res.data.createEntry.id).toEqual(attributes.id);
+    expect(res.data.createEntry.id).toEqual(mockUuid);
   });
   it('should not create guest if guest already exists', async () => {
     const { mutate } = createTestClientAndServer();
     const attributes = {
-      id: 'asdf',
       see: 'xyz',
       Guest: {
         firstName: 'Jane',
