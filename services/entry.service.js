@@ -1,6 +1,5 @@
-import moment from 'moment';
 import uuid from 'uuid';
-import { humanFormat } from '../libs/datetime';
+import { humanFormat, startDay, endDay } from '../libs/datetime';
 import models from '../database/models';
 
 import BaseService from './base';
@@ -23,16 +22,7 @@ class EntryService extends BaseService {
     const res = await entry.findAll({
       where: {
         createdAt: {
-          [models.Sequelize.Op.between]: [
-            moment()
-              .hours(0)
-              .minutes(0)
-              .seconds(0),
-            moment()
-              .hours(23)
-              .minutes(59)
-              .seconds(59),
-          ],
+          [models.Sequelize.Op.between]: [startDay, endDay],
         },
         ...(guestId && { guestId }),
       },
