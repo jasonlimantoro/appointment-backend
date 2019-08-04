@@ -1,16 +1,16 @@
 import AWS from 'aws-sdk';
+import AWSMock from 'aws-sdk-mock';
 import CustomAuth from '../../libs/auth';
 import { AuthService } from '../../services';
 import mockUser from '../../fixtures/users';
 
-jest.mock('@aws-amplify/auth');
+AWSMock.setSDKInstance(AWS);
 
 const service = new AuthService();
-AWS.config.credentials = {
-  params: {
-    Logins: {},
-  },
-};
+
+beforeEach(() => {
+  AWSMock.mock('CognitoIdentityCredentials', 'refreshPromise', () => {});
+});
 
 describe('Auth Service', () => {
   it('login: should get the token', async () => {
@@ -22,7 +22,6 @@ describe('Auth Service', () => {
     CustomAuth.login = jest.fn().mockResolvedValue(CognitoUser);
 
     const res = await service.login(mockUser);
-    // Sign in using amplify
     expect(CustomAuth.login).toBeCalledWith({
       username: mockUser.username,
       password: mockUser.password,
