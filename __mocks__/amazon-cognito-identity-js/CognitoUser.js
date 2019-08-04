@@ -11,7 +11,12 @@ export default class CognitoUser {
     .fn()
     .mockImplementation(cb => cb(null, new CognitoUserSession()));
 
+  authenticateUser = jest
+    .fn()
+    .mockImplementation((authDetails, { onSuccess }) => onSuccess({}));
+
   refreshSession = jest
     .fn()
-    .mockImplementation((_refreshToken, cb) => cb(null, new CognitoUserSession()));
+    .mockImplementation((_refreshToken, cb) =>
+      cb(null, new CognitoUserSession()));
 }
