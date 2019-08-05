@@ -9,7 +9,7 @@ module.exports = {
     */
     queryInterface.removeColumn('entries', 'updatedAt'),
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface, Sequelize) =>
     /*
       Add reverting commands here.
       Return a promise to correctly handle asynchronicity.
@@ -20,6 +20,5 @@ module.exports = {
     queryInterface.addColumn('entries', 'updatedAt', {
       type: Sequelize.DATE,
       allowNull: false,
-    });
-  },
+    }),
 };
