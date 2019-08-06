@@ -12,6 +12,10 @@ export default {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      endedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
     }),
   down: queryInterface => queryInterface.dropTable('sessions'),
 };

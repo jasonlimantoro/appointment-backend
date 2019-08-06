@@ -3,6 +3,7 @@ export default (sequelize, DataTypes) => {
     'session',
     {
       userId: DataTypes.STRING,
+      endedAt: DataTypes.DATE,
     },
     {
       timestamps: true,
