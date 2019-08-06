@@ -34,7 +34,6 @@ const typeDefs = gql`
     id: String
     see: String!
     guestId: String
-    sessionId: String!
     Guest: CreateGuestInput!
   }
   input PaginationInput {

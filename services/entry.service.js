@@ -37,7 +37,7 @@ class EntryService extends BaseService {
   };
 
   create = async ({
-    see, guestId, id, userId,
+    see, guestId, id, sessionId,
   }) => {
     if (!guestId) {
       this.constructor.throwInvalidArgumentsError('guestID must be provided');
@@ -47,7 +47,7 @@ class EntryService extends BaseService {
       id: id || uuid.v4(),
       see,
       guestId,
-      userId,
+      sessionId,
     });
   };
 

@@ -2,6 +2,7 @@ import uuid from 'uuid';
 import BaseService from './base';
 import dynamoClient from '../config/dynamodb';
 import { humanFormat } from '../libs/datetime';
+import models from '../database/models';
 
 class SessionService extends BaseService {
   constructor({
@@ -17,18 +18,9 @@ class SessionService extends BaseService {
     if (!userId) {
       this.constructor.throwInvalidArgumentsError();
     }
-    const params = {
-      TableName: this.tableName,
-      Item: {
-        id: uuid.v1(),
-        userId,
-        createdAt: humanFormat(new Date()),
-      },
-    };
-    return this.dataSource
-      .put(params)
-      .promise()
-      .then(() => params.Item);
+    const { session } = models;
+    const res = await session.create({ id: uuid.v4(), userId });
+    return res;
   };
 
   end = async ({ id } = {}) => {
