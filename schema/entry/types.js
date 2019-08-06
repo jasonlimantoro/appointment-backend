@@ -26,14 +26,15 @@ const typeDefs = gql`
     endedAt: String @date
     status: Status
     Guest: Guest!
-    photo: [Photo]!
-    userId: String!
+    photo: [Photo!]!
+    Session: [Session!]!
   }
 
   input CreateEntryInput {
     id: String
     see: String!
     guestId: String
+    sessionId: String!
     Guest: CreateGuestInput!
   }
   input PaginationInput {

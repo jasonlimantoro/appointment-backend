@@ -5,6 +5,14 @@ export default (sequelize, DataTypes) => {
       see: DataTypes.STRING,
       status: DataTypes.STRING,
       endedAt: DataTypes.DATE,
+      sessionId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: 'sessions',
+          key: 'id',
+        },
+      },
     },
     {
       timestamps: true,
@@ -12,6 +20,7 @@ export default (sequelize, DataTypes) => {
     },
   );
   entry.associate = models => {
+    entry.belongsTo(models.session, { foreignKy: 'sessionId' });
     entry.belongsTo(models.guest, { foreignKey: 'guestId' });
     entry.hasMany(models.photo, { foreignKey: 'entryId' });
   };

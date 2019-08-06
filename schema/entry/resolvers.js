@@ -87,6 +87,7 @@ const resolvers = {
           const res = await context.dataSources.entryAPI.create({
             id: input.id,
             see: input.see,
+            sessionId: input.sessionId,
             guestId: guest.NIK,
             userId: user.sub,
           });

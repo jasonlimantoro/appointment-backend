@@ -3,6 +3,7 @@ import config from '../../config/db';
 import guest from './guest';
 import entry from './entry';
 import photo from './photo';
+import session from './session';
 
 const env = () => {
   switch (true) {
@@ -30,6 +31,7 @@ const models = {
   guest: sequelize.import('guest', guest),
   entry: sequelize.import('entry', entry),
   photo: sequelize.import('photo', photo),
+  session: sequelize.import('session', session),
 };
 
 Object.keys(models).forEach(modelName => {

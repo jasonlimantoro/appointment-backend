@@ -2,6 +2,7 @@ import faker from 'faker';
 
 import models from '../../database/models';
 import guestFactory from './guest';
+import sessionFactory from './session';
 
 const data = async (props = {}, options = {}) => {
   const defaultProps = {
@@ -11,6 +12,9 @@ const data = async (props = {}, options = {}) => {
     guestId: !props.guestId
       ? (await guestFactory()).getDataValue('NIK')
       : faker.finance.account(16),
+    sessionId: !props.sessionId
+      ? (await sessionFactory()).getDataValue('id')
+      : faker.random.uuid(),
     endedAt: faker.date.future(0.1),
   };
   const { ended } = options;

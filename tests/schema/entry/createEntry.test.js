@@ -4,7 +4,7 @@ import Auth from '../../../libs/auth';
 import { createTestClientAndServer, truncateDb } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
 import models from '../../../database/models';
-import { guestFactory } from '../../factories';
+import { guestFactory, sessionFactory } from '../../factories';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 const spiedUuid = jest.spyOn(uuid, 'v4');
@@ -26,8 +26,10 @@ afterEach(() => {
 describe('createEntry', () => {
   it('should work', async () => {
     const { mutate } = createTestClientAndServer();
+    const session = await sessionFactory();
     const attributes = {
       see: 'xyz',
+      sessionId: session.getDataValue('id'),
       Guest: {
         firstName: 'Jane',
         lastName: 'Doe',
@@ -61,17 +63,19 @@ describe('createEntry', () => {
     const allEntries = await entry.findAll();
     const allGuests = await guest.findAll();
 
+    expect(res.errors).toBeUndefined();
     expect(allGuests).toHaveLength(1);
     expect(allGuests[0].getDataValue('NIK')).toEqual(attributes.Guest.NIK);
     expect(allEntries).toHaveLength(1);
     expect(allEntries[0].getDataValue('id')).toEqual(mockUuid);
-    expect(res.errors).toBeUndefined();
     expect(res.data.createEntry.id).toEqual(mockUuid);
   });
   it('should not create guest if guest already exists', async () => {
     const { mutate } = createTestClientAndServer();
+    const session = await sessionFactory();
     const attributes = {
       see: 'xyz',
+      sessionId: session.getDataValue('id'),
       Guest: {
         firstName: 'Jane',
         lastName: 'Doe',
