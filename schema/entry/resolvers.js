@@ -84,13 +84,10 @@ const resolvers = {
           const guest = await context.dataSources.guestAPI.findOrCreate(
             input.Guest,
           );
-          const session = await context.dataSources.sessionAPI.create({
-            userId: user.sub,
-          });
           const res = await context.dataSources.entryAPI.create({
             id: input.id,
             see: input.see,
-            sessionId: session.getDataValue('id'),
+            sessionId: input.sessionId,
             guestId: guest.NIK,
             userId: user.sub,
           });
