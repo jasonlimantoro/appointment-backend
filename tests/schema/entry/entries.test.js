@@ -3,6 +3,7 @@ import { createTestClientAndServer, truncateDb } from '../../utils';
 import Auth from '../../../libs/auth';
 import { entryFactory, photoFactory } from '../../factories';
 import * as credentialUtils from '../../../libs/credentials';
+import models from '../../../database/models';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 beforeEach(async () => {
@@ -17,6 +18,9 @@ beforeEach(async () => {
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
   spiedJwtVerification.mockReset();
+});
+afterAll(async () => {
+  await models.sequelize.close();
 });
 describe('Entry Schema', () => {
   it('Entry can automatically sign the photos url', async () => {

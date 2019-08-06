@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import Auth from '../../../libs/auth';
 import { createTestClientAndServer, truncateDb } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
+import models from '../../../database/models';
 import { entryFactory, guestFactory } from '../../factories';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
@@ -15,9 +16,12 @@ beforeEach(async () => {
     new Error('Authenticated routes should be proteced'),
   );
 });
-afterEach(() => {
+afterEach(async () => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
   spiedJwtVerification.mockReset();
+});
+afterAll(async () => {
+  await models.sequelize.close();
 });
 describe('listEntryToday', () => {
   it('listEntryToday: should work', async () => {

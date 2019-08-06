@@ -9,7 +9,7 @@ import { guestFactory, sessionFactory } from '../../factories';
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 const spiedUuid = jest.spyOn(uuid, 'v4');
 const mockUuid = 'some-uuid';
-beforeEach(async () => {
+beforeEach(async done => {
   await truncateDb();
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
@@ -18,11 +18,17 @@ beforeEach(async () => {
     new Error('Authenticated routes should be proteced'),
   );
   spiedUuid.mockReturnValue(mockUuid);
+  done();
 });
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
   spiedJwtVerification.mockReset();
 });
+
+afterAll(async () => {
+  await models.sequelize.close();
+});
+
 describe('createEntry', () => {
   it('should work', async () => {
     const { mutate } = createTestClientAndServer();
@@ -52,22 +58,25 @@ describe('createEntry', () => {
       }
     `;
     const { entry, guest } = models;
+    const allEntries = () => entry.findAll();
+    const allGuests = () => guest.findAll();
     spiedJwtVerification.mockResolvedValue({
       sub: 'some-user-id',
     });
+    expect(await allGuests()).toHaveLength(0);
+    expect(await allEntries()).toHaveLength(0);
 
     const res = await mutate({
       mutation: CREATE_ENTRY,
       variables: { input: attributes },
     });
-    const allEntries = await entry.findAll();
-    const allGuests = await guest.findAll();
-
     expect(res.errors).toBeUndefined();
-    expect(allGuests).toHaveLength(1);
-    expect(allGuests[0].getDataValue('NIK')).toEqual(attributes.Guest.NIK);
-    expect(allEntries).toHaveLength(1);
-    expect(allEntries[0].getDataValue('id')).toEqual(mockUuid);
+    expect(await allGuests()).toHaveLength(1);
+    expect((await allGuests())[0].getDataValue('NIK')).toEqual(
+      attributes.Guest.NIK,
+    );
+    expect(await allEntries()).toHaveLength(1);
+    expect((await allEntries())[0].getDataValue('id')).toEqual(mockUuid);
     expect(res.data.createEntry.id).toEqual(mockUuid);
   });
   it('should not create guest if guest already exists', async () => {
