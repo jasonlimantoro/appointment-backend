@@ -1,25 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Authentication login: should work 1`] = `
-Object {
-  "data": Object {
-    "login": Object {
-      "session": Object {
-        "id": "c29tZS11bmlxdWUtaWQ=",
-      },
-      "token": "some-token",
-    },
-  },
-  "errors": undefined,
-  "extensions": undefined,
-  "http": Object {
-    "headers": Headers {
-      Symbol(map): Object {},
-    },
-  },
-}
-`;
-
 exports[`Authentication logout: should work 1`] = `
 Object {
   "data": Object {

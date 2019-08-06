@@ -1,22 +1,21 @@
 import gql from 'graphql-tag';
 import AWS from 'aws-sdk';
+import AWSMock from 'aws-sdk-mock';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid';
-import Auth from '@aws-amplify/auth';
-import { createTestClientAndServer } from '../utils';
+import { createTestClientAndServer, truncateDb } from '../utils';
+import models from '../../database/models';
 import mockUser from '../../fixtures/users';
 import * as credentialUtils from '../../libs/credentials';
 import CustomAuth from '../../libs/auth';
 
-AWS.config.credentials = {
-  params: {
-    Logins: {},
-  },
-};
+AWSMock.setSDKInstance(AWS);
+
 const spiedJwtVerification = jest.spyOn(CustomAuth, 'verifyJwt');
 
-jest.mock('@aws-amplify/auth');
-beforeEach(() => {
+beforeEach(async () => {
+  await truncateDb();
+  AWSMock.mock('CognitoIdentityCredentials', 'refreshPromise', () => {});
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
     .mockResolvedValue(true);
@@ -26,6 +25,10 @@ beforeEach(() => {
 });
 afterEach(() => {
   spiedJwtVerification.mockClear();
+});
+
+afterAll(async () => {
+  await models.sequelize.close();
 });
 
 describe('Authentication', () => {
@@ -38,13 +41,15 @@ describe('Authentication', () => {
         jwtToken: 'some-token',
       },
     };
-    const { mutate, authAPI, sessionAPI } = createTestClientAndServer();
+    const { mutate } = createTestClientAndServer();
+    const { session } = models;
+    const allSession = () => session.findAll();
     CustomAuth.login = jest.fn().mockResolvedValue(mockCognito);
     uuid.v1 = jest.fn().mockReturnValue('some-unique-id');
     jwt.decode = jest.fn().mockReturnValue(decoded);
-    const spiedLogin = jest.spyOn(authAPI, 'login');
-    const spiedSessionCreation = jest.spyOn(sessionAPI, 'create');
-    const spiedEncryption = jest.spyOn(Buffer, 'from');
+    // const spiedLogin = jest.spyOn(authAPI, 'login');
+    // const spiedSessionCreation = jest.spyOn(sessionAPI, 'create');
+    // const spiedEncryption = jest.spyOn(Buffer, 'from');
     const LOGIN = gql`
       mutation Login($username: String!, $password: String!) {
         login(username: $username, password: $password) {
@@ -55,12 +60,17 @@ describe('Authentication', () => {
         }
       }
     `;
+    expect(await allSession()).toHaveLength(0);
     const res = await mutate({ mutation: LOGIN, variables: mockUser[0] });
-    expect(res).toMatchSnapshot();
-    expect(spiedEncryption).toBeCalledWith('some-unique-id');
-    expect(spiedLogin).toBeCalledWith(mockUser[0]);
+    expect(res.errors).toBeUndefined();
+    expect(await allSession()).toHaveLength(1);
+    const sessionId = (await allSession())[0].getDataValue('id');
+
+    expect(res.data.login.token).toEqual(mockCognito.idToken.jwtToken);
+    expect(res.data.login.session.id).toEqual(
+      Buffer.from(sessionId).toString('base64'),
+    );
     expect(jwt.decode).toBeCalledWith(mockCognito.idToken.jwtToken);
-    expect(spiedSessionCreation).toBeCalledWith({ userId: decoded.sub });
   });
 
   it('logout: should work', async () => {
@@ -94,7 +104,6 @@ describe('Authentication', () => {
         logout(sessionId: $sessionId)
       }
     `;
-    Auth.signOut = jest.fn().mockResolvedValue(true);
     spiedJwtVerification.mockResolvedValue(true);
     const res = await mutate({
       mutation: LOGOUT,
@@ -118,5 +127,6 @@ describe('Authentication', () => {
       variables: { cognitoUsername: 'some-username' },
     });
     expect(res.errors).toBeUndefined();
+    expect(res.data.refreshToken.token).toEqual('refresh-token');
   });
 });
