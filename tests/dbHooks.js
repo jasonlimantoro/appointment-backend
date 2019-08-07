@@ -5,5 +5,6 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
+  await truncateDb();
   await closeDb();
 });
