@@ -1,14 +1,13 @@
 import uuid from 'uuid';
 import { SessionService } from '../../services';
-import { truncateDb } from '../utils';
 import { sessionFactory } from '../factories';
+import '../dbHooks';
 
 const service = new SessionService();
 const mockUserId = 'uuid-user';
 const mockSessionId = 'uuid-session';
 
 beforeEach(async () => {
-  await truncateDb();
   jest.spyOn(uuid, 'v4').mockReturnValue(mockSessionId);
 });
 
@@ -19,9 +18,9 @@ describe('Session Service', () => {
   });
 
   it('end: should add a non-existent endedAt attribute', async () => {
-    const newSession = await sessionFactory();
-    expect(newSession.getDataValue('endedAt')).not.toBeDefined();
+    const newSession = await sessionFactory({}, { ended: false });
+    expect(newSession.getDataValue('endedAt')).toBeNull();
     const ended = await service.end({ id: newSession.getDataValue('id') });
-    expect(ended.getDataValue('endedAt')).toBeDefined();
+    expect(ended.getDataValue('endedAt')).not.toBeNull();
   });
 });

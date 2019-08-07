@@ -3,18 +3,19 @@ import AWS from 'aws-sdk';
 import AWSMock from 'aws-sdk-mock';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid';
-import { createTestClientAndServer, truncateDb } from '../utils';
+import { createTestClientAndServer } from '../utils';
 import models from '../../database/models';
 import mockUser from '../../fixtures/users';
 import * as credentialUtils from '../../libs/credentials';
 import CustomAuth from '../../libs/auth';
+import { sessionFactory } from '../factories';
+import '../dbHooks';
 
 AWSMock.setSDKInstance(AWS);
 
 const spiedJwtVerification = jest.spyOn(CustomAuth, 'verifyJwt');
 
 beforeEach(async () => {
-  await truncateDb();
   AWSMock.mock('CognitoIdentityCredentials', 'refreshPromise', () => {});
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
@@ -25,10 +26,6 @@ beforeEach(async () => {
 });
 afterEach(() => {
   spiedJwtVerification.mockClear();
-});
-
-afterAll(async () => {
-  await models.sequelize.close();
 });
 
 describe('Authentication', () => {
@@ -47,9 +44,6 @@ describe('Authentication', () => {
     CustomAuth.login = jest.fn().mockResolvedValue(mockCognito);
     uuid.v1 = jest.fn().mockReturnValue('some-unique-id');
     jwt.decode = jest.fn().mockReturnValue(decoded);
-    // const spiedLogin = jest.spyOn(authAPI, 'login');
-    // const spiedSessionCreation = jest.spyOn(sessionAPI, 'create');
-    // const spiedEncryption = jest.spyOn(Buffer, 'from');
     const LOGIN = gql`
       mutation Login($username: String!, $password: String!) {
         login(username: $username, password: $password) {
@@ -75,14 +69,16 @@ describe('Authentication', () => {
 
   it('logout: should work', async () => {
     const { mutate, sessionAPI } = createTestClientAndServer();
-    const loginSession = await sessionAPI.create({ userId: 'some-user-id' });
+    const loginSession = await sessionFactory({}, { ended: true });
     const spyEndSession = jest.spyOn(sessionAPI, 'end');
     const LOGOUT = gql`
       mutation Logout($sessionId: String!) {
         logout(sessionId: $sessionId)
       }
     `;
-    const encryptedSessionId = Buffer.from(loginSession.id).toString('base64');
+    const encryptedSessionId = Buffer.from(
+      loginSession.getDataValue('id'),
+    ).toString('base64');
     spiedJwtVerification.mockResolvedValue(true);
     const res = await mutate({
       mutation: LOGOUT,
@@ -90,7 +86,7 @@ describe('Authentication', () => {
         sessionId: encryptedSessionId,
       },
     });
-    expect(res).toMatchSnapshot();
+    expect(res.errors).toBeUndefined();
     expect(spyEndSession).toBeCalledWith({
       id: Buffer.from(encryptedSessionId, 'base64').toString('ascii'),
     });

@@ -5,7 +5,8 @@ import { AuthenticationError } from '../libs/errors';
 import CustomAuth from '../libs/auth';
 
 class AuthService {
-  static getJWTFromCognitoUser = CognitoUser => getNestedObjectValue(CognitoUser)(['idToken', 'jwtToken']);
+  static getJWTFromCognitoUser = CognitoUser =>
+    getNestedObjectValue(CognitoUser)(['idToken', 'jwtToken']);
 
   login = async ({ username, password }) => {
     try {
@@ -28,7 +29,11 @@ class AuthService {
 
   logout = async () => {
     await CustomAuth.logout();
-    delete AWS.config.credentials.params.Logins;
+    try {
+      delete AWS.config.credentials.params.Logins;
+    } catch {
+      // no logins map
+    }
   };
 
   refresh = async cognitoUsername => {

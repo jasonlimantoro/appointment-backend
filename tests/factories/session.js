@@ -2,13 +2,24 @@ import faker from 'faker';
 
 import models from '../../database/models';
 
-const data = async (props = {}) => {
+const data = async (props = {}, options = {}) => {
   const defaultProps = {
     id: faker.random.uuid(),
     userId: faker.random.uuid(),
     createdAt: faker.date.past(0.1),
+    endedAt: faker.date.future(0.1),
   };
-  return Object.assign({}, defaultProps, props);
+  const { ended } = options;
+  // randomize if options.ended is unspecified
+  const isEnded = ended === undefined ? faker.random.arrayElement([true, false]) : ended;
+  const statefulProps = {
+    ...(isEnded
+      ? {}
+      : {
+        endedAt: null,
+      }),
+  };
+  return Object.assign({}, defaultProps, statefulProps, props);
 };
 
 export default async (props = {}, options = {}, num = 1) => {
