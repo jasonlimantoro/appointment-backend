@@ -1,8 +1,6 @@
-import moment from 'moment';
 import mime from 'mime-types';
 import Auth from '@aws-amplify/auth';
 import {
-  filterToday,
   checkAuthentication,
   checkAuthGroup,
   constructFileName,
@@ -15,25 +13,6 @@ import { AuthenticationError, AuthorizationError } from '../../libs/errors';
 jest.mock('jsonwebtoken');
 
 describe('resolverUtils', () => {
-  describe('filterToday', () => {
-    it('should work', () => {
-      const given = [
-        {
-          createdAt: moment().hours(12),
-        },
-        {
-          createdAt: moment().hours(15),
-          endedAt: moment().hours(16),
-        },
-        {
-          createdAt: moment().hours(-1),
-        },
-      ];
-      const actual = filterToday(given);
-      expect(actual).toEqual([given[0]]);
-    });
-  });
-
   describe('checkAuthentication', () => {
     it('should throw error when header is invalid', async () => {
       const controller = jest.fn();
