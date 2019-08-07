@@ -3,6 +3,7 @@ import { createTestClientAndServer, truncateDb } from '../../utils';
 import Auth from '../../../libs/auth';
 import * as credentialUtils from '../../../libs/credentials';
 import { entryFactory, photoFactory } from '../../factories';
+import models from '../../../database/models';
 
 const spiedJWTVerification = jest.spyOn(Auth, 'verifyJwt');
 credentialUtils.getServiceWithAssumedCredentials = jest
@@ -17,6 +18,9 @@ beforeEach(async () => {
 });
 afterEach(() => {
   spiedJWTVerification.mockClear();
+});
+afterAll(async () => {
+  await models.sequelize.close();
 });
 describe('byEntry', () => {
   it('should work', async () => {
