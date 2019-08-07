@@ -1,3 +1,7 @@
+export const STATUS = {
+  ONGOING: 'ONGOING',
+  ENDED: 'ENDED',
+};
 export default (sequelize, DataTypes) => {
   const entry = sequelize.define(
     'entry',

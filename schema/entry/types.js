@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
+import { STATUS } from '../../database/models/entry';
 
 const typeDefs = gql`
   enum Status {
-    ONGOING
-    ENDED
+    ${STATUS.ONGOING}
+    ${STATUS.ENDED}
   }
   type PageInfo {
     hasNext: Boolean!
