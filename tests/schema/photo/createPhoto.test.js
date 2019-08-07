@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
-import { createTestClientAndServer, truncateDb } from '../../utils';
+import { createTestClientAndServer } from '../../utils';
 import Auth from '../../../libs/auth';
 import * as credentialUtils from '../../../libs/credentials';
 import { entryFactory } from '../../factories';
+import '../../dbHooks';
 
 const spiedJWTVerification = jest.spyOn(Auth, 'verifyJwt');
 credentialUtils.getServiceWithAssumedCredentials = jest
@@ -10,7 +11,6 @@ credentialUtils.getServiceWithAssumedCredentials = jest
   .mockResolvedValue(true);
 
 beforeEach(async () => {
-  await truncateDb();
   spiedJWTVerification.mockRejectedValue(
     new Error('Authenticated routes should be protected'),
   );

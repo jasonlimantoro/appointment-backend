@@ -1,26 +1,24 @@
 import gql from 'graphql-tag';
-import { createTestClientAndServer, truncateDb } from '../../utils';
+import { createTestClientAndServer } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
 import Auth from '../../../libs/auth';
 import { guestFactory } from '../../factories';
+import '../../dbHooks';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 credentialUtils.getServiceWithAssumedCredentials = jest
   .fn()
   .mockResolvedValue(true);
 
+beforeEach(async () => {
+  spiedJwtVerification.mockRejectedValue(
+    new Error('Authenticated routes should be protected'),
+  );
+});
+afterEach(async () => {
+  spiedJwtVerification.mockClear();
+});
 describe('Guest schema', () => {
-  beforeEach(async () => {
-    spiedJwtVerification.mockRejectedValue(
-      new Error('Authenticated routes should be protected'),
-    );
-    await truncateDb();
-  });
-  afterEach(async () => {
-    spiedJwtVerification.mockClear();
-    await truncateDb();
-  });
-
   it('byName: should work', async () => {
     const { query } = createTestClientAndServer();
     const guest = await guestFactory({ firstName: 'John', lastName: 'Doe' });

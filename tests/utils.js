@@ -57,10 +57,13 @@ export const truncateDb = async model => {
   if (model) {
     return models[model].destroy({ where: {}, force: true });
   }
-  return Promise.race(
+  return Promise.all(
     map(Object.keys(models), key => {
       if (['sequelize', 'Sequelize'].includes(key)) return null;
       return models[key].destroy({ where: {}, force: true });
     }),
   );
+};
+export const closeDb = async () => {
+  await models.sequelize.close();
 };

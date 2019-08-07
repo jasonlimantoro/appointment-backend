@@ -1,13 +1,12 @@
 import gql from 'graphql-tag';
 import Auth from '../../../libs/auth';
-import { createTestClientAndServer, truncateDb } from '../../utils';
+import { createTestClientAndServer } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
 import { entryFactory, guestFactory } from '../../factories';
-import models from '../../../database/models';
+import '../../dbHooks';
 
 const spiedJwtVerification = jest.spyOn(Auth, 'verifyJwt');
 beforeEach(async () => {
-  await truncateDb();
   credentialUtils.getServiceWithAssumedCredentials = jest
     .fn()
     .mockResolvedValue(true);
@@ -18,9 +17,6 @@ beforeEach(async () => {
 afterEach(() => {
   credentialUtils.getServiceWithAssumedCredentials.mockClear();
   spiedJwtVerification.mockReset();
-});
-afterAll(async () => {
-  await models.sequelize.close();
 });
 describe('byGuestId', () => {
   it('should work', async () => {

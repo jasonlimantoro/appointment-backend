@@ -6,7 +6,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "pretest": "NODE_ENV=test npx sequelize-cli db:migrate",
-    "test": "jest --no-cache",
+    "test": "jest --no-cache --runInBand",
     "test:watch": "yarn test --watch",
     "preoffline": "NODE_ENV=local npx sequelize-cli db:create",
     "offline": "webpack --config webpack.seed.js && sls offline start --dontPrintOutput",
