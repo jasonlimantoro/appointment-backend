@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import Auth from '../../../libs/auth';
 import { createTestClientAndServer } from '../../utils';
 import * as credentialUtils from '../../../libs/credentials';
+import { encryptBase64 } from '../../../libs/helpers';
 import models from '../../../database/models';
 import { guestFactory, sessionFactory } from '../../factories';
 import '../../dbHooks';
@@ -30,7 +31,7 @@ describe('createEntry', () => {
     const session = await sessionFactory();
     const attributes = {
       see: 'xyz',
-      sessionId: session.getDataValue('id'),
+      sessionId: encryptBase64(session.getDataValue('id')),
       Guest: {
         firstName: 'Jane',
         lastName: 'Doe',
@@ -52,9 +53,8 @@ describe('createEntry', () => {
         }
       }
     `;
-    const { entry, guest } = models;
-    const allEntries = () => entry.findAll();
-    const allGuests = () => guest.findAll();
+    const allEntries = () => models.entry.findAll();
+    const allGuests = () => models.guest.findAll();
     spiedJwtVerification.mockResolvedValue({
       sub: 'some-user-id',
     });
@@ -65,13 +65,16 @@ describe('createEntry', () => {
       mutation: CREATE_ENTRY,
       variables: { input: attributes },
     });
+    const guests = await allGuests();
+    const entries = await allEntries();
     expect(res.errors).toBeUndefined();
-    expect(await allGuests()).toHaveLength(1);
-    expect((await allGuests())[0].getDataValue('NIK')).toEqual(
-      attributes.Guest.NIK,
+    expect(guests).toHaveLength(1);
+    expect(guests[0].getDataValue('NIK')).toEqual(attributes.Guest.NIK);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].getDataValue('id')).toEqual(mockUuid);
+    expect(entries[0].getDataValue('sessionId')).toEqual(
+      session.getDataValue('id'),
     );
-    expect(await allEntries()).toHaveLength(1);
-    expect((await allEntries())[0].getDataValue('id')).toEqual(mockUuid);
     expect(res.data.createEntry.id).toEqual(mockUuid);
   });
   it('should not create guest if guest already exists', async () => {

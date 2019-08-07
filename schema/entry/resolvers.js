@@ -1,4 +1,5 @@
 import { checkAuthentication, paginate } from '../../libs/resolverUtils';
+import { decryptBase64 } from '../../libs/helpers';
 
 const resolvers = {
   Query: {
@@ -87,7 +88,7 @@ const resolvers = {
           const res = await context.dataSources.entryAPI.create({
             id: input.id,
             see: input.see,
-            sessionId: input.sessionId,
+            sessionId: decryptBase64(input.sessionId),
             guestId: guest.NIK,
             userId: user.sub,
           });
