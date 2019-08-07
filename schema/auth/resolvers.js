@@ -23,24 +23,25 @@ const resolvers = {
         session,
       };
     },
-    logout: async (_source, args, context) => checkAuthentication(
-      context,
-      async () => {
-        try {
-          const endSession = await context.dataSources.sessionAPI.end({
-            id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
-          });
-          await context.dataSources.authAPI.logout();
-          if (endSession) {
-            return true;
+    logout: async (_source, args, context) =>
+      checkAuthentication(
+        context,
+        async () => {
+          try {
+            const endSession = await context.dataSources.sessionAPI.end({
+              id: Buffer.from(args.sessionId, 'base64').toString('ascii'),
+            });
+            await context.dataSources.authAPI.logout();
+            if (endSession) {
+              return true;
+            }
+          } catch (e) {
+            throw new LogoutError(e.message);
           }
-        } catch (e) {
-          throw new LogoutError(e.message);
-        }
-      },
-      'DynamoDB.DocumentClient',
-      service => context.dataSources.sessionAPI.replaceDataSource(service),
-    ),
+        },
+        'DynamoDB.DocumentClient',
+        service => context.dataSources.sessionAPI.replaceDataSource(service),
+      ),
   },
   Query: {
     refreshToken: async (_source, { cognitoUsername }, context) => {
