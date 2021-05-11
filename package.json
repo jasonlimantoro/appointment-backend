@@ -67,7 +67,7 @@
     "graphql-tools": "^4.0.4",
     "isomorphic-fetch": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "merge-graphql-schemas": "^1.5.8",
     "mime-types": "^2.1.24",
     "moment": "^2.24.0",
